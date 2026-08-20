@@ -7,7 +7,7 @@
 This script loads all 423 CHIMERA prostate-cohort cases from train_release/,
 computes cohort-level statistical artifacts (PCA, Spearman correlation with
 Ward clustering, missingness grid, raincloud plot data), and emits finished
-JSON to dashboard/cohort/ for the browser-side SVG renderer.
+JSON to docs/cohort/ for the browser-side SVG renderer.
 
 numpy is used ONLY for PCA eigendecomposition and KDE evaluation.
 All other logic uses Python stdlib (json, os, re, math, statistics, collections).
@@ -34,7 +34,7 @@ import numpy as np
 # ---------------------------------------------------------------------------
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(ROOT, "train_release")
-OUT_DIR = os.path.join(ROOT, "dashboard", "cohort")
+OUT_DIR = os.path.join(ROOT, "docs", "cohort")
 
 TASK_DIRS = {"task1": "task1", "task2": "task2", "task3": "task3"}
 TASK_CLINICAL = {
@@ -929,7 +929,7 @@ def main():
         print(f"  Emitted raincloud_{metric}.json ({len(rc['strata'])} strata)")
 
     print("\n" + "=" * 70)
-    print("Phase B precompute complete. Artifacts in dashboard/cohort/")
+    print("Phase B precompute complete. Artifacts in docs/cohort/")
     print("=" * 70)
 
 

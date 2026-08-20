@@ -13,15 +13,15 @@ class SafeFileHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         clean_path = self.path.split('?', 1)[0].split('#', 1)[0]
         
-        # Redirect /dashboard to /dashboard/
-        if clean_path == '/dashboard':
+        # Redirect /docs to /docs/
+        if clean_path == '/docs':
             self.send_response(301)
-            self.send_header('Location', '/dashboard/')
+            self.send_header('Location', '/docs/')
             self.end_headers()
             return
             
-        if clean_path in ('', '/', '/dashboard/'):
-            rel_file = 'dashboard/index.html'
+        if clean_path in ('', '/', '/docs/'):
+            rel_file = 'docs/index.html'
         else:
             rel_file = clean_path.lstrip('/')
 
@@ -45,9 +45,9 @@ class SafeFileHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write("403 Forbidden".encode('utf-8'))
             return
 
-        # If not found directly, check if it lives inside dashboard/
+        # If not found directly, check if it lives inside docs/
         if not os.path.exists(full_path):
-            alt_path = os.path.join(BASE_DIR, 'dashboard', rel_file)
+            alt_path = os.path.join(BASE_DIR, 'docs', rel_file)
             if os.path.exists(alt_path):
                 full_path = alt_path
 
@@ -115,7 +115,7 @@ def run(preferred_port=8000):
 
     print("=" * 60)
     print("  CHIMERA Case Viewer Local Server Running")
-    print(f"  URL: http://localhost:{port}/dashboard/")
+    print(f"  URL: http://localhost:{port}/docs/")
     print("=" * 60)
     sys.stdout.flush()
 

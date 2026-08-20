@@ -1,0 +1,1397 @@
+{
+  "points": [
+    {
+      "case_id": "T2-001",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -9.227256,
+      "pc2": 3.523408
+    },
+    {
+      "case_id": "T2-002",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 12.759058,
+      "pc2": 0.314961
+    },
+    {
+      "case_id": "T2-003",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 4.71884,
+      "pc2": 1.718708
+    },
+    {
+      "case_id": "T2-004",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 11.120004,
+      "pc2": -1.863352
+    },
+    {
+      "case_id": "T2-005",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": 2.349118,
+      "pc2": -2.872284
+    },
+    {
+      "case_id": "T2-006",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -9.896126,
+      "pc2": 4.140355
+    },
+    {
+      "case_id": "T2-007",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -1.319621,
+      "pc2": 3.293595
+    },
+    {
+      "case_id": "T2-008",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -6.232844,
+      "pc2": -7.244982
+    },
+    {
+      "case_id": "T2-009",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -1.503768,
+      "pc2": 2.915315
+    },
+    {
+      "case_id": "T2-010",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -4.567854,
+      "pc2": 1.200586
+    },
+    {
+      "case_id": "T2-011",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": 0.697209,
+      "pc2": 0.975356
+    },
+    {
+      "case_id": "T2-012",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": 2.257554,
+      "pc2": 0.953144
+    },
+    {
+      "case_id": "T2-013",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 15.780266,
+      "pc2": -1.303116
+    },
+    {
+      "case_id": "T2-014",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": 0.68472,
+      "pc2": 0.770708
+    },
+    {
+      "case_id": "T2-015",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 10.029724,
+      "pc2": 1.127405
+    },
+    {
+      "case_id": "T2-016",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -7.154794,
+      "pc2": -3.505424
+    },
+    {
+      "case_id": "T2-017",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -0.860713,
+      "pc2": 0.123174
+    },
+    {
+      "case_id": "T2-018",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": 4.718849,
+      "pc2": -6.961882
+    },
+    {
+      "case_id": "T2-019",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -10.415573,
+      "pc2": -1.829053
+    },
+    {
+      "case_id": "T2-020",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 4.562563,
+      "pc2": -1.780044
+    },
+    {
+      "case_id": "T2-021",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": -19.815462,
+      "pc2": -2.147977
+    },
+    {
+      "case_id": "T2-022",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -3.286867,
+      "pc2": 2.344216
+    },
+    {
+      "case_id": "T2-023",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -0.55616,
+      "pc2": 1.26214
+    },
+    {
+      "case_id": "T2-024",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -2.731231,
+      "pc2": 1.761732
+    },
+    {
+      "case_id": "T2-025",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -6.771641,
+      "pc2": -3.523604
+    },
+    {
+      "case_id": "T2-026",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": -8.18132,
+      "pc2": -4.29272
+    },
+    {
+      "case_id": "T2-027",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -6.731329,
+      "pc2": 1.613334
+    },
+    {
+      "case_id": "T2-028",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 17.350998,
+      "pc2": -1.372673
+    },
+    {
+      "case_id": "T2-029",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -2.748339,
+      "pc2": 3.250153
+    },
+    {
+      "case_id": "T2-030",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -5.038081,
+      "pc2": 3.528458
+    },
+    {
+      "case_id": "T2-031",
+      "task": "task2",
+      "target": "watchful_waiting",
+      "pc1": 5.514845,
+      "pc2": 1.9852
+    },
+    {
+      "case_id": "T2-032",
+      "task": "task2",
+      "target": "watchful_waiting",
+      "pc1": -2.532889,
+      "pc2": 2.893999
+    },
+    {
+      "case_id": "T2-033",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -1.694474,
+      "pc2": -5.854747
+    },
+    {
+      "case_id": "T2-035",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": 1.513391,
+      "pc2": 0.217345
+    },
+    {
+      "case_id": "T2-036",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -11.318543,
+      "pc2": 3.496838
+    },
+    {
+      "case_id": "T2-037",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -3.78081,
+      "pc2": 0.42068
+    },
+    {
+      "case_id": "T2-038",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 10.585067,
+      "pc2": 0.186798
+    },
+    {
+      "case_id": "T2-039",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": 3.441149,
+      "pc2": -3.58134
+    },
+    {
+      "case_id": "T2-040",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -0.102746,
+      "pc2": 2.016907
+    },
+    {
+      "case_id": "T2-041",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 17.882339,
+      "pc2": -1.639822
+    },
+    {
+      "case_id": "T2-042",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": -6.64644,
+      "pc2": 1.934062
+    },
+    {
+      "case_id": "T2-043",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -1.852714,
+      "pc2": 2.806776
+    },
+    {
+      "case_id": "T2-044",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": -8.180513,
+      "pc2": -3.309203
+    },
+    {
+      "case_id": "T2-045",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": -18.607563,
+      "pc2": -3.813485
+    },
+    {
+      "case_id": "T2-047",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": 13.764546,
+      "pc2": -1.385692
+    },
+    {
+      "case_id": "T2-048",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -1.777726,
+      "pc2": 2.883699
+    },
+    {
+      "case_id": "T2-049",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": 0.674015,
+      "pc2": 2.573983
+    },
+    {
+      "case_id": "T2-050",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 16.668808,
+      "pc2": -0.403179
+    },
+    {
+      "case_id": "T2-051",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": 7.137887,
+      "pc2": -8.655877
+    },
+    {
+      "case_id": "T2-052",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 7.147643,
+      "pc2": 0.794689
+    },
+    {
+      "case_id": "T2-053",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": -4.530344,
+      "pc2": -10.003686
+    },
+    {
+      "case_id": "T2-054",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 6.13853,
+      "pc2": -0.457686
+    },
+    {
+      "case_id": "T2-055",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -2.329417,
+      "pc2": -11.788844
+    },
+    {
+      "case_id": "T2-056",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -8.99801,
+      "pc2": -2.700236
+    },
+    {
+      "case_id": "T2-057",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 17.490073,
+      "pc2": -1.689161
+    },
+    {
+      "case_id": "T2-058",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 3.609423,
+      "pc2": -2.75707
+    },
+    {
+      "case_id": "T2-059",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": -0.22045,
+      "pc2": 0.357362
+    },
+    {
+      "case_id": "T2-060",
+      "task": "task2",
+      "target": "active_surveillance",
+      "pc1": -4.484551,
+      "pc2": 3.940205
+    },
+    {
+      "case_id": "T2-061",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 1.830722,
+      "pc2": 2.018952
+    },
+    {
+      "case_id": "T2-062",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -12.169768,
+      "pc2": -0.182035
+    },
+    {
+      "case_id": "T2-063",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -2.209712,
+      "pc2": 2.428217
+    },
+    {
+      "case_id": "T2-064",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 17.767427,
+      "pc2": -1.699661
+    },
+    {
+      "case_id": "T2-065",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 16.181632,
+      "pc2": -0.144629
+    },
+    {
+      "case_id": "T2-067",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 5.210387,
+      "pc2": -4.984175
+    },
+    {
+      "case_id": "T2-068",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 14.462626,
+      "pc2": 0.625978
+    },
+    {
+      "case_id": "T2-069",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 5.853346,
+      "pc2": 0.792901
+    },
+    {
+      "case_id": "T2-070",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 2.55302,
+      "pc2": -0.692746
+    },
+    {
+      "case_id": "T2-072",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 1.864705,
+      "pc2": 2.475061
+    },
+    {
+      "case_id": "T2-073",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -1.703347,
+      "pc2": 3.521179
+    },
+    {
+      "case_id": "T2-074",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -0.53546,
+      "pc2": 3.269162
+    },
+    {
+      "case_id": "T2-075",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -9.590136,
+      "pc2": 2.676781
+    },
+    {
+      "case_id": "T2-076",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -1.093223,
+      "pc2": 1.823517
+    },
+    {
+      "case_id": "T2-077",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 5.206527,
+      "pc2": -1.328363
+    },
+    {
+      "case_id": "T2-078",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -2.324224,
+      "pc2": -4.957936
+    },
+    {
+      "case_id": "T2-079",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -18.055092,
+      "pc2": -3.877128
+    },
+    {
+      "case_id": "T2-080",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -7.610209,
+      "pc2": 2.368242
+    },
+    {
+      "case_id": "T2-081",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -6.905969,
+      "pc2": -4.983449
+    },
+    {
+      "case_id": "T2-082",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -6.382143,
+      "pc2": -0.020662
+    },
+    {
+      "case_id": "T2-083",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -2.654583,
+      "pc2": 2.23136
+    },
+    {
+      "case_id": "T2-084",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -5.092701,
+      "pc2": 2.625327
+    },
+    {
+      "case_id": "T2-085",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -0.026757,
+      "pc2": 1.72703
+    },
+    {
+      "case_id": "T2-086",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -18.638302,
+      "pc2": -3.8847
+    },
+    {
+      "case_id": "T2-087",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -6.270965,
+      "pc2": 0.810724
+    },
+    {
+      "case_id": "T2-088",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -6.518297,
+      "pc2": 3.194751
+    },
+    {
+      "case_id": "T2-089",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 1.378414,
+      "pc2": 2.831538
+    },
+    {
+      "case_id": "T2-090",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 6.686523,
+      "pc2": -2.426307
+    },
+    {
+      "case_id": "T2-091",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -5.4431,
+      "pc2": -8.308555
+    },
+    {
+      "case_id": "T2-092",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 15.527684,
+      "pc2": -1.691727
+    },
+    {
+      "case_id": "T2-093",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 5.560989,
+      "pc2": 0.174742
+    },
+    {
+      "case_id": "T2-094",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 12.17283,
+      "pc2": -4.318155
+    },
+    {
+      "case_id": "T2-095",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -14.133033,
+      "pc2": 0.247684
+    },
+    {
+      "case_id": "T2-096",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -7.529912,
+      "pc2": 3.399113
+    },
+    {
+      "case_id": "T2-097",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 6.193607,
+      "pc2": 0.611649
+    },
+    {
+      "case_id": "T2-098",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 6.481092,
+      "pc2": -0.284864
+    },
+    {
+      "case_id": "T2-099",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 1.848277,
+      "pc2": -3.900067
+    },
+    {
+      "case_id": "T2-100",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -10.054718,
+      "pc2": -5.23337
+    },
+    {
+      "case_id": "T2-101",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 4.74688,
+      "pc2": 2.345613
+    },
+    {
+      "case_id": "T2-102",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": -21.063855,
+      "pc2": -2.806259
+    },
+    {
+      "case_id": "T2-103",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 9.759846,
+      "pc2": 1.035321
+    },
+    {
+      "case_id": "T2-104",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -0.114618,
+      "pc2": 1.65395
+    },
+    {
+      "case_id": "T2-105",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 11.397319,
+      "pc2": -0.04785
+    },
+    {
+      "case_id": "T2-106",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -1.459727,
+      "pc2": 2.010938
+    },
+    {
+      "case_id": "T2-107",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 6.760798,
+      "pc2": 2.432195
+    },
+    {
+      "case_id": "T2-108",
+      "task": "task2",
+      "target": "continued_surveillance",
+      "pc1": -3.454017,
+      "pc2": -6.454636
+    },
+    {
+      "case_id": "T2-109",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -3.226309,
+      "pc2": 4.016209
+    },
+    {
+      "case_id": "T2-110",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -3.002386,
+      "pc2": 1.928863
+    },
+    {
+      "case_id": "T2-111",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -4.574051,
+      "pc2": -2.464727
+    },
+    {
+      "case_id": "T2-112",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -3.771314,
+      "pc2": 0.940421
+    },
+    {
+      "case_id": "T2-113",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 16.455238,
+      "pc2": -0.906339
+    },
+    {
+      "case_id": "T2-115",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -1.990472,
+      "pc2": -10.345119
+    },
+    {
+      "case_id": "T2-116",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 4.270607,
+      "pc2": -1.141192
+    },
+    {
+      "case_id": "T2-117",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 2.505134,
+      "pc2": -1.565711
+    },
+    {
+      "case_id": "T2-118",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -11.59751,
+      "pc2": 2.356003
+    },
+    {
+      "case_id": "T2-119",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 16.752164,
+      "pc2": -0.380887
+    },
+    {
+      "case_id": "T2-120",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 4.596914,
+      "pc2": 2.470027
+    },
+    {
+      "case_id": "T2-121",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -3.409797,
+      "pc2": 3.955012
+    },
+    {
+      "case_id": "T2-122",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -8.242725,
+      "pc2": 1.391574
+    },
+    {
+      "case_id": "T2-123",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 15.91684,
+      "pc2": -0.395598
+    },
+    {
+      "case_id": "T2-124",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -8.274609,
+      "pc2": 3.451439
+    },
+    {
+      "case_id": "T2-125",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 1.29423,
+      "pc2": -0.894353
+    },
+    {
+      "case_id": "T2-126",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 1.52629,
+      "pc2": 3.069686
+    },
+    {
+      "case_id": "T2-127",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -6.956497,
+      "pc2": 3.150142
+    },
+    {
+      "case_id": "T2-128",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 11.810241,
+      "pc2": 1.302108
+    },
+    {
+      "case_id": "T2-129",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -5.025533,
+      "pc2": 3.659706
+    },
+    {
+      "case_id": "T2-130",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -7.879276,
+      "pc2": 3.623643
+    },
+    {
+      "case_id": "T2-131",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -1.358689,
+      "pc2": 1.159251
+    },
+    {
+      "case_id": "T2-132",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -10.106651,
+      "pc2": -0.486955
+    },
+    {
+      "case_id": "T2-133",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 11.799624,
+      "pc2": 0.874348
+    },
+    {
+      "case_id": "T2-134",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -1.652434,
+      "pc2": 3.437203
+    },
+    {
+      "case_id": "T2-135",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 15.581542,
+      "pc2": -0.018679
+    },
+    {
+      "case_id": "T2-136",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -14.472602,
+      "pc2": -3.481951
+    },
+    {
+      "case_id": "T2-137",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -13.421086,
+      "pc2": -2.863426
+    },
+    {
+      "case_id": "T2-138",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -9.672806,
+      "pc2": -3.620451
+    },
+    {
+      "case_id": "T2-139",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 2.628479,
+      "pc2": 2.452223
+    },
+    {
+      "case_id": "T2-140",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 11.027792,
+      "pc2": 1.145303
+    },
+    {
+      "case_id": "T2-141",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -2.685306,
+      "pc2": 2.293238
+    },
+    {
+      "case_id": "T2-142",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 0.237852,
+      "pc2": 3.228574
+    },
+    {
+      "case_id": "T2-143",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -8.120246,
+      "pc2": 3.534289
+    },
+    {
+      "case_id": "T2-144",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 0.559219,
+      "pc2": -1.731496
+    },
+    {
+      "case_id": "T2-146",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 8.568207,
+      "pc2": 1.197095
+    },
+    {
+      "case_id": "T2-147",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -16.858835,
+      "pc2": -4.813177
+    },
+    {
+      "case_id": "T2-148",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 9.501374,
+      "pc2": 1.046773
+    },
+    {
+      "case_id": "T2-149",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 5.759898,
+      "pc2": -8.958149
+    },
+    {
+      "case_id": "T2-150",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 2.489502,
+      "pc2": -4.637267
+    },
+    {
+      "case_id": "T2-151",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": -11.894261,
+      "pc2": -4.903116
+    },
+    {
+      "case_id": "T2-152",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 8.001841,
+      "pc2": 0.935414
+    },
+    {
+      "case_id": "T2-153",
+      "task": "task2",
+      "target": "active_treatment",
+      "pc1": 6.076066,
+      "pc2": 1.922618
+    },
+    {
+      "case_id": "T3-001",
+      "task": "task3",
+      "target": "1",
+      "pc1": 1.848277,
+      "pc2": -3.900067
+    },
+    {
+      "case_id": "T3-004",
+      "task": "task3",
+      "target": "0",
+      "pc1": -2.209712,
+      "pc2": 2.428217
+    },
+    {
+      "case_id": "T3-005",
+      "task": "task3",
+      "target": "0",
+      "pc1": 11.027792,
+      "pc2": 1.145303
+    },
+    {
+      "case_id": "T3-006",
+      "task": "task3",
+      "target": "0",
+      "pc1": -0.55616,
+      "pc2": 1.26214
+    },
+    {
+      "case_id": "T3-007",
+      "task": "task3",
+      "target": "0",
+      "pc1": -7.879276,
+      "pc2": 3.623643
+    },
+    {
+      "case_id": "T3-009",
+      "task": "task3",
+      "target": "0",
+      "pc1": -1.051528,
+      "pc2": 1.100955
+    },
+    {
+      "case_id": "T3-010",
+      "task": "task3",
+      "target": "0",
+      "pc1": -8.18132,
+      "pc2": -4.29272
+    },
+    {
+      "case_id": "T3-011",
+      "task": "task3",
+      "target": "0",
+      "pc1": -10.011104,
+      "pc2": 4.293611
+    },
+    {
+      "case_id": "T3-012",
+      "task": "task3",
+      "target": "0",
+      "pc1": 6.481092,
+      "pc2": -0.284864
+    },
+    {
+      "case_id": "T3-013",
+      "task": "task3",
+      "target": "0",
+      "pc1": 1.52629,
+      "pc2": 3.069686
+    },
+    {
+      "case_id": "T3-014",
+      "task": "task3",
+      "target": "0",
+      "pc1": -11.392996,
+      "pc2": 3.578826
+    },
+    {
+      "case_id": "T3-017",
+      "task": "task3",
+      "target": "1",
+      "pc1": 11.120004,
+      "pc2": -1.863352
+    },
+    {
+      "case_id": "T3-019",
+      "task": "task3",
+      "target": "0",
+      "pc1": -2.731231,
+      "pc2": 1.761732
+    },
+    {
+      "case_id": "T3-020",
+      "task": "task3",
+      "target": "0",
+      "pc1": -7.610209,
+      "pc2": 2.368242
+    },
+    {
+      "case_id": "T3-021",
+      "task": "task3",
+      "target": "0",
+      "pc1": -13.209556,
+      "pc2": -0.715064
+    },
+    {
+      "case_id": "T3-022",
+      "task": "task3",
+      "target": "0",
+      "pc1": -0.114618,
+      "pc2": 1.65395
+    },
+    {
+      "case_id": "T3-023",
+      "task": "task3",
+      "target": "1",
+      "pc1": 11.397319,
+      "pc2": -0.04785
+    },
+    {
+      "case_id": "T3-024",
+      "task": "task3",
+      "target": "0",
+      "pc1": 1.478219,
+      "pc2": 1.737403
+    },
+    {
+      "case_id": "T3-026",
+      "task": "task3",
+      "target": "0",
+      "pc1": 1.212692,
+      "pc2": 0.088721
+    },
+    {
+      "case_id": "T3-027",
+      "task": "task3",
+      "target": "1",
+      "pc1": 7.147643,
+      "pc2": 0.794689
+    },
+    {
+      "case_id": "T3-028",
+      "task": "task3",
+      "target": "0",
+      "pc1": -1.694474,
+      "pc2": -5.854747
+    },
+    {
+      "case_id": "T3-029",
+      "task": "task3",
+      "target": "0",
+      "pc1": -9.590136,
+      "pc2": 2.676781
+    },
+    {
+      "case_id": "T3-030",
+      "task": "task3",
+      "target": "0",
+      "pc1": -8.99801,
+      "pc2": -2.700236
+    },
+    {
+      "case_id": "T3-031",
+      "task": "task3",
+      "target": "0",
+      "pc1": 2.723459,
+      "pc2": -1.07116
+    },
+    {
+      "case_id": "T3-032",
+      "task": "task3",
+      "target": "1",
+      "pc1": 8.845296,
+      "pc2": 0.726612
+    },
+    {
+      "case_id": "T3-035",
+      "task": "task3",
+      "target": "0",
+      "pc1": 5.853346,
+      "pc2": 0.792901
+    },
+    {
+      "case_id": "T3-039",
+      "task": "task3",
+      "target": "1",
+      "pc1": -8.274609,
+      "pc2": 3.451439
+    },
+    {
+      "case_id": "T3-041",
+      "task": "task3",
+      "target": "0",
+      "pc1": -10.106651,
+      "pc2": -0.486955
+    },
+    {
+      "case_id": "T3-042",
+      "task": "task3",
+      "target": "0",
+      "pc1": 1.830722,
+      "pc2": 2.018952
+    },
+    {
+      "case_id": "T3-043",
+      "task": "task3",
+      "target": "0",
+      "pc1": -6.270965,
+      "pc2": 0.810724
+    },
+    {
+      "case_id": "T3-047",
+      "task": "task3",
+      "target": "1",
+      "pc1": 11.810241,
+      "pc2": 1.302108
+    },
+    {
+      "case_id": "T3-048",
+      "task": "task3",
+      "target": "0",
+      "pc1": -9.667986,
+      "pc2": -2.489617
+    },
+    {
+      "case_id": "T3-049",
+      "task": "task3",
+      "target": "0",
+      "pc1": 1.378414,
+      "pc2": 2.831538
+    },
+    {
+      "case_id": "T3-050",
+      "task": "task3",
+      "target": "1",
+      "pc1": -8.242725,
+      "pc2": 1.391574
+    },
+    {
+      "case_id": "T3-053",
+      "task": "task3",
+      "target": "1",
+      "pc1": 0.559219,
+      "pc2": -1.731496
+    },
+    {
+      "case_id": "T3-054",
+      "task": "task3",
+      "target": "0",
+      "pc1": -9.227256,
+      "pc2": 3.523408
+    },
+    {
+      "case_id": "T3-056",
+      "task": "task3",
+      "target": "0",
+      "pc1": 9.759846,
+      "pc2": 1.035321
+    },
+    {
+      "case_id": "T3-058",
+      "task": "task3",
+      "target": "0",
+      "pc1": 14.462626,
+      "pc2": 0.625978
+    },
+    {
+      "case_id": "T3-059",
+      "task": "task3",
+      "target": "1",
+      "pc1": -5.025533,
+      "pc2": 3.659706
+    },
+    {
+      "case_id": "T3-061",
+      "task": "task3",
+      "target": "0",
+      "pc1": -1.093223,
+      "pc2": 1.823517
+    },
+    {
+      "case_id": "T3-062",
+      "task": "task3",
+      "target": "0",
+      "pc1": 0.199302,
+      "pc2": 3.069792
+    },
+    {
+      "case_id": "T3-063",
+      "task": "task3",
+      "target": "0",
+      "pc1": 3.609423,
+      "pc2": -2.75707
+    },
+    {
+      "case_id": "T3-064",
+      "task": "task3",
+      "target": "0",
+      "pc1": 4.562563,
+      "pc2": -1.780044
+    },
+    {
+      "case_id": "T3-065",
+      "task": "task3",
+      "target": "0",
+      "pc1": 0.674015,
+      "pc2": 2.573983
+    },
+    {
+      "case_id": "T3-066",
+      "task": "task3",
+      "target": "0",
+      "pc1": 4.71884,
+      "pc2": 1.718708
+    },
+    {
+      "case_id": "T3-067",
+      "task": "task3",
+      "target": "0",
+      "pc1": -3.226309,
+      "pc2": 4.016209
+    },
+    {
+      "case_id": "T3-069",
+      "task": "task3",
+      "target": "0",
+      "pc1": -5.8114,
+      "pc2": 3.191601
+    },
+    {
+      "case_id": "T3-070",
+      "task": "task3",
+      "target": "1",
+      "pc1": 16.181632,
+      "pc2": -0.144629
+    },
+    {
+      "case_id": "T3-071",
+      "task": "task3",
+      "target": "1",
+      "pc1": 10.029724,
+      "pc2": 1.127405
+    },
+    {
+      "case_id": "T3-072",
+      "task": "task3",
+      "target": "0",
+      "pc1": -0.53546,
+      "pc2": 3.269162
+    },
+    {
+      "case_id": "T3-074",
+      "task": "task3",
+      "target": "0",
+      "pc1": 0.19756,
+      "pc2": -1.050029
+    }
+  ],
+  "variance_explained": [
+    72.02,
+    9.92
+  ],
+  "cumulative_2pc": 81.94,
+  "n": 198,
+  "method": "Centered covariance eigendecomposition (numpy.linalg.eigh), top-2 PCs projected."
+}

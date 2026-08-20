@@ -22,7 +22,7 @@ import {
   METRIC_UNITS,
   MODALITIES,
   WEYL_PHI,
-} from '../../dashboard/js/cohort_engine.js';
+} from '../../docs/js/cohort_engine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

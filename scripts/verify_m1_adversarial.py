@@ -74,7 +74,7 @@ def main():
 
     # Call JS CohortEngine.computeAll
     js_code = """
-    import { CohortEngine } from './dashboard/js/cohort_engine.js';
+    import { CohortEngine } from './docs/js/cohort_engine.js';
     import fs from 'node:fs';
     import path from 'node:path';
 
@@ -271,7 +271,7 @@ def main():
     controlled_matrix = py_corr["matrix"]
     controlled_vars = py_corr["variables"]
     js_controlled_code = f"""
-    import {{ wardCluster }} from './dashboard/js/cohort_engine.js';
+    import {{ wardCluster }} from './docs/js/cohort_engine.js';
     const rho = {json.dumps(controlled_matrix)};
     const vars = {json.dumps(controlled_vars)};
     const order = wardCluster(rho, vars);
@@ -392,7 +392,7 @@ def main():
     for name, vals in test_quantile_sets:
         py_b = py_tukey_box(vals)
         js_code = f"""
-        import {{ tukeyBox }} from './dashboard/js/cohort_engine.js';
+        import {{ tukeyBox }} from './docs/js/cohort_engine.js';
         console.log(JSON.stringify(tukeyBox({json.dumps(vals)})));
         """
         js_b = run_js_eval(js_code)
@@ -423,7 +423,7 @@ def main():
     for name, vals in test_kde_sets:
         py_h = py_silverman_bandwidth(vals)
         js_code = f"""
-        import {{ silvermanBandwidth, gaussianKDE }} from './dashboard/js/cohort_engine.js';
+        import {{ silvermanBandwidth, gaussianKDE }} from './docs/js/cohort_engine.js';
         const vals = {json.dumps(vals)};
         const h = silvermanBandwidth(vals);
         const kdeRes = gaussianKDE(vals, 80, 0.15);
@@ -487,7 +487,7 @@ def main():
 
     for name, fdict in test_corr_sets:
         js_code = f"""
-        import {{ spearmanCorrelationMatrix, spearmanRho }} from './dashboard/js/cohort_engine.js';
+        import {{ spearmanCorrelationMatrix, spearmanRho }} from './docs/js/cohort_engine.js';
         const fdict = {json.dumps(fdict)};
         const res = spearmanCorrelationMatrix(fdict, 5);
         console.log(JSON.stringify(res));
@@ -529,7 +529,7 @@ def main():
 
     for name, mat in test_pca_sets:
         js_code = f"""
-        import {{ computePCA }} from './dashboard/js/cohort_engine.js';
+        import {{ computePCA }} from './docs/js/cohort_engine.js';
         const mat = {json.dumps(mat)};
         const res = computePCA(mat, 3);
         console.log(JSON.stringify(res));

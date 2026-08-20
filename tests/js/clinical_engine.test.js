@@ -9,7 +9,7 @@ import {
   CAPRAScorer,
   CAPRASScorer,
   ClinicalBundleGenerator
-} from '../../dashboard/js/clinical_engine.js';
+} from '../../docs/js/clinical_engine.js';
 
 test('safeFloat helper parses valid numbers and guards against invalid inputs', () => {
   assert.strictEqual(safeFloat(12.34), 12.34);

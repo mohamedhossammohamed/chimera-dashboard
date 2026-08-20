@@ -23,7 +23,7 @@ import {
   renderKaplanMeierSVG,
   renderEAUScorecard,
   renderConcordanceMatrix
-} from '../../dashboard/js/standard_components.js';
+} from '../../docs/js/standard_components.js';
 
 test('renderClevelandBulletStrip renders SVG bullet strip with threshold bands', () => {
   const container = document.createElement('div');

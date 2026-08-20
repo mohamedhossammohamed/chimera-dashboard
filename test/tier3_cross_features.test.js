@@ -13,7 +13,7 @@ import {
   gaussianKDE,
   computePCA,
   NUMERIC_VARS,
-} from '../dashboard/js/cohort_engine.js';
+} from '../docs/js/cohort_engine.js';
 import { setupMockDOM } from './helpers/mock_dom.js';
 
 describe('Tier 3: Cross-Feature Interactions & Pipeline Integration', () => {
@@ -284,7 +284,7 @@ describe('Tier 3: Cross-Feature Interactions & Pipeline Integration', () => {
   });
 
   it('X13: End-to-end trace ingestion -> analytics -> mock SVG DOM pipeline execution', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
     const container = document.getElementById('cohort-view');
 
     // Pass traces directly — live computation mode (upload-first architecture)

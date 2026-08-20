@@ -15,8 +15,8 @@ import {
   computePCA,
   CohortEngine,
   NUMERIC_VARS,
-} from '../dashboard/js/cohort_engine.js';
-import { safeFloat } from '../dashboard/js/clinical_engine.js';
+} from '../docs/js/cohort_engine.js';
+import { safeFloat } from '../docs/js/clinical_engine.js';
 import { setupMockDOM } from './helpers/mock_dom.js';
 
 describe('Tier 2: Boundary 1 - In-Browser Cohort Computation Boundaries', () => {
@@ -400,7 +400,7 @@ describe('Tier 2: Boundary 9 - Vector Rendering Boundaries', () => {
   });
 
   it('B9.1: handles empty data without throwing DOM errors', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
     const container = document.getElementById('cohort-view');
     await CohortView.renderCohortTab([]);
     // With upload-first architecture, empty data shows a "No data loaded" message
@@ -408,8 +408,8 @@ describe('Tier 2: Boundary 9 - Vector Rendering Boundaries', () => {
   });
 
   it('B9.2: renders with single data point without infinite SVG bounding box', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
-    const { TraceReader } = await import('../dashboard/js/data.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
+    const { TraceReader } = await import('../docs/js/data.js');
     // Load a single trace from relocated data directory
     const fs = await import('node:fs');
     const path = await import('node:path');
@@ -433,7 +433,7 @@ describe('Tier 2: Boundary 9 - Vector Rendering Boundaries', () => {
   });
 
   it('B9.3: handles missing strata in rainclouds gracefully', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
     const emptyRaincloud = {
       _loaded: true,
       raincloud_psa: {
@@ -451,7 +451,7 @@ describe('Tier 2: Boundary 9 - Vector Rendering Boundaries', () => {
   });
 
   it('B9.4: handles correlation matrix with 0 usable variables gracefully', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
     CohortView._data = {
       _loaded: true,
       correlation: { variables: [], matrix: [], n_variables: 0, n_cases: 0, excluded: NUMERIC_VARS },
@@ -461,7 +461,7 @@ describe('Tier 2: Boundary 9 - Vector Rendering Boundaries', () => {
   });
 
   it('B9.5: verifies viewBox attribute is present on all rendered SVG nodes', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
     CohortView._data = {
       _loaded: true,
       composition: {

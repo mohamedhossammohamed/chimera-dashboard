@@ -16,8 +16,8 @@ import {
   CohortEngine,
   NUMERIC_VARS,
   METRIC_UNITS,
-} from '../dashboard/js/cohort_engine.js';
-import { safeFloat } from '../dashboard/js/clinical_engine.js';
+} from '../docs/js/cohort_engine.js';
+import { safeFloat } from '../docs/js/clinical_engine.js';
 import { setupMockDOM } from './helpers/mock_dom.js';
 
 describe('Tier 1: Feature 1 - Live In-Browser Cohort Computation', () => {
@@ -586,7 +586,7 @@ describe('Tier 1: Feature 9 - Zero-Image Pure SVG/Canvas Rendering', () => {
   });
 
   it('9.1: guarantees zero <img> or raster tags in rendered DOM cards', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
     const container = document.getElementById('cohort-view');
     const dummyStats = {
       _loaded: true,
@@ -609,7 +609,7 @@ describe('Tier 1: Feature 9 - Zero-Image Pure SVG/Canvas Rendering', () => {
   });
 
   it('9.2: renders SVG elements with valid viewBox and responsive width', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
     const card = CohortView._makeCard('Test Card', 'SUBTITLE');
     assert.ok(card.card);
     assert.ok(card.body);
@@ -617,8 +617,8 @@ describe('Tier 1: Feature 9 - Zero-Image Pure SVG/Canvas Rendering', () => {
   });
 
   it('9.3: disclaimer banner renders clinical spectrum notice', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
-    const { TraceReader } = await import('../dashboard/js/data.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
+    const { TraceReader } = await import('../docs/js/data.js');
     const container = document.getElementById('cohort-view');
     // Load traces from relocated data directory
     const fs = await import('node:fs');
@@ -643,7 +643,7 @@ describe('Tier 1: Feature 9 - Zero-Image Pure SVG/Canvas Rendering', () => {
   });
 
   it('9.4: makes valid card containers for all B1-B5 sections', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
     const cardB1 = CohortView._makeCard('B1: Cohort Composition (Task x Target)', 'ORDERED STACKED BARS');
     const cardB2 = CohortView._makeCard('B2: Cohort 2D Latent Manifold — MRI PCA (R-16)', '1 DOT = 1 PATIENT');
     const cardB3 = CohortView._makeCard('B3: Hierarchical Spearman Correlation Heatmap (R-17)', 'WARD-ORDERED // VIRIDIS');
@@ -658,8 +658,8 @@ describe('Tier 1: Feature 9 - Zero-Image Pure SVG/Canvas Rendering', () => {
   });
 
   it('9.5: handles missing data cards with graceful missing message', async () => {
-    const { CohortView } = await import('../dashboard/js/cohort_view.js');
-    const { TraceReader } = await import('../dashboard/js/data.js');
+    const { CohortView } = await import('../docs/js/cohort_view.js');
+    const { TraceReader } = await import('../docs/js/data.js');
     const container = document.getElementById('cohort-view');
     // Load traces from relocated data directory
     const fs = await import('node:fs');

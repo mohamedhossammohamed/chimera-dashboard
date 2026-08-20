@@ -1,0 +1,57 @@
+{
+  "tasks": {
+    "task1": {
+      "total": 195,
+      "classes": {
+        "yes": {
+          "n": 160,
+          "pct": 82.1
+        },
+        "no": {
+          "n": 35,
+          "pct": 17.9
+        }
+      }
+    },
+    "task2": {
+      "total": 153,
+      "classes": {
+        "active_surveillance": {
+          "n": 25,
+          "pct": 16.3
+        },
+        "continued_surveillance": {
+          "n": 14,
+          "pct": 9.2
+        },
+        "watchful_waiting": {
+          "n": 2,
+          "pct": 1.3
+        },
+        "active_treatment": {
+          "n": 112,
+          "pct": 73.2
+        }
+      }
+    },
+    "task3": {
+      "total": 75,
+      "classes": {
+        "1": {
+          "n": 19,
+          "pct": 25.3
+        },
+        "0": {
+          "n": 56,
+          "pct": 74.7
+        }
+      }
+    }
+  },
+  "method": "Ordered horizontal stacked bars. Exact counts and percentages per task per target class. No pie charts.",
+  "target_definitions": {
+    "task1": "Biopsy decision: yes/no",
+    "task2": "Treatment management: active_surveillance / continued_surveillance / watchful_waiting / active_treatment",
+    "task3": "BCR event: 1 (recurred) / 0 (censored)"
+  }
+}

@@ -1,0 +1,5201 @@
+{
+  "modalities": [
+    "MRI",
+    "Biopsy",
+    "Prostatectomy",
+    "PSA_Trend",
+    "Labs",
+    "FamilyHistory"
+  ],
+  "cases": [
+    {
+      "case_id": "PT-pseudo_0020cfca66c8",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_0169468160c6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_01b643727538",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_033f1a8e1503",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_0615b2bd8504",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_062a1125899d",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_06b319f42fcb",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_075dd468b384",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_079636ac5644",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_0930885168c9",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_099651db404e",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_0bd72f429a8b",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_0cdfb9410718",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_0de7e606ca70",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_11345b8a7ab3",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_11574b12444b",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_1185f6a68df0",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_11fe9c6ca833",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_132e0000c0e0",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_138092c2a6be",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_152344add0f1",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_175e6ad47991",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_17f110c9e142",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_180352970ace",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_1a4e0cf3b927",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_1dc32184cab6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_20a7e91c494c",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_20ba3f0f6ca0",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_21e7fa67a79e",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_249def42388a",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_25007bb807d7",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_259484ae733f",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_2b3ef1d3a505",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_2cd88bcdf81c",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_2e0346bce3b3",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_2e4988b84112",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_2eef4115a253",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_2ef22b5dd08e",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_2fbb84505a45",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_33c8cd4571fd",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_34647958aba3",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_3477ea7065bd",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_3646e0a2ae13",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_36c92fb424ac",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_376de00c8131",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_37d8ae9b27f1",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_394e0b8dbeeb",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_3b6ea1920967",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_3cc88c81f35a",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_3ceacc9b660b",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_3f75ae876abe",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_41ca49bed13d",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_47c373e230b6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_47d8b39fd07f",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_48fb60dfd22f",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_4a2fa7bc3595",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_4a4fedfc1f51",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_4b950525e6a8",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_4bfd4ec864d8",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_4c6b2b2bbf94",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_4d54f04e26ae",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_4e545d350c5b",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_4edb17f79e46",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_4f33b0253633",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_52213169f58b",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_562159dc2cc6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_575cb2819e96",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_590e7b237744",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_598f1d8f4e08",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_5af00f9153c2",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_5dc2eb70fbd7",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_5f263f325019",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_62c93b0c3dba",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_6457372f9532",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_665cf811e172",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_668c2a174afc",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_67728e41a2fa",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_6a100adb6ac3",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_6b6ee002f75d",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_6c8ef835ea42",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_6d2ecb82cc52",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_6d6abf7f6fb5",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_6d83f9e49421",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_6dc747db3e7d",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_6df4f23de04a",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_723f490ff7ce",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_7423d1c19560",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_76bfeeb8b8b8",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_7bcbfa157137",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_7be89ab28e92",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_7dbdcd6f9064",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_7dd989c35f87",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_7efca1668c87",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_7f85fe245d6c",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_80d551b63772",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_8137531888a0",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_8192345b35fa",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_819642c63ff9",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_825bc8328913",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_837f1dcfb56d",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_83f690a06c81",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_84ce0e4a9eed",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_8636aa471ef7",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_8654c4ff4d10",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_87cbc2052e90",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_8967e0df17fc",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_9187d18278f9",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_926c37508fe2",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_927456f47c99",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_938ba8a478e6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_93c180f13bd8",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_945da5c635c4",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_956f2054a1ea",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_958f2377f288",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_95d3fd02d5e0",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_97a7a14b3c3d",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_9835e080606c",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_98f71f146763",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_9988c23725e6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_99e3dc40a451",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_9ac935d9650f",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_9df1617405c1",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_9ff22a71b795",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_a2ed5cd06259",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_a32d7e3c3cdf",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_a37319c14573",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_a424617e164e",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_a4f6e7273fc3",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_a5292377e539",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_a62fdda714c0",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_a64ead56f586",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_a9a20522674d",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_a9acda639666",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_ac05cda1a88a",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_ac1dc724676e",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_acad53162dba",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_acc7bae9e286",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_aed2e170b8e6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_af12e08190bd",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_afbc5ebc0d4e",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b00a553261d2",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b0321645a5de",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b28f2ad6069e",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b414d3d849a7",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b477d3bd8246",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b59dce24e94a",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b63dfe0f311e",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b69f6fab2a86",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b6db06db35d7",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b8115e954c12",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b9aa0df93f2a",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_b9f0b7018502",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_c03b1168ff4d",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_c12bcf838ec8",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_c13fda040310",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_c39e94a13920",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_c55496c11421",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_c7277954c60f",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_c9d31197c533",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_cac2563c222a",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_cce5d47c05dd",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_d217629c323a",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_d38917f87b35",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_d3d6b421d0aa",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_d3e975d025e6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_d49b896a09e6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_d5ceb6b4204f",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_d7d26761c714",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_d95b3a02898e",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_dcd61cf9b443",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_dcd7bf13a6f4",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_dd011d696387",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_e001f4d06517",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_e1bb1e86b054",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_e288564d7111",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_e5104a16c8bb",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_e91d5fe837cb",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_e9fbcdc890f2",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_ee512fea9006",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_ef2309676161",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_ef66ca71e996",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_ef8ea220bdc6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_f1083e2e01d8",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_f2ec9a9b4d4a",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_f3a2af65a42f",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_f41131a1bc0b",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_f4ea752ca1bb",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_f80c073525b1",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_f87b704d91af",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_f99f0627e536",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_fa31cd663f5a",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_fa4a71ae9a34",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_fab43a43b7e6",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_fc6cf5262222",
+      "task": "task1"
+    },
+    {
+      "case_id": "PT-pseudo_fdd4ff09679e",
+      "task": "task1"
+    },
+    {
+      "case_id": "T2-001",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-002",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-003",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-004",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-005",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-006",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-007",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-008",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-009",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-010",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-011",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-012",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-013",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-014",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-015",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-016",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-017",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-018",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-019",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-020",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-021",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-022",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-023",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-024",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-025",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-026",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-027",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-028",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-029",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-030",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-031",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-032",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-033",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-034",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-035",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-036",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-037",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-038",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-039",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-040",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-041",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-042",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-043",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-044",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-045",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-046",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-047",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-048",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-049",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-050",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-051",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-052",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-053",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-054",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-055",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-056",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-057",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-058",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-059",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-060",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-061",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-062",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-063",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-064",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-065",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-066",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-067",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-068",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-069",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-070",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-071",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-072",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-073",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-074",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-075",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-076",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-077",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-078",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-079",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-080",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-081",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-082",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-083",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-084",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-085",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-086",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-087",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-088",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-089",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-090",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-091",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-092",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-093",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-094",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-095",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-096",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-097",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-098",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-099",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-100",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-101",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-102",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-103",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-104",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-105",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-106",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-107",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-108",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-109",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-110",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-111",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-112",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-113",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-114",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-115",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-116",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-117",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-118",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-119",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-120",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-121",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-122",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-123",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-124",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-125",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-126",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-127",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-128",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-129",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-130",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-131",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-132",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-133",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-134",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-135",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-136",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-137",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-138",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-139",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-140",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-141",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-142",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-143",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-144",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-145",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-146",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-147",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-148",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-149",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-150",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-151",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-152",
+      "task": "task2"
+    },
+    {
+      "case_id": "T2-153",
+      "task": "task2"
+    },
+    {
+      "case_id": "T3-001",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-002",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-003",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-004",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-005",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-006",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-007",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-008",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-009",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-010",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-011",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-012",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-013",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-014",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-015",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-016",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-017",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-018",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-019",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-020",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-021",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-022",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-023",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-024",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-025",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-026",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-027",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-028",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-029",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-030",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-031",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-032",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-033",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-034",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-035",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-036",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-037",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-038",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-039",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-040",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-041",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-042",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-043",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-044",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-045",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-046",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-047",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-048",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-049",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-050",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-051",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-052",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-053",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-054",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-055",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-056",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-057",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-058",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-059",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-060",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-061",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-062",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-063",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-064",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-065",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-066",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-067",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-068",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-069",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-070",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-071",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-072",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-073",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-074",
+      "task": "task3"
+    },
+    {
+      "case_id": "T3-075",
+      "task": "task3"
+    }
+  ],
+  "matrix": [
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1
+    ]
+  ],
+  "expected_absence": {
+    "task1": {
+      "Biopsy": "Task 1: biopsy expectedly absent (pre-biopsy decision stage)",
+      "Prostatectomy": "Task 1: prostatectomy expectedly absent (pre-biopsy decision stage)"
+    },
+    "task2": {
+      "Prostatectomy": "Task 2: prostatectomy expectedly absent (post-biopsy, pre-surgery stage)"
+    },
+    "task3": {
+      "PSA_Trend": "Task 3: PSA trend expectedly absent (post-prostatectomy survival stage)",
+      "Labs": "Task 3: laboratory panel expectedly absent (post-prostatectomy survival stage)"
+    }
+  },
+  "summary": {
+    "task1": {
+      "MRI": {
+        "present": 191,
+        "missing": 4,
+        "total": 195
+      },
+      "Biopsy": {
+        "present": 0,
+        "missing": 195,
+        "total": 195
+      },
+      "Prostatectomy": {
+        "present": 0,
+        "missing": 195,
+        "total": 195
+      },
+      "PSA_Trend": {
+        "present": 195,
+        "missing": 0,
+        "total": 195
+      },
+      "Labs": {
+        "present": 195,
+        "missing": 0,
+        "total": 195
+      },
+      "FamilyHistory": {
+        "present": 195,
+        "missing": 0,
+        "total": 195
+      }
+    },
+    "task2": {
+      "MRI": {
+        "present": 149,
+        "missing": 4,
+        "total": 153
+      },
+      "Biopsy": {
+        "present": 147,
+        "missing": 6,
+        "total": 153
+      },
+      "Prostatectomy": {
+        "present": 0,
+        "missing": 153,
+        "total": 153
+      },
+      "PSA_Trend": {
+        "present": 153,
+        "missing": 0,
+        "total": 153
+      },
+      "Labs": {
+        "present": 153,
+        "missing": 0,
+        "total": 153
+      },
+      "FamilyHistory": {
+        "present": 153,
+        "missing": 0,
+        "total": 153
+      }
+    },
+    "task3": {
+      "MRI": {
+        "present": 75,
+        "missing": 0,
+        "total": 75
+      },
+      "Biopsy": {
+        "present": 51,
+        "missing": 24,
+        "total": 75
+      },
+      "Prostatectomy": {
+        "present": 75,
+        "missing": 0,
+        "total": 75
+      },
+      "PSA_Trend": {
+        "present": 0,
+        "missing": 75,
+        "total": 75
+      },
+      "Labs": {
+        "present": 0,
+        "missing": 75,
+        "total": 75
+      },
+      "FamilyHistory": {
+        "present": 52,
+        "missing": 23,
+        "total": 75
+      }
+    }
+  }
+}

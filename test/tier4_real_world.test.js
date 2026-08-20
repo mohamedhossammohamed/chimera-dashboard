@@ -15,14 +15,14 @@ import {
   silvermanBandwidth,
   gaussianKDE,
   computePCA,
-} from '../dashboard/js/cohort_engine.js';
+} from '../docs/js/cohort_engine.js';
 import { setupMockDOM } from './helpers/mock_dom.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 const TRACES_DIR = path.join(ROOT_DIR, '..', 'chimera-data', 'traces', 'all_local_cases');
-const COHORT_DIR = path.join(ROOT_DIR, 'dashboard', 'cohort');
+const COHORT_DIR = path.join(ROOT_DIR, 'docs', 'cohort');
 
 describe('Tier 4: Real-World Clinical Application Scenarios (423 Real Patient Traces)', () => {
   let realTraces = [];

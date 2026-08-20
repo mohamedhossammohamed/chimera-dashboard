@@ -73,7 +73,7 @@ class TestClinicalKineticsParity(unittest.TestCase):
         ]
 
         js_code = f"""
-        import {{ PSAKinetics }} from './dashboard/js/clinical_engine.js';
+        import {{ PSAKinetics }} from './docs/js/clinical_engine.js';
         const trends = {json.dumps(test_trends)};
         const results = trends.map(t => {{
             const k = new PSAKinetics(t);
@@ -130,7 +130,7 @@ class TestNomogramParity(unittest.TestCase):
         ]
 
         js_code = f"""
-        import {{ EAURiskClassifier }} from './dashboard/js/clinical_engine.js';
+        import {{ EAURiskClassifier }} from './docs/js/clinical_engine.js';
         const cases = {json.dumps(test_cases)};
         const results = cases.map(c => EAURiskClassifier.classify(c.psa, c.isup, c.ct).tier);
         console.log(JSON.stringify(results));
@@ -157,7 +157,7 @@ class TestNomogramParity(unittest.TestCase):
         ]
 
         js_code = f"""
-        import {{ CAPRAScorer }} from './dashboard/js/clinical_engine.js';
+        import {{ CAPRAScorer }} from './docs/js/clinical_engine.js';
         const cases = {json.dumps(test_cases)};
         const results = cases.map(c => CAPRAScorer.calculate(c.age, c.psa, c.gp, c.gs, c.ct, c.cp, c.ctot).score);
         console.log(JSON.stringify(results));
@@ -179,7 +179,7 @@ class TestNomogramParity(unittest.TestCase):
         ]
 
         js_code = f"""
-        import {{ CAPRASScorer }} from './dashboard/js/clinical_engine.js';
+        import {{ CAPRASScorer }} from './docs/js/clinical_engine.js';
         const reports = {json.dumps(test_reports)};
         const results = reports.map(r => CAPRASScorer.calculate(r[0], r[1]).score);
         console.log(JSON.stringify(results));
@@ -204,7 +204,7 @@ class TestCohortMathParity(unittest.TestCase):
         ]
 
         js_code = f"""
-        import {{ tukeyBox }} from './dashboard/js/cohort_engine.js';
+        import {{ tukeyBox }} from './docs/js/cohort_engine.js';
         const datasets = {json.dumps(datasets)};
         const results = datasets.map(d => tukeyBox(d));
         console.log(JSON.stringify(results));
@@ -228,7 +228,7 @@ class TestCohortMathParity(unittest.TestCase):
         y = [2.0, 3.0, 5.0, 7.0, 11.0, 13.0, 17.0, 19.0]
 
         js_code = f"""
-        import {{ spearmanRho }} from './dashboard/js/cohort_engine.js';
+        import {{ spearmanRho }} from './docs/js/cohort_engine.js';
         const res = spearmanRho({json.dumps(x)}, {json.dumps(y)});
         console.log(JSON.stringify({{ rho: res }}));
         """
@@ -242,7 +242,7 @@ class TestCohortMathParity(unittest.TestCase):
         grid = [10.0, 15.0, 20.0, 25.0, 30.0]
 
         js_code = f"""
-        import {{ silvermanBandwidth, gaussianKDE }} from './dashboard/js/cohort_engine.js';
+        import {{ silvermanBandwidth, gaussianKDE }} from './docs/js/cohort_engine.js';
         const vals = {json.dumps(vals)};
         const grid = {json.dumps(grid)};
         const h = silvermanBandwidth(vals);
