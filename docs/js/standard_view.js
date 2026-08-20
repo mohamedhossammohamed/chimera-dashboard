@@ -6,6 +6,7 @@ import { renderClevelandBulletStrip, renderKaplanMeierSVG, renderEAUScorecard, r
 import { parseSurgicalPathology } from './surgical_path_parser.js';
 import { showFeedback } from './feedback.js';
 import { PSAKinetics } from './clinical_engine.js';
+import { CohortEngine, kaplanMeier } from './cohort_engine.js';
 import { EAU_SENTINEL } from './constants.js';
 
 // Shared clinical threshold constants — single source of truth for both the
@@ -90,17 +91,17 @@ export class StandardView {
     const trajectoryResult = this.computeTrajectory(psaTrend);
 
     const rows = [
-      { key: 'age', label: 'Patient Age', unit: 'years', ref: '—', val: demographics.age, status: '—' },
-      { key: 'psa', label: 'Serum PSA', unit: 'ng/mL', ref: '< 4.0 (normal)', val: demographics.psa, status: this.getPSAStatus(demographics.psa) },
-      { key: 'psad', label: 'PSA Density (PSAD)', unit: 'ng/mL/cc', ref: '< 0.15 (low risk)', val: demographics.psad, status: this.getPSADStatus(demographics.psad) },
-      { key: 'vol', label: 'Prostate Volume', unit: 'cc', ref: '20 – 30 (normal)', val: demographics.vol, status: this.getVolStatus(demographics.vol) },
-      { key: 'pirads', label: 'PI-RADS v2.1 Score', unit: '—', ref: '1 – 5 scale', val: demographics.pirads, status: this.getPIRADSStatus(demographics.pirads) },
-      { key: 'dre', label: 'Digital Rectal Exam (DRE)', unit: '—', ref: 'Normal / Smooth', val: demographics.dre, status: this.getDREStatus(demographics.dre) },
-      { key: 'ct', label: 'Clinical T Stage', unit: '—', ref: 'cT1 – cT4', val: demographics.ct, status: '—' },
-      { key: 'bx_isup', label: 'Biopsy ISUP Grade Group', unit: '—', ref: '1 – 5 scale', val: demographics.bx_isup, status: this.getISUPStatus(demographics.bx_isup) },
-      { key: 'bx_gl_prim', label: 'Gleason Primary Pattern', unit: '—', ref: '3 – 5 pattern', val: demographics.bx_gl_prim, status: '—' },
-      { key: 'bx_gl_sec', label: 'Gleason Secondary Pattern', unit: '—', ref: '3 – 5 pattern', val: demographics.bx_gl_sec, status: '—' },
-      { key: 'trajectory', label: 'PSA Trajectory', unit: '—', ref: 'PSADT-based', val: trajectoryResult.label, status: this.getTrajectoryBadge(trajectoryResult.category) }
+      { key: 'age', label: 'Patient Age', unit: 'years', ref: '—', val: demographics.age, status: '—', provenance: 'uploaded' },
+      { key: 'psa', label: 'Serum PSA', unit: 'ng/mL', ref: '< 4.0 (normal)', val: demographics.psa, status: this.getPSAStatus(demographics.psa), provenance: 'uploaded' },
+      { key: 'psad', label: 'PSA Density (PSAD)', unit: 'ng/mL/cc', ref: '< 0.15 (low risk)', val: demographics.psad, status: this.getPSADStatus(demographics.psad), provenance: 'uploaded' },
+      { key: 'vol', label: 'Prostate Volume', unit: 'cc', ref: '20 – 30 (normal)', val: demographics.vol, status: this.getVolStatus(demographics.vol), provenance: 'uploaded' },
+      { key: 'pirads', label: 'PI-RADS v2.1 Score', unit: '—', ref: '1 – 5 scale', val: demographics.pirads, status: this.getPIRADSStatus(demographics.pirads), provenance: 'uploaded' },
+      { key: 'dre', label: 'Digital Rectal Exam (DRE)', unit: '—', ref: 'Normal / Smooth', val: demographics.dre, status: this.getDREStatus(demographics.dre), provenance: 'uploaded' },
+      { key: 'ct', label: 'Clinical T Stage', unit: '—', ref: 'cT1 – cT4', val: demographics.ct, status: '—', provenance: 'uploaded' },
+      { key: 'bx_isup', label: 'Biopsy ISUP Grade Group', unit: '—', ref: '1 – 5 scale', val: demographics.bx_isup, status: this.getISUPStatus(demographics.bx_isup), provenance: 'uploaded' },
+      { key: 'bx_gl_prim', label: 'Gleason Primary Pattern', unit: '—', ref: '3 – 5 pattern', val: demographics.bx_gl_prim, status: '—', provenance: 'uploaded' },
+      { key: 'bx_gl_sec', label: 'Gleason Secondary Pattern', unit: '—', ref: '3 – 5 pattern', val: demographics.bx_gl_sec, status: '—', provenance: 'uploaded' },
+      { key: 'trajectory', label: 'PSA Trajectory', unit: '—', ref: 'PSADT-based', val: trajectoryResult.label, status: this.getTrajectoryBadge(trajectoryResult.category), provenance: 'computed', method: 'psa-kinetics-psadt' }
     ];
 
     const tableRows = rows.map(r => {
@@ -117,9 +118,13 @@ export class StandardView {
         valHtml = `<span class="copyable-cell" data-copy='${this.escapeAttr(rawJsonVal)}'>${this.escapeHTML(String(r.val))}</span>`;
       }
 
+      const provBadge = r.provenance === 'computed'
+        ? `<a href="computations.html#${r.method || ''}" class="provenance-badge computed" title="Computed in-browser — click for documentation" target="_blank">COMPUTED</a>`
+        : '<span class="provenance-badge uploaded" title="Parsed from uploaded JSON trace">UPLOADED</span>';
+
       return `
         <tr>
-          <td style="font-weight: 600; color: var(--text-main);">${r.label}</td>
+          <td style="font-weight: 600; color: var(--text-main);">${r.label}${provBadge}</td>
           <td class="num-cell">${valHtml}</td>
           <td style="font-family: var(--font-mono); color: var(--text-muted);">${r.unit}</td>
           <td style="color: var(--text-muted); font-size: 11px;">${r.ref}</td>
@@ -435,6 +440,15 @@ export class StandardView {
     eauTitle.textContent = 'EAU 2026 Risk Stratification Scorecard';
     eauSection.appendChild(eauTitle);
 
+    const eauProvBadge = document.createElement('a');
+    eauProvBadge.href = 'computations.html#eau-risk-classification';
+    eauProvBadge.className = 'provenance-badge computed';
+    eauProvBadge.target = '_blank';
+    eauProvBadge.textContent = 'COMPUTED';
+    eauProvBadge.style.marginBottom = '8px';
+    eauProvBadge.style.display = 'inline-flex';
+    eauSection.appendChild(eauProvBadge);
+
     const eauContainer = document.createElement('div');
     eauSection.appendChild(eauContainer);
     el.appendChild(eauSection);
@@ -463,6 +477,15 @@ export class StandardView {
       caprasTitle.textContent = 'CAPRA-S (Post-Surgical) Scorecard';
       caprasSection.appendChild(caprasTitle);
 
+      const caprasProvBadge = document.createElement('a');
+      caprasProvBadge.href = 'computations.html#capra-s';
+      caprasProvBadge.className = 'provenance-badge computed';
+      caprasProvBadge.target = '_blank';
+      caprasProvBadge.textContent = 'COMPUTED';
+      caprasProvBadge.style.marginBottom = '6px';
+      caprasProvBadge.style.display = 'inline-flex';
+      caprasSection.appendChild(caprasProvBadge);
+
       const caprasLine = document.createElement('div');
       caprasLine.style.fontFamily = 'var(--font-mono)';
       caprasLine.style.fontSize = '11px';
@@ -488,6 +511,15 @@ export class StandardView {
     concTitle.style.paddingBottom = '4px';
     concTitle.textContent = 'MRI (PI-RADS) vs Histology (ISUP) Concordance Matrix';
     concSection.appendChild(concTitle);
+
+    const concProvBadge = document.createElement('a');
+    concProvBadge.href = 'computations.html#concordance-matrix';
+    concProvBadge.className = 'provenance-badge computed';
+    concProvBadge.target = '_blank';
+    concProvBadge.textContent = 'COMPUTED';
+    concProvBadge.style.marginBottom = '8px';
+    concProvBadge.style.display = 'inline-flex';
+    concSection.appendChild(concProvBadge);
 
     const concContainer = document.createElement('div');
     concSection.appendChild(concContainer);
@@ -742,16 +774,17 @@ export class StandardView {
       // Use the cohort survival curve from the model prediction.
       timePoints = cohortCurve.time_points;
       survivalProbs = cohortCurve.survival_probabilities;
-      eventStatus = new Array(timePoints.length).fill(0);
+      eventStatus = undefined;  // let renderer infer from survival probability drops
       eventTime = (gt.months_to_recurrence !== undefined && gt.months_to_recurrence !== null)
         ? Number(gt.months_to_recurrence) : undefined;
     } else if (gt.months_to_recurrence !== undefined && gt.months_to_recurrence !== null) {
-      // Minimal single-patient KM curve: S(0)=1.0, S(t)=0.0 if event else 1.0
+      // Single-patient KM curve via product-limit estimator
       const tEvent = Number(gt.months_to_recurrence);
       const isEvent = gt.event === 1;
-      timePoints = [0, tEvent];
-      survivalProbs = [1.0, isEvent ? 0.0 : 1.0];
-      eventStatus = [0, isEvent ? 1 : 0];
+      const km = kaplanMeier([tEvent], [isEvent ? 1 : 0]);
+      timePoints = km.time_points;
+      survivalProbs = km.survival_probabilities;
+      eventStatus = km.event_status;
       eventTime = tEvent;
     } else {
       // No survival data at all.
@@ -932,13 +965,13 @@ export class StandardView {
         bodyHtml = val.map(item => `
           <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle);">
             ${item.date ? `<div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-link); font-weight: 700; margin-bottom: 2px;">${this.escapeHTML(item.date)} ${item.author ? `— ${this.escapeHTML(item.author)}` : ''}</div>` : ''}
-            <div>${this.highlightEntities(this.escapeHTML(item.text || JSON.stringify(item)))}</div>
+            <div>${this.highlightEntities(item.text || JSON.stringify(item))}</div>
           </div>
         `).join('');
       } else if (typeof val === 'object') {
         bodyHtml = `<pre class="vector-pre">${this.escapeHTML(JSON.stringify(val, null, 2))}</pre>`;
       } else {
-        bodyHtml = `<div>${this.highlightEntities(this.escapeHTML(String(val)))}</div>`;
+        bodyHtml = `<div>${this.highlightEntities(String(val))}</div>`;
       }
 
       const badgeClass = badgeState === 'recorded' ? 'badge-normal' : (badgeState === 'unknown' ? 'badge-unknown' : 'badge-missing');
@@ -958,10 +991,12 @@ export class StandardView {
     el.innerHTML = accordionsHtml;
   }
 
-  // Sanitized Entity Highlighter
-  static highlightEntities(escapedText) {
-    if (!escapedText) return '';
-    return escapedText
+  // Sanitized Entity Highlighter — M-104: escapes untrusted text FIRST,
+  // then applies entity highlighting so no raw HTML can ever reach the DOM.
+  static highlightEntities(rawText) {
+    if (!rawText) return '';
+    const escaped = StandardView.escapeHTML(rawText);
+    return escaped
       .replace(/\b(PI-RADS\s*[1-5]?)\b/gi, '<mark class="entity-pirads">$1</mark>')
       .replace(/\b(Gleason\s*\d\s*\+\s*\d|\bGG\s*[1-5]\b)/gi, '<mark class="entity-gleason">$1</mark>')
       .replace(/\b(ISUP\s*(?:grade\s*group\s*)?[1-5]?)\b/gi, '<mark class="entity-isup">$1</mark>')
@@ -1012,7 +1047,7 @@ export class StandardView {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${trace.case_id || 'trace'}.json`;
+      a.download = `${StandardView.sanitizeFilename(trace.case_id || 'trace')}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1100,6 +1135,12 @@ export class StandardView {
       .replace(/'/g, '&#39;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
+  }
+
+  // M-106 — sanitize download filenames: replace any character outside
+  // [a-zA-Z0-9._-] with underscore to prevent path/injection in filenames.
+  static sanitizeFilename(name) {
+    return String(name || '').replace(/[^a-zA-Z0-9._-]/g, '_');
   }
 
   static bindCopyableCells(rootEl) {

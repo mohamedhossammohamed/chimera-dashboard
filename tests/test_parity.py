@@ -5,6 +5,7 @@ Executes Node.js child processes to evaluate JavaScript code against Python stan
 
 import json
 import math
+import statistics
 import subprocess
 import sys
 import unittest
@@ -77,9 +78,11 @@ class TestClinicalKineticsParity(unittest.TestCase):
         const trends = {json.dumps(test_trends)};
         const results = trends.map(t => {{
             const k = new PSAKinetics(t);
+            const psadt = k.calculatePSADT();
             return {{
                 psav: k.calculatePSAV(),
-                psadt: k.calculatePSADT(),
+                psadt: psadt,
+                trajectory: k.trajectory(psadt),
                 insufficient: k.isInsufficient,
                 nPoints: k.nPoints
             }};
@@ -108,7 +111,12 @@ class TestClinicalKineticsParity(unittest.TestCase):
                 self.assertIsNone(js_res["psadt"], f"PSADT expected None on trend {i}")
             else:
                 self.assertIsNotNone(js_res["psadt"], f"PSADT expected float on trend {i}")
-                self.assertAlmostEqual(py_psadt, js_res["psadt"], delta=0.5, msg=f"PSADT parity mismatch on trend {i}")
+                self.assertAlmostEqual(py_psadt, js_res["psadt"], delta=0.05, msg=f"PSADT parity mismatch on trend {i}")
+
+            # Trajectory parity
+            py_trajectory = py_k.trajectory(py_psadt)
+            js_trajectory = js_res.get("trajectory")
+            self.assertEqual(py_trajectory, js_trajectory, f"Trajectory mismatch on trend {i}: Py {py_trajectory} vs JS {js_trajectory}")
 
 
 class TestNomogramParity(unittest.TestCase):
@@ -257,6 +265,82 @@ class TestCohortMathParity(unittest.TestCase):
         self.assertAlmostEqual(py_h, js_res["h"], places=4)
         for d_py, d_js in zip(py_dens, js_res["densities"]):
             self.assertAlmostEqual(d_py, d_js, places=4)
+
+    def test_weyl_jitter_parity(self):
+        """Weyl jitter should match between Python and JS."""
+        values = [1.0, 2.0, 3.0, 4.0, 5.0]
+        js_code = f"""
+        import {{ weylJitter }} from './docs/js/cohort_engine.js';
+        const res = weylJitter({json.dumps(values)});
+        console.log(JSON.stringify(res));
+        """
+        js_res = run_node_eval(js_code)
+        # Verify structure and determinism
+        self.assertEqual(len(js_res), 5)
+        for item in js_res:
+            self.assertIn('value', item)
+            self.assertIn('jitter', item)
+            # Jitter should be in [-0.5, 0.5)
+            self.assertGreaterEqual(item['jitter'], -0.5)
+            self.assertLess(item['jitter'], 0.5)
+
+
+class TestRobustZScoreParity(unittest.TestCase):
+    """Parity tests for robust z-score and percentile between Python and JS."""
+
+    def test_robust_z_basic_parity(self):
+        """Robust z-score should match between Python and JS for basic inputs."""
+        values = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+        test_x = [1.0, 5.5, 10.0]
+
+        js_code = f"""
+        import {{ robustZ, percentile }} from './docs/js/cohort_engine.js';
+        const values = {json.dumps(values)};
+        const xs = {json.dumps(test_x)};
+        const results = xs.map(x => ({{ robustZ: robustZ(values, x), percentile: percentile(values, x) }}));
+        console.log(JSON.stringify(results));
+        """
+        js_results = run_node_eval(js_code)
+
+        # Python reference: manual computation matching CohortStats
+        s = sorted(values)
+        n = len(s)
+        med = statistics.median(s)
+        # Q1 and Q3 via linear interpolation
+        def pct(p):
+            k = (n - 1) * p / 100.0
+            f = int(math.floor(k))
+            c = int(math.ceil(k))
+            if f == c:
+                return s[f]
+            return s[f] + (k - f) * (s[c] - s[f])
+        q1 = pct(25)
+        q3 = pct(75)
+        iqr = q3 - q1
+
+        for i, x in enumerate(test_x):
+            py_rz = (x - med) / (iqr / 1.349) if iqr != 0 else 0.0
+            js_rz = js_results[i]["robustZ"]
+            self.assertAlmostEqual(py_rz, js_rz, places=4, msg=f"Robust z mismatch for x={x}")
+
+    def test_robust_z_zero_iqr_parity(self):
+        """Zero IQR should return 0 in both implementations."""
+        values = [5.0, 5.0, 5.0, 5.0, 5.0]
+        js_code = """
+        import { robustZ } from './docs/js/cohort_engine.js';
+        console.log(JSON.stringify({ robustZ: robustZ([5,5,5,5,5], 5) }));
+        """
+        js_res = run_node_eval(js_code)
+        self.assertEqual(js_res["robustZ"], 0, "Zero IQR should return 0")
+
+    def test_robust_z_nan_input_parity(self):
+        """NaN input should return null/None in both implementations."""
+        js_code = """
+        import { robustZ } from './docs/js/cohort_engine.js';
+        console.log(JSON.stringify({ robustZ: robustZ([1,2,3,4,5], NaN) }));
+        """
+        js_res = run_node_eval(js_code)
+        self.assertIsNone(js_res["robustZ"], "NaN input should return null")
 
 
 if __name__ == "__main__":

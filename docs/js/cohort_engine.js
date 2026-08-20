@@ -15,7 +15,7 @@ export function safeFloat(val) {
     return null;
   }
   const n = parseFloat(s);
-  return Number.isNaN(n) ? null : n;
+  return (Number.isNaN(n) || !Number.isFinite(n)) ? null : n;
 }
 
 export const NUMERIC_VARS = [
@@ -44,14 +44,22 @@ export const MODALITIES = [
 
 export const WEYL_PHI = 0.6180339887498949; // (sqrt(5) - 1) / 2
 
+function bankersRound(val, scale) {
+  const scaled = val * scale;
+  const floor = Math.floor(scaled);
+  const diff = scaled - floor;
+  if (diff < 0.5) return floor / scale;
+  if (diff > 0.5) return (floor + 1) / scale;
+  return (floor % 2 === 0 ? floor : floor + 1) / scale;
+}
 function round6(val) {
   if (val === null || val === undefined || Number.isNaN(val)) return null;
-  return Math.round(val * 1e6) / 1e6;
+  return bankersRound(val, 1e6);
 }
 
 function round2(val) {
   if (val === null || val === undefined || Number.isNaN(val)) return null;
-  return Math.round(val * 100) / 100;
+  return bankersRound(val, 100);
 }
 
 // ---------------------------------------------------------------------------
@@ -279,7 +287,7 @@ export function spearmanCorrelationMatrix(featureVectors, minObs = 5) {
   }
 
   const order = wardCluster(rhoMatrix, usableVars);
-  const displayMatrix = rhoMatrix.map(row => row.map(v => v === null ? null : Math.round(v * 10000) / 10000));
+  const displayMatrix = rhoMatrix.map(row => row.map(v => v === null ? null : bankersRound(v, 10000)));
   const orderedMatrix = order.map(i => order.map(j => displayMatrix[i][j]));
   const orderedNames = order.map(idx => usableVars[idx]);
 
@@ -607,8 +615,8 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
   if (!vectors || !Array.isArray(vectors) || vectors.length === 0) {
     return {
       points: [],
-      variance_explained: [0, 0, 0].slice(0, Math.max(2, nComponents)),
-      varianceExplained: [0, 0, 0].slice(0, Math.max(2, nComponents)),
+      variance_explained: [0, 0, 0].slice(0, nComponents),
+      varianceExplained: [0, 0, 0].slice(0, nComponents),
       cumulative_2pc: 0,
       cumulative_3pc: 0,
       totalVariance: 0,
@@ -618,13 +626,13 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
   }
 
   const n = vectors.length;
-  const d = Array.isArray(vectors[0]) ? vectors[0].length : 0;
+  const d = (Array.isArray(vectors[0]) || ArrayBuffer.isView(vectors[0])) ? vectors[0].length : 0;
 
   if (d === 0) {
     return {
       points: [],
-      variance_explained: [0, 0, 0].slice(0, Math.max(2, nComponents)),
-      varianceExplained: [0, 0, 0].slice(0, Math.max(2, nComponents)),
+      variance_explained: [0, 0, 0].slice(0, nComponents),
+      varianceExplained: [0, 0, 0].slice(0, nComponents),
       cumulative_2pc: 0,
       cumulative_3pc: 0,
       totalVariance: 0,
@@ -648,8 +656,8 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
     };
     return {
       points: [pt],
-      variance_explained: [0, 0, 0].slice(0, Math.max(2, nComponents)),
-      varianceExplained: [0, 0, 0].slice(0, Math.max(2, nComponents)),
+      variance_explained: [0, 0, 0].slice(0, nComponents),
+      varianceExplained: [0, 0, 0].slice(0, nComponents),
       cumulative_2pc: 0,
       cumulative_3pc: 0,
       totalVariance: 0,
@@ -694,8 +702,8 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
     }));
     return {
       points,
-      variance_explained: [0, 0, 0].slice(0, Math.max(2, nComponents)),
-      varianceExplained: [0, 0, 0].slice(0, Math.max(2, nComponents)),
+      variance_explained: [0, 0, 0].slice(0, nComponents),
+      varianceExplained: [0, 0, 0].slice(0, nComponents),
       cumulative_2pc: 0,
       cumulative_3pc: 0,
       totalVariance: 0,
@@ -713,7 +721,7 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
   // operations — a ~50x speedup with negligible accuracy loss for top-3 PCs.
   // -----------------------------------------------------------------------
   if (n > 200) {
-    const k = Math.min(n, Math.max(2, nComponents) + 2);
+    const k = Math.min(n, nComponents + 2);
 
     // Deterministic random projection matrix OmegaT (k x D) using Weyl sequence
     const OmegaT = new Float64Array(k * d);
@@ -772,6 +780,21 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
       nrm = Math.sqrt(nrm);
       if (nrm > 1e-12) {
         for (let i = 0; i < n; i++) Q[i * k + col] /= nrm;
+      }
+    }
+
+    // Second MGS pass for numerical stability (prevents variance > 100%)
+    for (let col = 0; col < k; col++) {
+      for (let prev = 0; prev < col; prev++) {
+        let dot = 0;
+        for (let i = 0; i < n; i++) dot += Q[i * k + prev] * Q[i * k + col];
+        for (let i = 0; i < n; i++) Q[i * k + col] -= dot * Q[i * k + prev];
+      }
+      let nrm2 = 0;
+      for (let i = 0; i < n; i++) nrm2 += Q[i * k + col] * Q[i * k + col];
+      nrm2 = Math.sqrt(nrm2);
+      if (nrm2 > 1e-12) {
+        for (let i = 0; i < n; i++) Q[i * k + col] /= nrm2;
       }
     }
 
@@ -911,8 +934,8 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
     const varExpl = [round2(var1), round2(var2), round2(var3)];
     return {
       points,
-      variance_explained: varExpl.slice(0, Math.max(2, nComponents)),
-      varianceExplained: varExpl.slice(0, Math.max(2, nComponents)),
+      variance_explained: varExpl.slice(0, nComponents),
+      varianceExplained: varExpl.slice(0, nComponents),
       cumulative_2pc: round2(cum2pc),
       cumulative_3pc: round2(cum3pc),
       totalVariance: round6(totalTrace),
@@ -1036,8 +1059,8 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
 
   return {
     points,
-    variance_explained: varExpl.slice(0, Math.max(2, nComponents)),
-    varianceExplained: varExpl.slice(0, Math.max(2, nComponents)),
+    variance_explained: varExpl.slice(0, nComponents),
+    varianceExplained: varExpl.slice(0, nComponents),
     cumulative_2pc: round2(cum2pc),
     cumulative_3pc: round2(cum3pc),
     totalVariance: round6(totalTrace),
@@ -1049,6 +1072,44 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
 // ---------------------------------------------------------------------------
 // 2. High-Level In-Browser Cohort Analytics Engine
 // ---------------------------------------------------------------------------
+
+/**
+ * Kaplan-Meier product-limit estimator.
+ * @param {number[]} times - Event/censor times
+ * @param {number[]} events - 1=event, 0=censored
+ * @returns {Object} { time_points, survival_probabilities, event_status, n_at_risk }
+ */
+export function kaplanMeier(times, events) {
+  if (!times || !Array.isArray(times) || times.length === 0) {
+    return { time_points: [], survival_probabilities: [], event_status: [], n_at_risk: [] };
+  }
+  const sorted = times.map((t, i) => ({ t, e: events[i] || 0 }))
+    .sort((a, b) => a.t - b.t);
+  const uniqueTimes = [...new Set(sorted.map(d => d.t))].sort((a, b) => a - b);
+  let survival = 1.0;
+  const timePoints = [0];
+  const survivalProbs = [1.0];
+  const eventStatus = [0];
+  const nAtRisk = [sorted.length];
+  for (const t of uniqueTimes) {
+    const atRisk = sorted.filter(d => d.t >= t).length;
+    const eventsAtT = sorted.filter(d => d.t === t && d.e === 1).length;
+    const censoredAtT = sorted.filter(d => d.t === t && d.e === 0).length;
+    if (eventsAtT > 0) {
+      survival *= (1 - eventsAtT / atRisk);
+      timePoints.push(t);
+      survivalProbs.push(survival);
+      eventStatus.push(1);
+      nAtRisk.push(atRisk - eventsAtT - censoredAtT);
+    } else if (censoredAtT > 0) {
+      timePoints.push(t);
+      survivalProbs.push(survival);
+      eventStatus.push(0);
+      nAtRisk.push(atRisk - censoredAtT);
+    }
+  }
+  return { time_points: timePoints, survival_probabilities: survivalProbs, event_status: eventStatus, n_at_risk: nAtRisk };
+}
 
 export class CohortEngine {
   static rankData = rankData;
@@ -1065,6 +1126,7 @@ export class CohortEngine {
   static silvermanBandwidth = silvermanBandwidth;
   static gaussianKDE = gaussianKDE;
   static computePCA = computePCA;
+  static kaplanMeier = kaplanMeier;
 
   static extractTask3Radiology(rr) {
     const out = { vol: null, psad: null, pirads: null };
@@ -1135,7 +1197,7 @@ export class CohortEngine {
     const variables = {};
     for (const v of NUMERIC_VARS) {
       if (v === 'cspca') {
-        variables[v] = safeFloat(d.cspca ?? trace.cspca ?? sp.cspca ?? trace.structured_prompt_data?.cspca ?? clin.cspca);
+        variables[v] = safeFloat(d.cspca ?? trace.cspca ?? sp.cspca ?? trace.structured_prompt_data?.cspca ?? clin.cspca ?? sp.clinical_significance?.cspca);
       } else {
         variables[v] = safeFloat(d[v] ?? trace[v] ?? sp[v] ?? clin[v]);
       }
@@ -1158,9 +1220,9 @@ export class CohortEngine {
     const meanPool = raw => {
       if (!raw || !Array.isArray(raw) || raw.length === 0) return null;
       if (typeof raw[0] === 'number') return raw.map(v => round6(v));
-      if (!Array.isArray(raw[0]) || raw[0].length === 0) return null;
+      if ((!Array.isArray(raw[0]) && !ArrayBuffer.isView(raw[0])) || raw[0].length === 0) return null;
       const dim = raw[0].length;
-      const validRows = raw.filter(r => Array.isArray(r) && r.length === dim);
+      const validRows = raw.filter(r => (Array.isArray(r) || ArrayBuffer.isView(r)) && r.length === dim);
       if (validRows.length === 0) return null;
       const res = new Float64Array(dim);
       for (const r of validRows) {
@@ -1242,7 +1304,7 @@ export class CohortEngine {
       tasks[taskKey].n = tot;
       for (const clsKey of Object.keys(tasks[taskKey].classes)) {
         const n = tasks[taskKey].classes[clsKey].n;
-        tasks[taskKey].classes[clsKey].pct = tot > 0 ? Math.round((n / tot) * 1000) / 10 : 0;
+        tasks[taskKey].classes[clsKey].pct = tot > 0 ? bankersRound((n / tot) * 100, 10) : 0;
       }
     }
 
@@ -1613,6 +1675,22 @@ export class CohortEngine {
 
     const t1 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     const computationTimeMs = round2(t1 - t0);
+
+    // M-047: Annotate PCA method status for graceful degradation transparency.
+    // When full embeddings are not available in trace JSON (only vector_sample
+    // with 6 values), meanPool returns null, live PCA is skipped, and we fall
+    // back to pre-computed pca_points. variance_explained is [0, 0, 0] which is
+    // honest but confusing without context — the method field explains why.
+    if (pca_mri.n === 0 || (Array.isArray(pca_mri.variance_explained) && pca_mri.variance_explained.every(v => v === 0))) {
+      pca_mri.method = 'Pre-computed PCA coordinates (full embeddings not available in trace JSON for live computation).';
+    } else {
+      pca_mri.method = 'Live dual-Gram power iteration PCA.';
+    }
+    if (pca_biopsy.n === 0 || (Array.isArray(pca_biopsy.variance_explained) && pca_biopsy.variance_explained.every(v => v === 0))) {
+      pca_biopsy.method = 'Pre-computed PCA coordinates (full embeddings not available in trace JSON for live computation).';
+    } else {
+      pca_biopsy.method = 'Live dual-Gram power iteration PCA.';
+    }
 
     return {
       filter: filterStr,

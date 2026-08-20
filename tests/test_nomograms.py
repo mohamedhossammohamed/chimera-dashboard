@@ -38,7 +38,8 @@ class TestCTParser(unittest.TestCase):
     def test_ambiguous_and_invalid_ct_stages(self):
         self.assertEqual(_parse_ct("cT2"), (2, 0))
         self.assertIsNone(_parse_ct("cTx"))
-        self.assertIsNone(_parse_ct("T1"))
+        # "T1" without c/p prefix is valid per JS parity (optional prefix)
+        self.assertEqual(_parse_ct("T1"), (1, 0))
         self.assertIsNone(_parse_ct(""))
         self.assertIsNone(_parse_ct(None))
         self.assertIsNone(_parse_ct(123))

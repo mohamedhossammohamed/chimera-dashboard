@@ -267,6 +267,16 @@ function renderSurgicalPathologyFlagStrip(panel, trace) {
 
   const section = makeSection('R-15: Surgical Pathology Flag Strip (Weight-Ordered)');
 
+  // Provenance badge — computed via NLP regex extraction
+  const surgProv = document.createElement('a');
+  surgProv.href = 'computations.html#surgical-pathology-parser';
+  surgProv.className = 'provenance-badge computed';
+  surgProv.target = '_blank';
+  surgProv.textContent = 'COMPUTED';
+  surgProv.style.marginBottom = '6px';
+  surgProv.style.display = 'inline-flex';
+  section.appendChild(surgProv);
+
   for (const f of orderedFlags) {
     const row = document.createElement('div');
     row.className = 'forest-strip-row';
@@ -310,6 +320,16 @@ function renderCCILine(panel, trace) {
   const age = demo.age;
 
   const section = makeSection('R-14: Charlson Comorbidity Index (CCI) — Actuarial Line');
+
+  // Provenance badge — computed via keyword matching + age adjustment
+  const cciProv = document.createElement('a');
+  cciProv.href = 'computations.html#charlson-comorbidity-index';
+  cciProv.className = 'provenance-badge computed';
+  cciProv.target = '_blank';
+  cciProv.textContent = 'COMPUTED';
+  cciProv.style.marginBottom = '6px';
+  cciProv.style.display = 'inline-flex';
+  section.appendChild(cciProv);
 
   if (!Array.isArray(pmhx) || pmhx.length === 0) {
     section.appendChild(makeMissingBox('pmhx absent or empty — CCI cannot be computed (MISSING).'));
@@ -514,6 +534,16 @@ function renderEmbeddingSignature(panel, trace) {
   ];
 
   const section = makeSection('R-12: Embedding Signature Panel (Backend-Computed)');
+
+  // Provenance badge — vector stats computed in-browser from uploaded embedding vectors
+  const embProv = document.createElement('a');
+  embProv.href = 'computations.html#vector-statistics';
+  embProv.className = 'provenance-badge computed';
+  embProv.target = '_blank';
+  embProv.textContent = 'COMPUTED';
+  embProv.style.marginBottom = '6px';
+  embProv.style.display = 'inline-flex';
+  section.appendChild(embProv);
 
   // Check if any modality has data
   const hasAny = modalityDefs.some(m => {

@@ -628,3 +628,77 @@ mark.entity-epe {
     display: none !important;
   }
 }
+
+/* ===========================================================================
+   Provenance Labels — data source indicators
+   UPLOADED: green dot, value came from the user's uploaded JSON trace
+   COMPUTED: blue calculator icon, value was derived in-browser; clicking
+             opens computations.html#<method> for full documentation
+   =========================================================================== */
+.provenance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-left: 4px;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+}
+
+.provenance-badge.uploaded {
+  background: rgba(46, 160, 67, 0.12);
+  color: var(--color-green-fg);
+  border: 1px solid rgba(46, 160, 67, 0.25);
+}
+
+.provenance-badge.uploaded::before {
+  content: '\25CF';
+  font-size: 8px;
+}
+
+.provenance-badge.computed {
+  background: rgba(56, 139, 253, 0.12);
+  color: var(--color-blue-fg);
+  border: 1px solid rgba(56, 139, 253, 0.25);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.provenance-badge.computed:hover {
+  background: rgba(56, 139, 253, 0.20);
+  border-color: rgba(56, 139, 253, 0.45);
+}
+
+.provenance-badge.computed::before {
+  content: '\03A3'; /* Sigma — mathematical computation */
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Provenance banner for cohort-level "all computed" sections */
+.provenance-banner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-blue-fg);
+  background: rgba(56, 139, 253, 0.06);
+  border: 1px solid rgba(56, 139, 253, 0.15);
+  border-radius: 4px;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+}
+
+.provenance-banner a {
+  color: var(--color-blue-fg);
+  text-decoration: underline;
+  font-weight: 600;
+}

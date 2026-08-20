@@ -394,6 +394,10 @@ describe('Tier 1: Feature 5 - Ward Minimum-Variance Clustering', () => {
     const order = wardCluster(rho, ['v0', 'v1', 'v2', 'v3', 'v4', 'v5']);
     assert.equal(order.length, k);
     assert.deepEqual(new Set(order), new Set([0, 1, 2, 3, 4, 5]));
+    // Verify most correlated pair is adjacent (not just permutation validity)
+    const pos0 = order.indexOf(0);
+    const pos1 = order.indexOf(1);
+    assert.equal(Math.abs(pos0 - pos1), 1, 'Most correlated pair (0,1) must be adjacent in tree');
   });
 
   it('5.5: single variable returns [0]', () => {

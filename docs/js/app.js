@@ -1,13 +1,19 @@
 // Master Standard View Application Coordinator (app.js)
 // [OFFICIAL: RESEARCHER-APPROVED] CHIMERA-Agent Phase A Integration
 // [SUGGESTION: CO-PILOT] In-browser live execution and bundle generation
-import { TraceReader } from './data.js';
+import { TraceReader, sanitizeJson, isTrainReleaseSplitFormat, mergeTrainReleaseFiles } from './data.js';
 import { StandardView } from './standard_view.js';
 import { renderClevelandBulletStrip, renderKaplanMeierSVG, renderEAUScorecard, renderConcordanceMatrix } from './standard_components.js';
 import { CohortView } from './cohort_view.js';
 import { CaseExtras } from './case_extras.js';
 import { ClinicalBundleGenerator } from './clinical_engine.js';
 import { CohortEngine } from './cohort_engine.js';
+
+// M-106 — sanitize download filenames: replace any character outside
+// [a-zA-Z0-9._-] with underscore to prevent path/injection in filenames.
+function sanitizeFilename(name) {
+  return String(name || '').replace(/[^a-zA-Z0-9._-]/g, '_');
+}
 
 class StandardWorkbenchApp {
   constructor() {
@@ -179,7 +185,7 @@ class StandardWorkbenchApp {
       return;
     }
     const t = this.activeTrace;
-    const filename = `${(t && t.case_id) || 'case'}_bundle.md`;
+    const filename = `${sanitizeFilename((t && t.case_id) || 'case')}_bundle.md`;
     const blob = new Blob([this.activeBundle], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -273,9 +279,8 @@ class StandardWorkbenchApp {
       this.showFeedback(`Processing ${files.length} files...`, 'info');
     }
 
-    let loadedCount = 0;
-    let lastValid = null;
-
+    // Phase 1: Read all JSON files and parse them
+    const parsedFiles = [];
     for (const file of files) {
       if (!file.name.endsWith('.json')) continue;
       if (file.size > 10 * 1024 * 1024) {
@@ -284,8 +289,30 @@ class StandardWorkbenchApp {
       }
       try {
         const text = await file.text();
-        const parsed = JSON.parse(text);
-        const res = this.reader.validateAndNormalize(parsed);
+        const content = sanitizeJson(JSON.parse(text));
+        parsedFiles.push({
+          name: file.name,
+          content,
+          relativePath: file.webkitRelativePath || '',
+        });
+      } catch (err) {
+        this.showFeedback(`Invalid JSON in "${file.name}": ${err.message}`, 'error');
+      }
+    }
+
+    if (parsedFiles.length === 0) {
+      this.showFeedback('No valid JSON files found.', 'error');
+      return;
+    }
+
+    // Phase 2: Detect if files are in train_release split format
+    if (isTrainReleaseSplitFormat(parsedFiles)) {
+      this.showFeedback('Detected CHIMERA train_release format — merging split files...', 'info');
+      const mergedTraces = mergeTrainReleaseFiles(parsedFiles);
+      let loadedCount = 0;
+      let lastValid = null;
+      for (const trace of mergedTraces) {
+        const res = this.reader.validateAndNormalize(trace);
         if (res.success) {
           const newKey = `${(res.data.task || '').toLowerCase()}::${res.data.case_id}`;
           const exists = this.loadedTraces.some(t =>
@@ -297,10 +324,42 @@ class StandardWorkbenchApp {
             lastValid = res.data;
           }
         } else {
-          this.showFeedback(`Schema Validation Warning for "${file.name}": ${res.error}`, 'error');
+          console.warn(`[app.js] Merged trace validation failed for ${trace.case_id}:`, res.error);
         }
-      } catch (err) {
-        this.showFeedback(`Invalid JSON in "${file.name}": ${err.message}`, 'error');
+      }
+      if (loadedCount > 0) {
+        this.showFeedback(`Loaded ${loadedCount} merged traces from train_release format.`, 'success');
+        this.rebuildManifestFromLoadedTraces();
+        this.populateCaseSelector();
+        if (lastValid) {
+          this.activeTrace = lastValid;
+          this.loadBundle(this.activeTrace);
+          this.render();
+        }
+      } else {
+        this.showFeedback('No valid traces could be merged from split files.', 'error');
+      }
+      return;
+    }
+
+    // Phase 3: Standard merged trace format — process each file individually
+    let loadedCount = 0;
+    let lastValid = null;
+
+    for (const pf of parsedFiles) {
+      const res = this.reader.validateAndNormalize(pf.content);
+      if (res.success) {
+        const newKey = `${(res.data.task || '').toLowerCase()}::${res.data.case_id}`;
+        const exists = this.loadedTraces.some(t =>
+          `${(t.task || '').toLowerCase()}::${t.case_id}` === newKey
+        );
+        if (!exists) {
+          this.loadedTraces.push(res.data);
+          loadedCount++;
+          lastValid = res.data;
+        }
+      } else {
+        this.showFeedback(`Schema Validation Warning for "${pf.name}": ${res.error}`, 'error');
       }
     }
 
@@ -313,7 +372,7 @@ class StandardWorkbenchApp {
         this.loadBundle(this.activeTrace);
         this.render();
       }
-    } else if (files.length > 0) {
+    } else if (parsedFiles.length > 0) {
       this.showFeedback('No valid trace files found.', 'error');
     }
   }
@@ -408,7 +467,13 @@ class StandardWorkbenchApp {
       this.activeTrace = res.data;
       this.loadBundle(this.activeTrace);
       this.render();
+      if (res.warnings && res.warnings.length > 0) {
+        this.showFeedback(`Schema warnings: ${res.warnings.join(', ')}`, 'warn');
+      }
     } else {
+      if (res.error) {
+        this.showFeedback(`Trace load error: ${res.error}`, 'error');
+      }
       console.error(res.error);
       this.showFeedback(`Failed to load case: ${res.error}`, 'error');
     }

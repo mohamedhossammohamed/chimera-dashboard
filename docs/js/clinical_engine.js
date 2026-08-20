@@ -17,7 +17,7 @@ export function safeFloat(val) {
     return null;
   }
   const n = parseFloat(s);
-  return Number.isNaN(n) ? null : n;
+  return (Number.isNaN(n) || !Number.isFinite(n)) ? null : n;
 }
 
 export class DateParser {
@@ -177,7 +177,7 @@ export class PSAKinetics {
    * @returns {string} 'Aggressive' | 'Rapid' | 'Moderate' | 'Indolent' | 'Stable/Declining' | '[DATA NOT RECORDED]'
    */
   trajectory(psadtVal) {
-    if (psadtVal === null) {
+    if (psadtVal === null || Number.isNaN(psadtVal)) {
       return this.isInsufficient ? EAU_SENTINEL : 'Stable/Declining';
     }
     if (psadtVal === Infinity) {
@@ -213,7 +213,7 @@ export class EAURiskClassifier {
 
     const criteria = [];
 
-    // EAU 2025 Risk Classification (5 tiers — no "Very High" tier exists)
+    // EAU 2026 Risk Classification (5 tiers — no "Very High" tier exists)
     // Order: Locally advanced → High → Unfavorable Intermediate → Favorable Intermediate → Low
 
     // 1. Locally Advanced: cT3-4 (takes precedence over all other criteria)
@@ -244,6 +244,12 @@ export class EAURiskClassifier {
     if (isup !== null && isup === 3) {
       criteria.push(`ISUP 3`);
       return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
+    }
+    // 3b. Favourable Intermediate: ISUP 1 AND PSA 10-20 AND cT1-2a AND no high-risk
+    if (psaVal !== null && psaVal >= 10 && psaVal <= 20 && isup === 1 &&
+        ctRank && (ctRank.major === 1 || (ctRank.major === 2 && ctRank.minor <= 1)) && !hasHighRisk) {
+      criteria.push(`PSA ${psaVal} 10-20; ISUP 1; ${ct}; no high-risk patterns`);
+      return { tier: 'Favorable Intermediate', reason: criteria.join('; ') };
     }
     if (psaVal !== null && psaVal >= 10 && psaVal <= 20) {
       if (isup !== null && isup === 2) {

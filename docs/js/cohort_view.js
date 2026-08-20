@@ -771,6 +771,14 @@ export const CohortView = {
     root.innerHTML = '';
 
     // ------------------------------------------------------------------
+    // Provenance Banner — all cohort visualizations are computed in-browser
+    // ------------------------------------------------------------------
+    const provBanner = document.createElement('div');
+    provBanner.className = 'provenance-banner';
+    provBanner.innerHTML = '<span class="provenance-badge computed" style="cursor:default">COMPUTED</span> All cohort visualizations are computed in-browser from uploaded traces. <a href="computations.html#cohort-analytics" target="_blank">View computation documentation &rarr;</a>';
+    root.appendChild(provBanner);
+
+    // ------------------------------------------------------------------
     // Clinical Spectrum Disclaimer Banner
     // Persistent notice that the cohort spans three distinct clinical contexts.
     // ------------------------------------------------------------------

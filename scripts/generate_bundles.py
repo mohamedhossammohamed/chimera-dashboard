@@ -49,13 +49,23 @@ CLINICAL_DATA_FILE = {
 # ---------------------------------------------------------------------------
 
 def _safe_float(value):
-    """Return float if value is numeric (not None, not string), else None."""
+    """Return float if value is numeric or numeric string, else None."""
     if value is None:
         return None
     if isinstance(value, bool):
         return None
     if isinstance(value, (int, float)):
+        if math.isnan(value) or math.isinf(value):
+            return None
         return float(value)
+    if isinstance(value, str):
+        s = value.strip()
+        if not s or s.upper() in ('N/A', 'NOT AVAILABLE', 'MISSING'):
+            return None
+        try:
+            return float(s)
+        except ValueError:
+            return None
     return None
 
 
@@ -185,6 +195,8 @@ class CohortStats:
         n = len(s)
         if n == 0 or value is None:
             return None
+        if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
+            return None
         rank_below = sum(1 for v in s if v < value)
         count_equal = sum(1 for v in s if v == value)
         pct = ((rank_below + 0.5 * count_equal) / n) * 100.0
@@ -270,13 +282,15 @@ class PSAKinetics:
             return None
         slope = num / den
         if slope <= 0:
-            return None  # signal "non-rising"
-        return LN2 / slope
+            return None  # signal "non-rising" — JSON collapses JS Infinity to null anyway
+        return round(LN2 / slope, 1)  # round to 1 decimal to match JS
 
     def trajectory(self, psadt_val):
-        if psadt_val is None:
+        if psadt_val is None or (isinstance(psadt_val, float) and math.isnan(psadt_val)):
             if self.insufficient:
                 return MISSING
+            return "Stable/Declining"
+        if psadt_val is None:
             return "Stable/Declining"
         if psadt_val < 6:
             return "Aggressive"
@@ -295,13 +309,13 @@ def _parse_ct(ct):
     """Parse clinical T stage string into (major, minor) tuple, or None."""
     if not ct or not isinstance(ct, str):
         return None
-    m = re.match(r"^cT(\d)([a-c])?$", ct.strip())
+    m = re.match(r"^[cCpP]?T(\d)([a-cA-C]?)$", ct.strip())
     if not m:
         return None
     major = int(m.group(1))
     minor = 0
     if m.group(2):
-        minor = ord(m.group(2)) - ord("a") + 1
+        minor = ord(m.group(2).lower()) - ord("a") + 1
     return (major, minor)
 
 
@@ -322,7 +336,7 @@ class EAURiskTier:
 
         criteria = []
 
-        # EAU 2025 Risk Classification (5 tiers — no "Very High" tier exists)
+        # EAU 2026 Risk Classification (5 tiers — no "Very High" tier exists)
         # Order: Locally advanced → High → Unfavorable Intermediate → Favorable Intermediate → Low
 
         # 1. Locally Advanced: cT3-4 (takes precedence over all other criteria)
@@ -348,6 +362,11 @@ class EAURiskTier:
         if bx_isup is not None and bx_isup == 3:
             criteria.append(f"ISUP 3")
             return "Unfavorable Intermediate", "; ".join(criteria)
+        # 3b. Favourable Intermediate: ISUP 1 AND PSA 10-20 AND cT1-2a AND no high-risk
+        if psa is not None and 10 <= psa <= 20 and bx_isup == 1:
+            if ct_rank in cls.LOW_CT and not has_high_risk:
+                criteria.append(f"PSA {psa} 10-20; ISUP 1; {ct}; no high-risk patterns")
+                return "Favorable Intermediate", "; ".join(criteria)
         if psa is not None and 10 <= psa <= 20:
             if bx_isup is not None and bx_isup == 2:
                 criteria.append(f"PSA {psa} 10-20; ISUP 2")
@@ -569,9 +588,41 @@ class CAPRAS_Score:
         return False
 
     @staticmethod
+    def _find_list_negation_ranges(lower):
+        """Find ranges where list negation propagates.
+
+        "no evidence of ECE, SVI, LVI" → all three are negated.
+        Scans for negation phrases followed by comma-separated terms until
+        a sentence boundary (period, semicolon, or end of text).
+        Mirrors JS `findListNegationRanges()`.
+        """
+        ranges = []
+        list_neg_re = re.compile(
+            r'\b(?:no\s+evidence\s+of|no\s+sign\s+of|free\s+of)\b',
+            re.IGNORECASE,
+        )
+        for m in list_neg_re.finditer(lower):
+            phrase_start = m.start()
+            phrase_end = m.end()
+            pos = phrase_end
+            while pos < len(lower) and lower[pos].isspace():
+                pos += 1
+            if pos >= len(lower):
+                continue
+            list_end = pos
+            while list_end < len(lower):
+                ch = lower[list_end]
+                if ch in '.;\n':
+                    break
+                list_end += 1
+            ranges.append((phrase_start, list_end))
+        return ranges
+
+    @staticmethod
     def _classify_field(lower, trigger_re, positive_re, check_numeric,
                         not_assessable_re, not_assessed_re, numeric_neg_re,
-                        negation_re, evidence_neg_re, absent_label, present_label):
+                        negation_re, evidence_neg_re, absent_label, present_label,
+                        exclude_re=None, list_neg_ranges=None):
         """Negation-aware classification of a binary pathology field.
 
         Two-phase scan mirroring the JS `classifyField()`:
@@ -601,6 +652,15 @@ class CAPRAS_Score:
 
             # Not assessable (e.g. no dissection) → skip this mention entirely
             if not_assessable_re is not None and not_assessable_re.search(window):
+                continue
+            # Distant metastasis exclusion (e.g. "bone metastasis" → not LNI)
+            if exclude_re is not None and exclude_re.search(window):
+                continue
+            # List negation: "no evidence of ECE, SVI, LVI" → all negated
+            if list_neg_ranges is not None and any(
+                r[0] <= start and end <= r[1] for r in list_neg_ranges
+            ):
+                has_negated = True
                 continue
             # Not assessed (e.g. not noted / not evaluated) → skip this mention
             if not_assessed_re is not None and not_assessed_re.search(window):
@@ -646,6 +706,7 @@ class CAPRAS_Score:
             'ece': None,
             'svi': None,
             'lni': None,
+            'lvi': None,
         }
 
         if not text or not isinstance(text, str):
@@ -656,6 +717,7 @@ class CAPRAS_Score:
         # (no upfront clause split). Clause isolation is enforced inside
         # `_classify_field` via `_clause_bounds` using delimiters [.;!?,\n].
         lower = text.lower()
+        list_neg_ranges = CAPRAS_Score._find_list_negation_ranges(lower)
 
         # --- Pathologic Gleason: /Gleason (?:score|pattern)? (\d)\+(\d)/i ---
         # Highest-grade selection (ISUP 2019 / Epstein 2005 / Kunz 2009):
@@ -663,7 +725,7 @@ class CAPRAS_Score:
         # tiebreak by higher primary (4+3 > 3+4).
         # Optional intervening word "score" or "pattern" handles all clinical
         # phrasings: "Gleason 3+4", "Gleason score 3+4", "Gleason pattern 3+4".
-        gleason_matches = re.findall(r'Gleason\s+(?:score\s+|pattern\s+)?(\d)\s*\+\s*(\d)', text, re.IGNORECASE)
+        gleason_matches = re.findall(r'Gleason\s+(?:score\s+|pattern\s+)?[:=]?\s*(\d{1,2})\s*\+\s*(\d{1,2})', text, re.IGNORECASE)
         if gleason_matches:
             best = max(gleason_matches, key=lambda mt: (int(mt[0]) + int(mt[1]), int(mt[0])))
             result['gleason_prim'] = int(best[0])
@@ -674,7 +736,7 @@ class CAPRAS_Score:
         # is affirmative, not negated). `no evidence of` / `negative for` are
         # covered by the bare `no` / `negative` word boundaries.
         negation_re = re.compile(
-            r'\b(?:no|not|without|negative|absent|none|free|clear(?!ly))\b',
+            r'\b(?:no|not|without|negative|absent|none|free|clear(?!ly)|unremarkable|uninvolved)\b|\(-\)',
             re.IGNORECASE,
         )
 
@@ -700,6 +762,13 @@ class CAPRAS_Score:
             re.IGNORECASE,
         )
 
+        # Distant metastasis patterns — exclude from LNI classification
+        distant_mets_re = re.compile(
+            r'\b(?:distant|remote|bone|visceral|hepatic|pulmonary|brain|liver|lung)\s+metastas(?:is|es)\b'
+            r'|\bmetastas(?:is|es)\s+(?:to\s+)?(?:distant|remote|bone|visceral|hepatic|pulmonary|brain|liver|lung)\b',
+            re.IGNORECASE,
+        )
+
         # --- Surgical Margin — maps present→'positive', absent→'negative' ---
         # R0 is a negative margin (no residual tumor). R1 is positive.
         # Trigger/positive regexes mirror JS exactly.
@@ -715,6 +784,7 @@ class CAPRAS_Score:
             evidence_neg_re,
             'absent',
             'present',
+            list_neg_ranges=list_neg_ranges,
         )
         # Handle R0 explicitly: if "R0" appears and no R1/positive, it's negative
         if margin_raw is None and re.search(r'\br0\b', text, re.IGNORECASE) \
@@ -734,7 +804,7 @@ class CAPRAS_Score:
                 r'\b(?:extraprostatic extensions?|extracapsular extensions?|ece)\b',
                 re.IGNORECASE,
             ),
-            re.compile(r'\b(?:present|positive|identified|noted|invasion|invasive)\b', re.IGNORECASE),
+            re.compile(r'\b(?:present|positive|identified|noted|invasion|invasive|seen|involvement|yes)\b|\(\+\)', re.IGNORECASE),
             False,
             None,
             not_assessed_re,
@@ -743,13 +813,14 @@ class CAPRAS_Score:
             evidence_neg_re,
             'absent',
             'present',
+            list_neg_ranges=list_neg_ranges,
         )
 
         # --- SVI (Seminal Vesicle Invasion) ---
         result['svi'] = CAPRAS_Score._classify_field(
             lower,
             re.compile(r'\b(?:seminal vesicles?|svi)\b', re.IGNORECASE),
-            re.compile(r'\b(?:invasion|invaded|positive|present)\b', re.IGNORECASE),
+            re.compile(r'\b(?:invasion|invaded|positive|present|seen|involvement|yes)\b|\(\+\)', re.IGNORECASE),
             False,
             None,
             not_assessed_re,
@@ -758,6 +829,7 @@ class CAPRAS_Score:
             evidence_neg_re,
             'absent',
             'present',
+            list_neg_ranges=list_neg_ranges,
         )
 
         # --- LNI (Lymph Node Involvement) ---
@@ -768,7 +840,7 @@ class CAPRAS_Score:
             lower,
             re.compile(r'\b(?:lymph nodes?|nodal|lni|metastas(?:is|es))\b', re.IGNORECASE),
             re.compile(
-                r'\b(?:positive|involved|metasta(?:sis|ses|tic)|present)\b',
+                r'\b(?:positive|involved|metasta(?:sis|ses|tic)|present|seen|involvement|yes)\b|\(\+\)',
                 re.IGNORECASE,
             ),
             True,
@@ -779,6 +851,24 @@ class CAPRAS_Score:
             evidence_neg_re,
             'absent',
             'present',
+            distant_mets_re,
+            list_neg_ranges=list_neg_ranges,
+        )
+
+        # --- LVI (Lymphovascular Invasion) ---
+        result['lvi'] = CAPRAS_Score._classify_field(
+            lower,
+            re.compile(r'\b(?:lymphovascular|vascular invasion|lvi|angiolymphatic)\b', re.IGNORECASE),
+            re.compile(r'\b(?:present|positive|invasion|invasive|noted|identified|seen|yes)\b|\(\+\)', re.IGNORECASE),
+            False,
+            None,
+            not_assessed_re,
+            numeric_neg_re,
+            negation_re,
+            evidence_neg_re,
+            'absent',
+            'present',
+            list_neg_ranges=list_neg_ranges,
         )
 
 

@@ -178,6 +178,7 @@ def main():
     print(f"    - Task 2 Prostatectomy false-positive presence (M_Px=1 when expected 0): {t2_px_mismatches} cases")
     print(f"    - Task 3 Biopsy false-positive presence (M_Bx=1 when expected 0): {t3_bx_mismatches} cases")
     print(f"    - Root Cause: cohort_engine.js:844-845 checks Boolean(mod.biopsy.pca_points) where [] is truthy in JS.")
+    assert mismatches == 0, f"Missingness parity failed: {mismatches} cases differ between Python and JS"
 
     # 1.3 Tukey Boxplots & Silverman KDE Rainclouds
     print("\n--- 1.3 Tukey Boxplots & Silverman KDE Rainclouds ---")
@@ -266,6 +267,7 @@ def main():
                 max_rho_diff = max(max_rho_diff, d)
 
     print(f"  - Max Spearman Rho Absolute Diff on common features: {max_rho_diff:.2e} (Tolerance: 1e-4)")
+    assert max_rho_diff <= 1e-4, f"Spearman rho parity failed: max diff {max_rho_diff} exceeds 1e-4"
 
     # Test Ward Agglomerative Linkage on an identical controlled 9x9 correlation matrix
     controlled_matrix = py_corr["matrix"]
@@ -567,7 +569,12 @@ def main():
 
     print("\n" + "=" * 80)
     print("ALL EMPIRICAL ADVERSARIAL CHALLENGES COMPLETED SUCCESSFULLY!")
-    print("VERDICT: APPROVE")
+    if mismatches == 0 and max_rho_diff <= 1e-4:
+        print("VERDICT: APPROVE")
+    else:
+        print("VERDICT: FAIL")
+        print(f"  Missingness mismatches: {mismatches}")
+        print(f"  Max rho diff: {max_rho_diff}")
     print("=" * 80)
 
 if __name__ == "__main__":

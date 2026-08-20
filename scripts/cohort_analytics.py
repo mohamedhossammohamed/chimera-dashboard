@@ -420,7 +420,11 @@ def pearson_r(x, y):
 
 def spearman_rho(x, y):
     """Spearman rho = Pearson r on ranks. Uses pairwise complete observations."""
-    pairs = [(xi, yi) for xi, yi in zip(x, y) if xi is not None and yi is not None]
+    # Filter NaN/None pairs (pairwise complete, matching JS)
+    pairs = [(x[i], y[i]) for i in range(len(x))
+             if x[i] is not None and y[i] is not None
+             and not (isinstance(x[i], float) and math.isnan(x[i]))
+             and not (isinstance(y[i], float) and math.isnan(y[i]))]
     if len(pairs) < 5:
         return None
     xs = [p[0] for p in pairs]
@@ -513,7 +517,8 @@ def ward_cluster(rho_matrix, var_names):
     for i in range(k):
         for j in range(k):
             r = rho_matrix[i][j]
-            if r is None:
+            # NaN/None → 1.0 distance (uncorrelated), matching JS behavior
+            if r is None or (isinstance(r, float) and math.isnan(r)):
                 d = 1.0
             else:
                 d = 1.0 - abs(r)
@@ -650,9 +655,11 @@ def compute_missingness(cases):
 
 def tukey_box(values):
     """Compute Tukey five-number summary with 1.5*IQR whiskers."""
-    if len(values) == 0:
+    vs = [v for v in values if v is not None and isinstance(v, (int, float))
+          and not isinstance(v, bool) and not math.isnan(v) and not math.isinf(v)]
+    if len(vs) == 0:
         return None
-    vs = sorted(values)
+    vs = sorted(vs)
     n = len(vs)
 
     def percentile(p):
@@ -694,13 +701,15 @@ def silverman_bandwidth(values):
     Silverman's rule of thumb:
       h = 0.9 * min(sigma, IQR/1.34) * n^(-1/5)
     """
-    n = len(values)
+    vs = [v for v in values if v is not None and isinstance(v, (int, float))
+          and not isinstance(v, bool) and not math.isnan(v) and not math.isinf(v)]
+    n = len(vs)
     if n < 2:
         return 0.0
-    mean = sum(values) / n
-    sigma = math.sqrt(sum((v - mean) ** 2 for v in values) / (n - 1)) if n > 1 else 0.0
+    mean = sum(vs) / n
+    sigma = math.sqrt(sum((v - mean) ** 2 for v in vs) / (n - 1)) if n > 1 else 0.0
 
-    vs = sorted(values)
+    vs = sorted(vs)
     def pct(p):
         k = (n - 1) * p / 100.0
         f = math.floor(k)
@@ -726,14 +735,16 @@ def gaussian_kde(values, bandwidth, eval_points):
       f(x) = (1 / (n * h)) * sum_i K((x - x_i) / h)
       K(u) = (1 / sqrt(2*pi)) * exp(-u^2 / 2)
     """
-    n = len(values)
+    vs = [v for v in values if v is not None and isinstance(v, (int, float))
+          and not isinstance(v, bool) and not math.isnan(v) and not math.isinf(v)]
+    n = len(vs)
     if n == 0 or bandwidth == 0:
         return [0.0] * len(eval_points)
     norm = 1.0 / (n * bandwidth * math.sqrt(2 * math.pi))
     densities = []
     for x in eval_points:
         s = 0.0
-        for xi in values:
+        for xi in vs:
             u = (x - xi) / bandwidth
             s += math.exp(-0.5 * u * u)
         densities.append(norm * s)

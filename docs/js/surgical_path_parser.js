@@ -21,13 +21,16 @@
 
 // Negation terms with word boundaries. \bclear(?!ly) prevents matching "clearly"
 // (e.g. "clearly present" is affirmative, not negated).
-const NEGATION_RE = /\b(?:no|not|without|negative|absent|none|free|clear(?!ly))\b/i;
+const NEGATION_RE = /\b(?:no|not|without|negative|absent|none|free|clear(?!ly)|unremarkable|uninvolved)\b|\(-\)/i;
 
 // Numeric negation: "0/15", "0 / 15" — zero positive out of N sampled.
 const NUMERIC_NEG_RE = /\b0\s*\/\s*\d+\b/;
 
 // Not-assessable patterns (LNI: no dissection performed → skip mention).
 const NOT_ASSESSABLE_RE = /\b(?:not removed|no lymph nodes?\s+(?:were\s+)?removed|no lymph node dissection|not dissected)\b/i;
+
+// Distant metastasis patterns — exclude from LNI classification
+const DISTANT_METS_RE = /\b(?:distant|remote|bone|visceral|hepatic|pulmonary|brain|liver|lung)\s+metastas(?:is|es)\b|\bmetastas(?:is|es)\s+(?:to\s+)?(?:distant|remote|bone|visceral|hepatic|pulmonary|brain|liver|lung)\b/i;
 
 // Not-assessed patterns (field-specific: pathologist did not evaluate this field).
 // Applies to ALL fields: "not noted" / "not assessed" means unknown (null),
@@ -66,6 +69,37 @@ function clauseBounds(lower, pos) {
 // e.g. "no evidence of, seminal vesicle invasion" — the comma separates the
 // negation phrase from the trigger, but they belong to the same clause semantically.
 const EVIDENCE_NEG_RE = /\bno\s+evidence\s+of\b/i;
+
+/**
+ * Find ranges where list negation propagates.
+ * "no evidence of ECE, SVI, LVI" → all three are negated.
+ * Scans for negation phrases followed by comma-separated terms until
+ * a sentence boundary (period, semicolon, or end of text).
+ */
+function findListNegationRanges(lower) {
+  const ranges = [];
+  // Match "no evidence of", "no sign of", "free of" at clause start
+  const listNegRe = /\b(?:no\s+evidence\s+of|no\s+sign\s+of|free\s+of)\b/gi;
+  let m;
+  while ((m = listNegRe.exec(lower)) !== null) {
+    const phraseStart = m.index;
+    const phraseEnd = m.index + m[0].length;
+    // Skip whitespace after the phrase
+    let pos = phraseEnd;
+    while (pos < lower.length && /\s/.test(lower[pos])) pos++;
+    if (pos >= lower.length) continue;
+    // Scan forward through commas until sentence boundary (. ; \n)
+    let listEnd = pos;
+    while (listEnd < lower.length) {
+      const ch = lower[listEnd];
+      if (ch === '.' || ch === ';' || ch === '\n') break;
+      listEnd++;
+    }
+    // The negation range covers from phraseStart to listEnd
+    ranges.push({ start: phraseStart, end: listEnd });
+  }
+  return ranges;
+}
 
 /**
  * Check whether a mention at [start, end) in lowercased text is negated.
@@ -119,7 +153,7 @@ function isNegated(lower, start, end) {
  * @param {RegExp|null} notAssessableRe - Regex matching not-assessable patterns.
  * @returns {'present'|'absent'|null}
  */
-function classifyField(lower, triggerRe, positiveRe, checkNumeric, notAssessableRe) {
+function classifyField(lower, triggerRe, positiveRe, checkNumeric, notAssessableRe, excludeRe, listNegRanges) {
   let hasPositive = false;
   let hasNegated = false;
   triggerRe.lastIndex = 0;
@@ -135,13 +169,25 @@ function classifyField(lower, triggerRe, positiveRe, checkNumeric, notAssessable
     // Not assessable (e.g. no dissection) → skip this mention entirely
     if (notAssessableRe && notAssessableRe.test(window)) continue;
 
+    // Distant metastasis exclusion (e.g. "bone metastasis" → not LNI)
+    if (excludeRe && excludeRe.test(window)) continue;
+
+    // List negation: "no evidence of ECE, SVI, LVI" → all negated
+    if (listNegRanges && listNegRanges.some(r => start >= r.start && end <= r.end)) {
+      hasNegated = true;
+      continue;
+    }
+
     // Not assessed (e.g. "not noted", "not evaluated") → unknown, skip mention.
     // This must take precedence over negation: "LVI: not noted" is NOT 'absent',
     // it means the pathologist did not assess it. Skipping keeps the field null.
     if (NOT_ASSESSED_RE.test(window)) continue;
 
     // Numeric negation: "0/15 lymph nodes positive" → absent
-    if (checkNumeric && NUMERIC_NEG_RE.test(window)) {
+    // Check both the ±20 char window AND the full clause, so that
+    // "0/15 lymph nodes positive for metastasis" correctly negates the
+    // "metastasis" mention even though 0/15 is >20 chars away.
+    if (checkNumeric && (NUMERIC_NEG_RE.test(window) || NUMERIC_NEG_RE.test(lower.substring(clause.start, clause.end)))) {
       hasNegated = true;
       continue;
     }
@@ -170,13 +216,14 @@ export function parseSurgicalPathology(reportText) {
 
   const result = { ...empty };
   const lower = reportText.toLowerCase();
+  const listNegRanges = findListNegationRanges(lower);
 
   // Pathologic Gleason (primary + secondary) — highest-grade selection
   // ISUP 2019 / Epstein 2005 / Kunz 2009: highest sum (prim+sec) correlates
   // best with biochemical recurrence; tiebreak by higher primary (4+3 > 3+4).
   // Optional intervening word "score" or "pattern" handles all clinical
   // phrasings: "Gleason 3+4", "Gleason score 3+4", "Gleason pattern 3+4".
-  const glMatches = reportText.matchAll(/Gleason\s+(?:score\s+|pattern\s+)?(\d)\s*\+\s*(\d)/gi);
+  const glMatches = reportText.matchAll(/Gleason\s+(?:score\s*|pattern\s*)?[:=]?\s*(\d{1,2})\s*\+\s*(\d{1,2})/gi);
   let highestPrim = null, highestSec = null, highestSum = -1;
   for (const m of glMatches) {
     const prim = parseInt(m[1], 10);
@@ -196,9 +243,11 @@ export function parseSurgicalPathology(reportText) {
   const marginRaw = classifyField(
     lower,
     /\bmargins?\b|\br0\b|\br1\b/g,
-    /\b(?:positive|r1|involved)\b/i,
+    /\b(?:positive|r1|involved)\b|\(\+\)/i,
     false,
-    null
+    null,
+    null,
+    listNegRanges
   );
   // Handle R0 explicitly: if "R0" appears and no R1/positive, it's negative
   if (marginRaw === null && /\br0\b/i.test(reportText) && !/\br1\b/i.test(reportText)) {
@@ -211,28 +260,34 @@ export function parseSurgicalPathology(reportText) {
   result.ece = classifyField(
     lower,
     /\b(?:extraprostatic extensions?|extracapsular extensions?|ece)\b/g,
-    /\b(?:present|positive|identified|noted|invasion|invasive)\b/i,
+    /\b(?:present|positive|identified|noted|invasion|invasive|seen|involvement|yes)\b|\(\+\)/i,
     false,
-    null
+    null,
+    null,
+    listNegRanges
   );
 
   // SVI (Seminal Vesicle Invasion)
   result.svi = classifyField(
     lower,
     /\b(?:seminal vesicles?|svi)\b/g,
-    /\b(?:invasion|invaded|positive|present)\b/i,
+    /\b(?:invasion|invaded|positive|present|seen|involvement|yes)\b|\(\+\)/i,
     false,
-    null
+    null,
+    null,
+    listNegRanges
   );
 
   // LNI (Lymph Node Involvement) — "lymph node", "nodal", "LNI", NOT "lymphovascular"
   // Not-assessable (no dissection) → skip. Numeric negation (0/N) → absent.
   result.lni = classifyField(
     lower,
-    /\b(?:lymph nodes?|nodal|lni|(?<!\b(?:distant|remote|bone|visceral|hepatic|pulmonary|brain|liver|lung)\s+)metastas(?:is|es)(?!\s+(?:distant|remote|bone|visceral|hepatic|pulmonary|brain|liver|lung)))\b/g,
-    /\b(?:positive|involved|metasta(?:sis|ses|tic)|present)\b/i,
+    /\b(?:lymph nodes?|nodal|lni|metastas(?:is|es))\b/g,
+    /\b(?:positive|involved|metasta(?:sis|ses|tic)|present|seen|involvement|yes)\b|\(\+\)/i,
     true,
-    NOT_ASSESSABLE_RE
+    NOT_ASSESSABLE_RE,
+    DISTANT_METS_RE,
+    listNegRanges
   );
 
   // LVI (Lymphovascular Invasion) — "lymphovascular", "vascular invasion",
@@ -242,9 +297,11 @@ export function parseSurgicalPathology(reportText) {
   result.lvi = classifyField(
     lower,
     /\b(?:lymphovascular|vascular invasion|lvi|angiolymphatic)\b/g,
-    /\b(?:present|positive|invasion|invasive|noted|identified)\b/i,
+    /\b(?:present|positive|invasion|invasive|noted|identified|seen|yes)\b|\(\+\)/i,
     false,
-    null
+    null,
+    null,
+    listNegRanges
   );
 
   return result;

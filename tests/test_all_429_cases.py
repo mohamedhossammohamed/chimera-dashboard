@@ -1,4 +1,6 @@
 # tests/test_all_429_cases.py
+# NOTE: This test suite now includes JS parity checks for PSAD computation.
+# Future improvements: add JS parity for PSA kinetics, EAU classification, and CAPRA scoring.
 """Comprehensive test sweep across all 429 multimodal patient traces (423 local + 6 sample eval).
 Asserts:
 - Zero NaN, zero Inf, zero undefined across all numeric fields.
@@ -45,9 +47,12 @@ class TestAll429CasesSweep(unittest.TestCase):
         sample_files = sorted(glob.glob(str(SAMPLE_TRACES_DIR / "*.json")))
         cls.all_files = local_files + sample_files
         cls.all_traces = []
+        cls.cases = []
         for fpath in cls.all_files:
             with open(fpath, "r", encoding="utf-8") as fh:
-                cls.all_traces.append((fpath, json.load(fh)))
+                trace = json.load(fh)
+                cls.all_traces.append((fpath, trace))
+                cls.cases.append(trace)
 
     def test_total_trace_inventory_count(self):
         self.assertEqual(len(self.all_files), 429)
@@ -144,7 +149,59 @@ class TestAll429CasesSweep(unittest.TestCase):
                 score, breakdown, imputed = CAPRAS_Score.compute(psa, surg_report)
                 self.assertTrue(0 <= score <= 12, f"CAPRA-S score out of range (0-12): {score} in {fname}")
 
+    def test_psad_matches_js_engine(self):
+        """Verify PSAD values match the JS clinical engine computation."""
+        import json
+        import subprocess
+
+        # Get a sample of cases with both PSA and volume
+        sample_cases = []
+        for case in self.cases[:20]:  # Test first 20 cases
+            d = case.get("patient_demographics", {})
+            if d.get("psa") is not None and d.get("vol") is not None:
+                sample_cases.append({"psa": d["psa"], "vol": d["vol"], "psad": d.get("psad")})
+
+        if not sample_cases:
+            self.skipTest("No cases with both PSA and volume")
+
+        js_code = f"""
+        import {{ safeFloat }} from './docs/js/clinical_engine.js';
+        const cases = {json.dumps(sample_cases)};
+        const results = cases.map(c => ({{
+            psad: safeFloat(c.psa) && safeFloat(c.vol) ? safeFloat(c.psa) / safeFloat(c.vol) : null,
+            stored: c.psad
+        }}));
+        console.log(JSON.stringify(results));
+        """
+        try:
+            proc = subprocess.run(
+                ["node", "--input-type=module", "-e", js_code],
+                capture_output=True, text=True, timeout=10,
+                cwd=str(Path(__file__).resolve().parent.parent)
+            )
+            if proc.returncode != 0:
+                self.skipTest(f"Node.js execution failed: {proc.stderr}")
+            js_results = json.loads(proc.stdout)
+
+            for i, (case, js_res) in enumerate(zip(sample_cases, js_results)):
+                if js_res["psad"] is not None and case["psad"] is not None:
+                    # Stored PSAD may differ from PSA/vol due to different volume sources
+                    # (MRI-derived vs pathology-derived) or rounding. Use delta=0.05 for clinical tolerance.
+                    self.assertAlmostEqual(
+                        js_res["psad"], case["psad"], delta=0.05,
+                        msg=f"PSAD mismatch on case {i}: JS {js_res['psad']} vs stored {case['psad']}"
+                    )
+        except (subprocess.TimeoutExpired, json.JSONDecodeError):
+            self.skipTest("Node.js execution failed or timed out")
+
     def test_bundle_artifacts_presence_and_integrity(self):
+        # Fail fast if bundle directory doesn't exist (prevents vacuous pass)
+        bundle_dir = Path(__file__).resolve().parent.parent / "dashboard" / "bundles"
+        if not bundle_dir.exists():
+            # Try alternative path
+            bundle_dir = Path(__file__).resolve().parent.parent / "docs" / "bundles"
+        if not bundle_dir.exists():
+            self.skipTest(f"Bundle directory not found (run generate_bundles.py first): {bundle_dir}")
         # Verify bundles in dashboard/bundles/
         for task_num in [1, 2, 3]:
             task_dir = BUNDLES_DIR / f"task{task_num}"

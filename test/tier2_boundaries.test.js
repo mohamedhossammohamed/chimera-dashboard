@@ -223,6 +223,9 @@ describe('Tier 2: Boundary 5 - Ward Hierarchical Clustering Boundaries', () => {
     const order = wardCluster(rho, ['v1', 'v2', 'v3']);
     assert.equal(order.length, 3);
     assert.deepEqual(new Set(order), new Set([0, 1, 2]));
+    // Verify determinism — same input produces same output
+    const order2 = wardCluster(rho, ['v1', 'v2', 'v3']);
+    assert.deepEqual(order, order2, 'Ward clustering must be deterministic');
   });
 
   it('B5.4: all perfectly correlated variables (rho=1.0) cluster without division by zero', () => {
@@ -234,6 +237,10 @@ describe('Tier 2: Boundary 5 - Ward Hierarchical Clustering Boundaries', () => {
     const order = wardCluster(rho, ['v1', 'v2', 'v3']);
     assert.equal(order.length, 3);
     assert.deepEqual(new Set(order), new Set([0, 1, 2]));
+    // All perfectly correlated — verify at least one pair is adjacent
+    const pos0 = order.indexOf(0);
+    const pos1 = order.indexOf(1);
+    assert.equal(Math.abs(pos0 - pos1), 1, 'Perfectly correlated variables should be adjacent');
   });
 
   it('B5.5: matrix with null values treats distance as 1.0 (uncorrelated) gracefully', () => {
