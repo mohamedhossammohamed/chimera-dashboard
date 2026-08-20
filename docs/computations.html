@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHIMERA Computation Documentation</title>
+
+  <!-- KaTeX CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+  <!-- Prism CSS (okaidia theme) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-okaidia.css">
+
+  <style>
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border-default: #30363d;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-link: #58a6ff;
+      --font-mono: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .layout {
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      gap: 2rem;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      position: sticky;
+      top: 2rem;
+      align-self: flex-start;
+      width: 260px;
+      flex-shrink: 0;
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .sidebar h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .sidebar > a {
+      display: block;
+      color: var(--text-link);
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      padding: 0.4rem 0.5rem;
+      border-radius: 4px;
+      transition: background-color 0.15s ease;
+    }
+
+    .sidebar > a:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 0.15rem;
+    }
+
+    .sidebar ul li a {
+      display: block;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 4px;
+      transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .sidebar ul li a:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-tertiary);
+    }
+
+    /* Main Content */
+    main#content {
+      flex: 1;
+      min-width: 0;
+      padding: 0;
+    }
+
+    main#content h1,
+    main#content h2,
+    main#content h3,
+    main#content h4 {
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    main#content h1 {
+      font-size: 2rem;
+      border-bottom: 1px solid var(--border-default);
+      padding-bottom: 0.5rem;
+    }
+
+    main#content h2 {
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--border-default);
+      padding-bottom: 0.4rem;
+    }
+
+    main#content h3 {
+      font-size: 1.2rem;
+    }
+
+    main#content h4 {
+      font-size: 1rem;
+    }
+
+    main#content p {
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    main#content a {
+      color: var(--text-link);
+      text-decoration: none;
+    }
+
+    main#content a:hover {
+      text-decoration: underline;
+    }
+
+    main#content ul,
+    main#content ol {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+
+    main#content li {
+      margin-bottom: 0.4rem;
+    }
+
+    main#content code {
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+      background-color: var(--bg-tertiary);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      color: var(--text-primary);
+    }
+
+    /* Provenance Info Box */
+    .provenance-info {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-default);
+      border-left: 3px solid var(--text-link);
+      border-radius: 6px;
+      padding: 0.875rem 1rem;
+      margin: 1rem 0 1.5rem 0;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .provenance-info strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .provenance-info code {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    /* Math Block */
+    .math {
+      display: block;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      margin: 1.5rem 0;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    /* Code Blocks */
+    pre {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      overflow-x: auto;
+      padding: 1rem;
+      margin: 1rem 0 1.5rem 0;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+      border-radius: 0;
+      font-size: inherit;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border-default);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    td {
+      color: var(--text-secondary);
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-default);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-secondary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+      }
+
+      .sidebar {
+        position: static;
+        width: 100%;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar">
+      <h3>Computations</h3>
+      <a href="index.html">&larr; Back to Dashboard</a>
+      <ul>
+        <li><a href="#psa-kinetics-psadt">PSA Doubling Time</a></li>
+        <li><a href="#psa-kinetics-trajectory">PSADT Trajectory</a></li>
+        <li><a href="#psa-kinetics-psav">PSA Velocity</a></li>
+        <li><a href="#eau-risk-classification">EAU Risk Classification</a></li>
+        <li><a href="#capra-pre-treatment">CAPRA Score</a></li>
+        <li><a href="#capra-s">CAPRA-S Score</a></li>
+        <li><a href="#surgical-pathology-parser">Surgical Pathology Parser</a></li>
+        <li><a href="#charlson-comorbidity-index">Charlson Comorbidity Index</a></li>
+        <li><a href="#pca">Principal Component Analysis</a></li>
+        <li><a href="#spearman-correlation">Spearman Correlation</a></li>
+        <li><a href="#spearman-correlation-matrix">Correlation Matrix</a></li>
+        <li><a href="#ward-clustering">Ward Clustering</a></li>
+        <li><a href="#silverman-bandwidth">Silverman Bandwidth</a></li>
+        <li><a href="#gaussian-kde">Gaussian KDE</a></li>
+        <li><a href="#tukey-box">Tukey Box Plot</a></li>
+        <li><a href="#cohort-analytics">Cohort Analytics Pipeline</a></li>
+      </ul>
+    </nav>
+    <main id="content">
+      <section id="psa-kinetics-psadt">
+  <h2>PSA Doubling Time (PSADT)</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> clinical_engine.js &rarr; PSAKinetics.calculatePSADT()</p>
+    <p><strong>Inputs:</strong> Array of PSA measurements (date + value pairs); requires &ge;3 data points spanning &ge;6 months</p>
+    <p><strong>Output:</strong> number (doubling time in months, 1 decimal) | null (insufficient data) | Infinity (stable/declining)</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>PSA Doubling Time is calculated by fitting a log-linear regression of ln(PSA) against time in years. The regression slope k gives the doubling time as ln(2)/k, converted to months. Returns null if fewer than 3 measurements or time span &lt; 6 months. Returns Infinity if PSA is stable or declining (slope &le; 0).</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \text{PSADT} = \frac{\ln 2}{k} \times 12, \quad k = \frac{\sum_{i}(t_i - \bar{t})(\ln v_i - \overline{\ln v})}{\sum_{i}(t_i - \bar{t})^2} $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">  calculatePSADT() {
+    if (this.isInsufficient) return null;
+    const baseTime = this.points[0].date.getTime();
+    const ts = this.points.map(p =&gt; (p.date.getTime() - baseTime) / (1000 * 60 * 60 * 24 * PSAKinetics.DAYS_PER_YEAR));
+    const logVs = this.points.map(p =&gt; Math.log(p.val));
+    const n = ts.length;
+
+    const tMean = ts.reduce((a, b) =&gt; a + b, 0) / n;
+    const logMean = logVs.reduce((a, b) =&gt; a + b, 0) / n;
+
+    const ssT = ts.reduce((acc, t) =&gt; acc + (t - tMean) ** 2, 0);
+    if (ssT === 0) return null;
+
+    const ssTLog = ts.reduce((acc, t, i) =&gt; acc + (t - tMean) * (logVs[i] - logMean), 0);
+    const k = ssTLog / ssT;
+
+    if (k &lt;= 0) return Infinity; // Stable or declining — clinically distinct from insufficient data
+    const dtYears = Math.LN2 / k;
+    const dtMonths = dtYears * 12.0;
+    return Math.round(dtMonths * 10) / 10;
+  }</code></pre>
+</section>
+
+<section id="psa-kinetics-trajectory">
+  <h2>PSADT Trajectory Classification</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> clinical_engine.js &rarr; PSAKinetics.trajectory()</p>
+    <p><strong>Inputs:</strong> PSADT value in months (number | null | Infinity) from calculatePSADT()</p>
+    <p><strong>Output:</strong> String category &mdash; 'Aggressive' | 'Rapid' | 'Moderate' | 'Indolent' | 'Stable/Declining' | '[DATA NOT RECORDED]'</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Classifies PSADT into clinically actionable categories: Aggressive (&lt;6 months), Rapid (6-12 months), Moderate (12-24 months), Indolent (&ge;24 months), Stable/Declining (slope &le; 0 or Infinity), or [DATA NOT RECORDED] (insufficient data).</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$
+    \text{Trajectory} = \begin{cases}
+      \text{Aggressive} & \text{if } \text{PSADT} < 6 \text{ months} \\
+      \text{Rapid} & \text{if } 6 \leq \text{PSADT} < 12 \text{ months} \\
+      \text{Moderate} & \text{if } 12 \leq \text{PSADT} < 24 \text{ months} \\
+      \text{Indolent} & \text{if } \text{PSADT} \geq 24 \text{ months} \\
+      \text{Stable/Declining} & \text{if slope } k \leq 0 \text{ or } \text{PSADT} = \infty \\
+      \text{[DATA NOT RECORDED]} & \text{if insufficient data (null + } N < 3 \text{ or span} < 6 \text{ mo)}
+    \end{cases}
+    $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">  trajectory(psadtVal) {
+    if (psadtVal === null || Number.isNaN(psadtVal)) {
+      return this.isInsufficient ? EAU_SENTINEL : 'Stable/Declining';
+    }
+    if (psadtVal === Infinity) {
+      return 'Stable/Declining';
+    }
+    if (psadtVal &lt; 6) return 'Aggressive';
+    if (psadtVal &lt; 12) return 'Rapid';
+    if (psadtVal &lt; 24) return 'Moderate';
+    return 'Indolent';
+  }</code></pre>
+</section>
+
+<section id="psa-kinetics-psav">
+  <h2>PSA Velocity (PSAV)</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> clinical_engine.js &rarr; PSAKinetics.calculatePSAV()</p>
+    <p><strong>Inputs:</strong> Array of PSA measurements (date + value pairs)</p>
+    <p><strong>Output:</strong> number (slope in ng/mL/year, rounded to 3 decimals) | null (insufficient data or zero time variance)</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>PSA Velocity is the slope of an ordinary least-squares linear regression of PSA value (ng/mL) against time in years. Returns null if insufficient data or zero time variance.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \text{PSAV} = \frac{\sum_{i}(t_i - \bar{t})(v_i - \bar{v})}{\sum_{i}(t_i - \bar{t})^2} \quad (\text{ng/mL/year}) $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">  calculatePSAV() {
+    if (this.isInsufficient) return null;
+    const baseTime = this.points[0].date.getTime();
+    const ts = this.points.map(p =&gt; (p.date.getTime() - baseTime) / (1000 * 60 * 60 * 24 * PSAKinetics.DAYS_PER_YEAR));
+    const vs = this.points.map(p =&gt; p.val);
+    const n = ts.length;
+
+    const tMean = ts.reduce((a, b) =&gt; a + b, 0) / n;
+    const vMean = vs.reduce((a, b) =&gt; a + b, 0) / n;
+
+    const ssT = ts.reduce((acc, t) =&gt; acc + (t - tMean) ** 2, 0);
+    if (ssT === 0) return null;
+
+    const ssTV = ts.reduce((acc, t, i) =&gt; acc + (t - tMean) * (vs[i] - vMean), 0);
+    return Math.round((ssTV / ssT) * 1000) / 1000;
+  }</code></pre>
+</section>
+
+<section id="eau-risk-classification">
+  <h2>EAU 2026 Risk Classification</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> clinical_engine.js &rarr; EAURiskClassifier.classify()</p>
+    <p><strong>Inputs:</strong> PSA (ng/mL), biopsy ISUP grade group, clinical T stage (string), high-risk patterns flag</p>
+    <p><strong>Output:</strong> Object { tier: string, reason: string } &mdash; tier is one of 5 EAU 2026 risk levels or sentinel</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Classifies prostate cancer risk into 5 EAU 2026 tiers using an ordered precedence cascade: (1) Locally Advanced if cT3-4, (2) High if ISUP 4/5 or PSA &gt;20 or cT2c, (3) Unfavorable Intermediate if ISUP 3 or (ISUP 2 + PSA 10-20) or cT2b, (4) Favorable Intermediate if ISUP 1-2 + PSA &lt;10 + cT1-2a + no high-risk patterns, (5) Low if ISUP 1 + PSA &lt;10 + cT1-2a.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$
+    \begin{array}{|c|l|l|}
+      \hline
+      \text{Order} & \text{Tier} & \text{Criteria} \\
+      \hline
+      1 & \text{Locally Advanced} & \text{cT3-4} \\
+      2 & \text{High} & \text{ISUP 4/5 OR PSA} > 20 \text{ OR cT2c} \\
+      3 & \text{Unfavorable Intermediate} & \text{ISUP 3 OR (ISUP 2 + PSA 10-20) OR cT2b} \\
+      4 & \text{Favorable Intermediate} & \text{ISUP 1-2 + PSA} < 10 \text{ + cT1-2a + no high-risk} \\
+      5 & \text{Low} & \text{ISUP 1 + PSA} < 10 \text{ + cT1-2a} \\
+      \hline
+    \end{array}
+    $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">  static classify(psa, bxIsup, ct, highRiskPatterns) {
+    const psaVal = safeFloat(psa);
+    let isup = bxIsup !== null &amp;&amp; bxIsup !== undefined ? safeFloat(bxIsup) : null;
+    if (isup !== null) isup = Math.floor(isup);
+    const ctRank = EAURiskClassifier.parseCT(ct);
+    const hasHighRisk = Boolean(highRiskPatterns) &amp;&amp;
+      !['', 'none', 'null', 'n/a', 'false'].includes(String(highRiskPatterns).trim().toLowerCase());
+
+    const criteria = [];
+
+    // EAU 2026 Risk Classification (5 tiers — no "Very High" tier exists)
+    // Order: Locally advanced → High → Unfavorable Intermediate → Favorable Intermediate → Low
+
+    // 1. Locally Advanced: cT3-4 (takes precedence over all other criteria)
+    if (ctRank &amp;&amp; ctRank.major &gt;= 3) {
+      criteria.push(`Clinical stage ${ct} (cT3-4)`);
+      return { tier: 'Locally Advanced', reason: criteria.join('; ') };
+    }
+
+    // 2. High: ISUP 4/5 OR PSA &gt; 20 OR cT2c
+    if (isup !== null &amp;&amp; (isup === 4 || isup === 5)) {
+      criteria.push(`ISUP ${isup}`);
+      return { tier: 'High', reason: criteria.join('; ') };
+    }
+    if (psaVal !== null &amp;&amp; psaVal &gt; 20) {
+      criteria.push(`PSA ${psaVal} &gt; 20`);
+      return { tier: 'High', reason: criteria.join('; ') };
+    }
+    if (ctRank &amp;&amp; ctRank.major === 2 &amp;&amp; ctRank.minor === 3) {
+      criteria.push(`Clinical stage ${ct} (cT2c)`);
+      return { tier: 'High', reason: criteria.join('; ') };
+    }
+
+    if (isup === null &amp;&amp; ctRank === null &amp;&amp; psaVal === null) {
+      return { tier: EAU_SENTINEL, reason: 'Insufficient data: ISUP grade, clinical T stage, and PSA all missing' };
+    }
+
+    // 3. Unfavorable Intermediate: ISUP 3 OR (ISUP 2 AND PSA 10-20) OR cT2b
+    if (isup !== null &amp;&amp; isup === 3) {
+      criteria.push(`ISUP 3`);
+      return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
+    }
+    // 3b. Favourable Intermediate: ISUP 1 AND PSA 10-20 AND cT1-2a AND no high-risk
+    if (psaVal !== null &amp;&amp; psaVal &gt;= 10 &amp;&amp; psaVal &lt;= 20 &amp;&amp; isup === 1 &amp;&amp;
+        ctRank &amp;&amp; (ctRank.major === 1 || (ctRank.major === 2 &amp;&amp; ctRank.minor &lt;= 1)) &amp;&amp; !hasHighRisk) {
+      criteria.push(`PSA ${psaVal} 10-20; ISUP 1; ${ct}; no high-risk patterns`);
+      return { tier: 'Favorable Intermediate', reason: criteria.join('; ') };
+    }
+    if (psaVal !== null &amp;&amp; psaVal &gt;= 10 &amp;&amp; psaVal &lt;= 20) {
+      if (isup !== null &amp;&amp; isup === 2) {
+        criteria.push(`PSA ${psaVal} 10-20; ISUP 2`);
+        return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
+      }
+      // PSA 10-20 alone with no ISUP info — still intermediate
+      if (isup === null) {
+        criteria.push(`PSA ${psaVal} 10-20`);
+        return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
+      }
+    }
+    if (ctRank &amp;&amp; ctRank.major === 2 &amp;&amp; ctRank.minor === 2) {
+      criteria.push(`Clinical stage ${ct} (cT2b)`);
+      return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
+    }
+
+    // 4. Favorable Intermediate: ISUP 2 AND PSA &lt; 10 AND cT1-2a AND no high-risk patterns
+    if (psaVal !== null &amp;&amp; psaVal &lt; 10 &amp;&amp; isup === 2 &amp;&amp; ctRank &amp;&amp; (ctRank.major === 1 || (ctRank.major === 2 &amp;&amp; ctRank.minor &lt;= 1)) &amp;&amp; !hasHighRisk) {
+      criteria.push(`PSA ${psaVal} &lt; 10; ISUP 2; ${ct}; no high-risk patterns`);
+      return { tier: 'Favorable Intermediate', reason: criteria.join('; ') };
+    }
+
+    // 5. Low: ISUP 1 AND PSA &lt; 10 AND cT1-2a
+    if (psaVal !== null &amp;&amp; psaVal &lt; 10 &amp;&amp; isup === 1 &amp;&amp; ctRank &amp;&amp; (ctRank.major === 1 || (ctRank.major === 2 &amp;&amp; ctRank.minor &lt;= 1))) {
+      criteria.push(`PSA ${psaVal} &lt; 10; ISUP 1; ${ct}`);
+      return { tier: 'Low', reason: criteria.join('; ') };
+    }
+
+    // Partial classification fallback: ISUP 2 with high-risk patterns upgrade
+    if (psaVal !== null &amp;&amp; psaVal &lt; 10 &amp;&amp; isup === 2 &amp;&amp; hasHighRisk) {
+      criteria.push(`PSA ${psaVal} &lt; 10; ISUP 2; high-risk patterns present — upgraded`);
+      return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
+    }
+
+    return { tier: EAU_SENTINEL, reason: 'Non-standard risk parameter constellation' };
+  }</code></pre>
+</section>
+
+
+<section id="capra-pre-treatment">
+  <h2>UCSF CAPRA Pre-Treatment Nomogram</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> clinical_engine.js → CAPRAScorer.calculate()</p>
+    <p><strong>Inputs:</strong> age (years), psa (ng/mL), bxGlPrim (biopsy Gleason primary), bxGlSec (biopsy Gleason secondary), ct (clinical T-stage string), coresPos (positive cores count), coresTot (total cores count)</p>
+    <p><strong>Output:</strong> { score: integer (0–10), breakdown: string }</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>UCSF Cancer of the Prostate Risk Assessment (CAPRA) score. Weighted sum: Age &gt;=50 (+1), PSA bins (+0-4), Gleason primary &gt;=4 (+3) or secondary &gt;=4 (+1), clinical T3+ (+1), positive cores &gt;=34% (+1). Maximum score 10.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \text{CAPRA} = \min(10, \, w_{\text{age}} + w_{\text{PSA}} + w_{\text{Gleason}} + w_{\text{T}} + w_{\text{cores}}) $$
+  </div>
+  <table class="weight-table">
+    <thead>
+      <tr><th>Component</th><th>Condition</th><th>Weight</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>w<sub>age</sub></td><td>Age &gt;= 50</td><td>+1</td></tr>
+      <tr><td rowspan="5">w<sub>PSA</sub></td><td>PSA &lt;= 6</td><td>+0</td></tr>
+      <tr><td>6 &lt; PSA &lt;= 10</td><td>+1</td></tr>
+      <tr><td>10 &lt; PSA &lt;= 20</td><td>+2</td></tr>
+      <tr><td>20 &lt; PSA &lt;= 30</td><td>+3</td></tr>
+      <tr><td>PSA &gt; 30</td><td>+4</td></tr>
+      <tr><td rowspan="2">w<sub>Gleason</sub></td><td>Primary &gt;= 4</td><td>+3</td></tr>
+      <tr><td>Secondary &gt;= 4 (primary &lt; 4)</td><td>+1</td></tr>
+      <tr><td>w<sub>T</sub></td><td>Clinical T3 or higher</td><td>+1</td></tr>
+      <tr><td>w<sub>cores</sub></td><td>Positive cores &gt;= 34%</td><td>+1</td></tr>
+    </tbody>
+  </table>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">export class CAPRAScorer {
+  static calculate(age, psa, bxGlPrim, bxGlSec, ct, coresPos, coresTot) {
+    let total = 0;
+    const breakdown = [];
+
+    // Age (max 1)
+    const ageVal = safeFloat(age);
+    if (ageVal !== null &amp;&amp; ageVal &gt;= 50) {
+      total += 1;
+      breakdown.push('Age [+1] (&gt;=50)');
+    } else {
+      breakdown.push('Age [+0] (&lt;50)');
+    }
+
+    // PSA (max 4) — boundaries inclusive per UCSF CAPRA table
+    const psaVal = safeFloat(psa);
+    let psaPts = 0;
+    if (psaVal === null || psaVal &lt;= 6) psaPts = 0;
+    else if (psaVal &lt;= 10) psaPts = 1;
+    else if (psaVal &lt;= 20) psaPts = 2;
+    else if (psaVal &lt;= 30) psaPts = 3;
+    else psaPts = 4;
+    total += psaPts;
+    breakdown.push(`PSA [+${psaPts}]`);
+
+    // Gleason (max 3)
+    const gp = safeFloat(bxGlPrim);
+    const gs = safeFloat(bxGlSec);
+    let glPts = 0;
+    if (gp !== null &amp;&amp; gs !== null) {
+      if (gp &gt;= 4) glPts = 3;
+      else if (gs &gt;= 4) glPts = 1;
+      else glPts = 0;
+      breakdown.push(`Gleason [+${glPts}] (${gp}+${gs})`);
+    } else {
+      breakdown.push('Gleason [+0] (data missing)');
+    }
+    total += glPts;
+
+    // T-Stage (max 1)
+    const ctRank = EAURiskClassifier.parseCT(ct);
+    let ctPts = 0;
+    if (ctRank &amp;&amp; ctRank.major &gt; 2) {
+      ctPts = 1;
+      breakdown.push(`T-Stage [+1] (${ct})`);
+    } else {
+      breakdown.push(`T-Stage [+0] (${ct || 'cT1/cT2'})`);
+    }
+    total += ctPts;
+
+    // Positive Cores (max 1)
+    const cp = safeFloat(coresPos);
+    const ctot = safeFloat(coresTot);
+    let corePts = 0;
+    if (cp !== null &amp;&amp; ctot !== null &amp;&amp; ctot &gt; 0) {
+      const pct = (cp / ctot) * 100;
+      if (pct &gt;= 34) corePts = 1;
+      breakdown.push(`Cores [+${corePts}] (${pct.toFixed(1)}%)`);
+    } else {
+      breakdown.push('Cores [+0] (not recorded)');
+    }
+    total += corePts;
+
+    const score = Math.min(10, total);
+    return { score, breakdown: breakdown.join(', ') };
+  }
+}</code></pre>
+</section>
+
+<section id="capra-s">
+  <h2>UCSF CAPRA-S Post-Surgical Nomogram</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> clinical_engine.js → CAPRASScorer.calculate()</p>
+    <p><strong>Inputs:</strong> psa (ng/mL), surgicalReportText (raw surgical pathology report text)</p>
+    <p><strong>Output:</strong> { score: integer (0–12), breakdown: string, imputed: string[] }</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>UCSF CAPRA-S post-surgical score. Weighted sum from surgical pathology: PSA bins (+0-3), pathologic Gleason sum (+0-3), surgical margin positive (+2), extracapsular extension present (+1), seminal vesicle invasion present (+2), lymph node involvement present (+1). Maximum score 12. Surgical pathology flags extracted via negation-aware NLP parser.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \text{CAPRA-S} = \min(12, \, w_{\text{PSA}} + w_{\text{pGS}} + w_{\text{margin}} + w_{\text{ECE}} + w_{\text{SVI}} + w_{\text{LNI}}) $$
+  </div>
+  <table class="weight-table">
+    <thead>
+      <tr><th>Component</th><th>Condition</th><th>Weight</th></tr>
+    </thead>
+    <tbody>
+      <tr><td rowspan="4">w<sub>PSA</sub></td><td>PSA &lt;= 6</td><td>+0</td></tr>
+      <tr><td>6 &lt; PSA &lt;= 10</td><td>+1</td></tr>
+      <tr><td>10 &lt; PSA &lt;= 20</td><td>+2</td></tr>
+      <tr><td>PSA &gt; 20</td><td>+3</td></tr>
+      <tr><td rowspan="4">w<sub>pGS</sub></td><td>Gleason sum &lt;= 6</td><td>+0</td></tr>
+      <tr><td>3+4</td><td>+1</td></tr>
+      <tr><td>4+3</td><td>+2</td></tr>
+      <tr><td>Sum 8–10</td><td>+3</td></tr>
+      <tr><td rowspan="2">w<sub>margin</sub></td><td>Negative</td><td>+0</td></tr>
+      <tr><td>Positive</td><td>+2</td></tr>
+      <tr><td rowspan="2">w<sub>ECE</sub></td><td>Absent</td><td>+0</td></tr>
+      <tr><td>Present</td><td>+1</td></tr>
+      <tr><td rowspan="2">w<sub>SVI</sub></td><td>Absent</td><td>+0</td></tr>
+      <tr><td>Present</td><td>+2</td></tr>
+      <tr><td rowspan="2">w<sub>LNI</sub></td><td>Negative</td><td>+0</td></tr>
+      <tr><td>Positive</td><td>+1</td></tr>
+    </tbody>
+  </table>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">export class CAPRASScorer {
+  // Surgical pathology extraction is delegated to the canonical
+  // parseSurgicalPathology() in surgical_path_parser.js (negation-aware,
+  // single source of truth). CAPRASScorer consumes its structured output
+  // and applies the verified CAPRA-S scoring weights below.
+  static calculate(psa, surgicalReportText) {
+    const parsed = parseSurgicalPathology(surgicalReportText);
+    const comps = {
+      gleasonPrim: parsed.gleason_prim,
+      gleasonSec: parsed.gleason_sec,
+      margin: parsed.margin,
+      ece: parsed.ece,
+      svi: parsed.svi,
+      lni: parsed.lni,
+    };
+    const breakdown = [];
+    const imputed = [];
+    let total = 0;
+
+    // PSA (max 3)
+    const psaVal = safeFloat(psa);
+    let psaPts = 0;
+    if (psaVal === null) {
+      psaPts = 0;
+      imputed.push('PSA');
+      breakdown.push('PSA [+0](imputed)');
+    } else if (psaVal &lt;= 6) {
+      psaPts = 0;
+      breakdown.push('PSA [+0]');
+    } else if (psaVal &lt;= 10) {
+      psaPts = 1;
+      breakdown.push('PSA [+1]');
+    } else if (psaVal &lt;= 20) {
+      psaPts = 2;
+      breakdown.push('PSA [+2]');
+    } else {
+      psaPts = 3;
+      breakdown.push('PSA [+3]');
+    }
+    total += psaPts;
+
+    // Gleason (max 3)
+    const gp = comps.gleasonPrim;
+    const gs = comps.gleasonSec;
+    let glPts = 0;
+    if (gp === null || gs === null) {
+      glPts = 0;
+      imputed.push('pGleason');
+      breakdown.push('pGleason [+0](imputed)');
+    } else {
+      const gsum = gp + gs;
+      if (gsum &lt;= 6) glPts = 0;
+      else if (gp === 3 &amp;&amp; gs === 4) glPts = 1;
+      else if (gp === 4 &amp;&amp; gs === 3) glPts = 2;
+      else glPts = 3;
+      breakdown.push(`pGleason [+${glPts}] (${gp}+${gs})`);
+    }
+    total += glPts;
+
+    // Margin (max 2)
+    let marginPts = 0;
+    if (comps.margin === null) {
+      marginPts = 0;
+      imputed.push('Margin');
+      breakdown.push('Margin [+0](imputed)');
+    } else if (comps.margin === 'positive') {
+      marginPts = 2;
+      breakdown.push('Margin [+2]');
+    } else {
+      marginPts = 0;
+      breakdown.push('Margin [+0]');
+    }
+    total += marginPts;
+
+    // ECE (max 1)
+    let ecePts = 0;
+    if (comps.ece === null) {
+      ecePts = 0;
+      imputed.push('ECE');
+      breakdown.push('ECE [+0](imputed)');
+    } else if (comps.ece === 'present') {
+      ecePts = 1;
+      breakdown.push('ECE [+1]');
+    } else {
+      ecePts = 0;
+      breakdown.push('ECE [+0]');
+    }
+    total += ecePts;
+
+    // SVI (max 2)
+    let sviPts = 0;
+    if (comps.svi === null) {
+      sviPts = 0;
+      imputed.push('SVI');
+      breakdown.push('SVI [+0](imputed)');
+    } else if (comps.svi === 'present') {
+      sviPts = 2;
+      breakdown.push('SVI [+2]');
+    } else {
+      sviPts = 0;
+      breakdown.push('SVI [+0]');
+    }
+    total += sviPts;
+
+    // LNI (max 1)
+    let lniPts = 0;
+    if (comps.lni === null) {
+      lniPts = 0;
+      imputed.push('LNI');
+      breakdown.push('LNI [+0](imputed)');
+    } else if (comps.lni === 'present') {
+      lniPts = 1;
+      breakdown.push('LNI [+1]');
+    } else {
+      lniPts = 0;
+      breakdown.push('LNI [+0]');
+    }
+    total += lniPts;
+
+    const score = Math.min(12, total);
+    return { score, breakdown: breakdown.join(', '), imputed };
+  }
+}</code></pre>
+</section>
+
+
+<section id="surgical-pathology-parser">
+  <h2>Negation-Aware Surgical Pathology Parser</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> surgical_path_parser.js → parseSurgicalPathology()</p>
+    <p><strong>Inputs:</strong> Raw free-text surgical pathology report string (or null/undefined/empty)</p>
+    <p><strong>Output:</strong> Object with Gleason primary/secondary scores and binary flags (margin, ece, svi, lni, lvi) as 'present'/'absent'/null</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Two-phase negation-aware regex extraction from free-text surgical pathology reports. Phase 1: find all mentions of clinical trigger terms (e.g., 'seminal vesicle', 'margin', 'extraprostatic'). Phase 2: check ±40 chars of context for negation words (no, not, without, negative, absent, none, free, clear, unremarkable, uninvolved). Clause boundaries prevent negation bleeding across sentences. List negation propagation: 'no evidence of ECE, SVI, LVI' negates all three. Distant metastasis exclusion: 'bone metastasis' excluded from LNI. Numeric negation: '0/15 lymph nodes positive' → absent. Unextractable fields remain null (never assumed negative).</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    No closed-form equation — the parser is an algorithmic two-phase scan. Pseudocode:
+    <br><br>
+    For each field F with trigger regex T<sub>F</sub>:
+    <br>
+    &nbsp;&nbsp;mentions ← findAll(T<sub>F</sub>, text)
+    <br>
+    &nbsp;&nbsp;hasPositive ← false; hasNegated ← false
+    <br>
+    &nbsp;&nbsp;for each mention m in mentions:
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;clause ← clauseBounds(text, m.start)
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;window ← text[max(clause.start, m.start−20) .. min(clause.end, m.end+20)]
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;if notAssessable(window) or notAssessed(window) or distantMets(window): skip m
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;if listNegated(m, ranges): hasNegated ← true; continue
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;if numericNeg(window) or numericNeg(clause): hasNegated ← true; continue
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;if isNegated(m): hasNegated ← true
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;else if positiveRe(window): hasPositive ← true
+    <br>
+    &nbsp;&nbsp;F ← hasPositive ? 'present' : hasNegated ? 'absent' : null
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">function findListNegationRanges(lower) {
+  const ranges = [];
+  // Match "no evidence of", "no sign of", "free of" at clause start
+  const listNegRe = /\b(?:no\s+evidence\s+of|no\s+sign\s+of|free\s+of)\b/gi;
+  let m;
+  while ((m = listNegRe.exec(lower)) !== null) {
+    const phraseStart = m.index;
+    const phraseEnd = m.index + m[0].length;
+    // Skip whitespace after the phrase
+    let pos = phraseEnd;
+    while (pos &lt; lower.length &amp;&amp; /\s/.test(lower[pos])) pos++;
+    if (pos &gt;= lower.length) continue;
+    // Scan forward through commas until sentence boundary (. ; \n)
+    let listEnd = pos;
+    while (listEnd &lt; lower.length) {
+      const ch = lower[listEnd];
+      if (ch === '.' || ch === ';' || ch === '\n') break;
+      listEnd++;
+    }
+    // The negation range covers from phraseStart to listEnd
+    ranges.push({ start: phraseStart, end: listEnd });
+  }
+  return ranges;
+}
+
+function classifyField(lower, triggerRe, positiveRe, checkNumeric, notAssessableRe, excludeRe, listNegRanges) {
+  let hasPositive = false;
+  let hasNegated = false;
+  triggerRe.lastIndex = 0;
+  let m;
+  while ((m = triggerRe.exec(lower)) !== null) {
+    const start = m.index;
+    const end = start + m[0].length;
+    const clause = clauseBounds(lower, start);
+    const winStart = Math.max(clause.start, start - 20);
+    const winEnd = Math.min(clause.end, end + 20);
+    const window = lower.substring(winStart, winEnd);
+
+    // Not assessable (e.g. no dissection) → skip this mention entirely
+    if (notAssessableRe &amp;&amp; notAssessableRe.test(window)) continue;
+
+    // Distant metastasis exclusion (e.g. "bone metastasis" → not LNI)
+    if (excludeRe &amp;&amp; excludeRe.test(window)) continue;
+
+    // List negation: "no evidence of ECE, SVI, LVI" → all negated
+    if (listNegRanges &amp;&amp; listNegRanges.some(r =&gt; start &gt;= r.start &amp;&amp; end &lt;= r.end)) {
+      hasNegated = true;
+      continue;
+    }
+
+    // Not assessed (e.g. "not noted", "not evaluated") → unknown, skip mention.
+    // This must take precedence over negation: "LVI: not noted" is NOT 'absent',
+    // it means the pathologist did not assess it. Skipping keeps the field null.
+    if (NOT_ASSESSED_RE.test(window)) continue;
+
+    // Numeric negation: "0/15 lymph nodes positive" → absent
+    // Check both the ±20 char window AND the full clause, so that
+    // "0/15 lymph nodes positive for metastasis" correctly negates the
+    // "metastasis" mention even though 0/15 is &gt;20 chars away.
+    if (checkNumeric &amp;&amp; (NUMERIC_NEG_RE.test(window) || NUMERIC_NEG_RE.test(lower.substring(clause.start, clause.end)))) {
+      hasNegated = true;
+      continue;
+    }
+
+    if (isNegated(lower, start, end)) {
+      hasNegated = true;
+    } else if (positiveRe.test(window)) {
+      hasPositive = true;
+    }
+  }
+  if (hasPositive) return 'present';
+  if (hasNegated) return 'absent';
+  return null;
+}
+
+export function parseSurgicalPathology(reportText) {
+  const empty = { gleason_prim: null, gleason_sec: null, margin: null, ece: null, svi: null, lni: null, lvi: null };
+  if (!reportText || typeof reportText !== 'string') return empty;
+
+  const result = { ...empty };
+  const lower = reportText.toLowerCase();
+  const listNegRanges = findListNegationRanges(lower);
+
+  // Pathologic Gleason (primary + secondary) — highest-grade selection
+  // ISUP 2019 / Epstein 2005 / Kunz 2009: highest sum (prim+sec) correlates
+  // best with biochemical recurrence; tiebreak by higher primary (4+3 &gt; 3+4).
+  // Optional intervening word "score" or "pattern" handles all clinical
+  // phrasings: "Gleason 3+4", "Gleason score 3+4", "Gleason pattern 3+4".
+  const glMatches = reportText.matchAll(/Gleason\s+(?:score\s*|pattern\s*)?[:=]?\s*(\d{1,2})\s*\+\s*(\d{1,2})/gi);
+  let highestPrim = null, highestSec = null, highestSum = -1;
+  for (const m of glMatches) {
+    const prim = parseInt(m[1], 10);
+    const sec = parseInt(m[2], 10);
+    const sum = prim + sec;
+    if (sum &gt; highestSum || (sum === highestSum &amp;&amp; prim &gt; highestPrim)) {
+      highestSum = sum; highestPrim = prim; highestSec = sec;
+    }
+  }
+  if (highestPrim !== null) {
+    result.gleason_prim = highestPrim;
+    result.gleason_sec = highestSec;
+  }
+
+  // Surgical Margin — maps present→'positive', absent→'negative'
+  // R0 is a negative margin (no residual tumor). R1 is positive.
+  const marginRaw = classifyField(
+    lower,
+    /\bmargins?\b|\br0\b|\br1\b/g,
+    /\b(?:positive|r1|involved)\b|\(\+\)/i,
+    false,
+    null,
+    null,
+    listNegRanges
+  );
+  // Handle R0 explicitly: if "R0" appears and no R1/positive, it's negative
+  if (marginRaw === null &amp;&amp; /\br0\b/i.test(reportText) &amp;&amp; !/\br1\b/i.test(reportText)) {
+    result.margin = 'negative';
+  } else {
+    result.margin = marginRaw === 'present' ? 'positive' : marginRaw === 'absent' ? 'negative' : null;
+  }
+
+  // ECE (Extraprostatic / Extracapsular Extension)
+  result.ece = classifyField(
+    lower,
+    /\b(?:extraprostatic extensions?|extracapsular extensions?|ece)\b/g,
+    /\b(?:present|positive|identified|noted|invasion|invasive|seen|involvement|yes)\b|\(\+\)/i,
+    false,
+    null,
+    null,
+    listNegRanges
+  );
+
+  // SVI (Seminal Vesicle Invasion)
+  result.svi = classifyField(
+    lower,
+    /\b(?:seminal vesicles?|svi)\b/g,
+    /\b(?:invasion|invaded|positive|present|seen|involvement|yes)\b|\(\+\)/i,
+    false,
+    null,
+    null,
+    listNegRanges
+  );
+
+  // LNI (Lymph Node Involvement) — "lymph node", "nodal", "LNI", NOT "lymphovascular"
+  // Not-assessable (no dissection) → skip. Numeric negation (0/N) → absent.
+  result.lni = classifyField(
+    lower,
+    /\b(?:lymph nodes?|nodal|lni|metastas(?:is|es))\b/g,
+    /\b(?:positive|involved|metasta(?:sis|ses|tic)|present|seen|involvement|yes)\b|\(\+\)/i,
+    true,
+    NOT_ASSESSABLE_RE,
+    DISTANT_METS_RE,
+    listNegRanges
+  );
+
+  // LVI (Lymphovascular Invasion) — "lymphovascular", "vascular invasion",
+  // "LVI", or "angiolymphatic". NOT "lymph node" (that's LNI, handled above with
+  // a disjoint trigger). NOT "seminal vesicle invasion" (that's SVI, also disjoint).
+  // "not noted"/"not assessed" → null (unknown), handled globally in classifyField.
+  result.lvi = classifyField(
+    lower,
+    /\b(?:lymphovascular|vascular invasion|lvi|angiolymphatic)\b/g,
+    /\b(?:present|positive|invasion|invasive|noted|identified|seen|yes)\b|\(\+\)/i,
+    false,
+    null,
+    null,
+    listNegRanges
+  );
+
+  return result;
+}</code></pre>
+</section>
+
+<section id="charlson-comorbidity-index">
+  <h2>Charlson Comorbidity Index (CCI)</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> case_extras.js → computeCCI()</p>
+    <p><strong>Inputs:</strong> Array of past medical history (pmhx) string entries and patient age (number or null)</p>
+    <p><strong>Output:</strong> Object with raw CCI score, age-adjusted CCI score, matched components array, and missing flag</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Charlson Comorbidity Index computed from past medical history (pmhx) entries. Each entry is matched against a keyword map of 17 weighted conditions (MI=1, CHF=1, COPD=1, Dementia=1, etc.). Category-based deduplication prevents double-counting. Age adjustment: +floor((age-40)/10) for age >=50.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \text{CCI}_{\text{adj}} = \text{CCI}_{\text{raw}} + \left\lfloor \frac{\text{age} - 40}{10} \right\rfloor \times \mathbb{1}[\text{age} \ge 50] $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">const CCI_KEYWORD_MAP = [
+  // Order matters: more specific (higher-weight) patterns checked first.
+  // The `category` field groups rules that represent the same Charlson comorbidity
+  // family so computeCCI can deduplicate across pmhx entries (keep highest weight
+  // per category). This prevents cross-entry double-counting, e.g. "diabetes" +
+  // "diabetic nephropathy" both map to category 'diabetes' → only the weight-2
+  // end-organ match is retained.
+  { patterns: [/metastat/i, /metast/i], weight: 6, label: 'Solid tumor (metastatic)', category: 'metastatic_solid_tumor' },
+  { patterns: [/\bAIDS\b/, /\bHIV\b/i], weight: 6, label: 'AIDS/HIV', category: 'aids' },
+  { patterns: [/moderate.*severe.*liver|severe.*liver|cirrhos|liver.*transplant/i], weight: 3, label: 'Liver disease (moderate-severe)', category: 'liver' },
+  { patterns: [/leukemia|lymphoma/i], weight: 2, label: 'Leukemia/Lymphoma', category: 'malignancy' },
+  { patterns: [/cancer|carcinoma|tumor|neoplasm|malignancy/i], weight: 2, label: 'Any prior malignancy (non-metastatic)', category: 'malignancy' },
+  { patterns: [/hemipleg|hemipares/i], weight: 2, label: 'Hemiplegia', category: 'paraplegia' },
+  { patterns: [/\bparapleg(?:ia|ic)\b/i, /\bparalysis\b/i, /\bhemipleg(?:ia|ic)\b/i], weight: 2, label: 'Paraplegia', category: 'paraplegia' },
+  { patterns: [/chronic kidney|CKD/i], weight: 2, label: 'Chronic kidney disease', category: 'renal' },
+  { patterns: [/diabetes.*end.?organ|diabetes.*nephropath|diabetes.*retinopath|diabetic.*nephropath/i], weight: 2, label: 'Diabetes (end-organ damage)', category: 'diabetes' },
+  { patterns: [/diabetes|diabetic/i], weight: 1, label: 'Diabetes (uncomplicated)', category: 'diabetes' },
+  { patterns: [/myocardial infarction|\bMI\b/i], weight: 1, label: 'Myocardial infarction', category: 'mi' },
+  { patterns: [/congestive heart failure|\bCHF\b|heart failure/i], weight: 1, label: 'Congestive heart failure', category: 'chf' },
+  { patterns: [/COPD|chronic obstructive pulmonary/i], weight: 1, label: 'COPD', category: 'copd' },
+  { patterns: [/cerebrovascular|stroke|\bTIA\b|transient ischemic/i], weight: 1, label: 'Cerebrovascular disease', category: 'cerebrovascular' },
+  { patterns: [/peripheral vascular|\bPVD\b/i], weight: 1, label: 'Peripheral vascular disease', category: 'pvd' },
+  { patterns: [/dementia/i], weight: 1, label: 'Dementia', category: 'dementia' },
+  { patterns: [/liver disease|mild.*liver/i], weight: 1, label: 'Liver disease (mild)', category: 'liver' },
+  { patterns: [/peptic ulcer|ulcer disease/i], weight: 1, label: 'Peptic ulcer disease', category: 'ulcer' },
+  { patterns: [/connective tissue|rheumatoid|lupus|SLE/i], weight: 1, label: 'Connective tissue disease', category: 'connective' },
+];
+
+function computeCCI(pmhx, age) {
+  if (!Array.isArray(pmhx) || pmhx.length === 0) {
+    return { raw: null, ageAdjusted: null, components: [], missing: true };
+  }
+
+  const rawComponents = [];
+
+  for (let i = 0; i &lt; pmhx.length; i++) {
+    const entry = String(pmhx[i] || '').trim();
+    if (!entry) continue;
+    for (const rule of CCI_KEYWORD_MAP) {
+      if (rule.patterns.some(p =&gt; p.test(entry))) {
+        // First match wins (CCI_KEYWORD_MAP is ordered by weight descending, so the
+        // first matching rule is the highest-weight rule for this entry).
+        rawComponents.push({ label: rule.label, weight: rule.weight, category: rule.category, source: entry });
+        break;
+      }
+    }
+    // If no CCI condition matched, the entry is a non-CCI comorbidity (e.g. hypercholesterolaemia)
+    // — it contributes 0 to CCI but is not an error.
+  }
+
+  // Category-based deduplication: keep only the highest-weight match per clinical
+  // category. This prevents cross-entry double-counting when the same disease family
+  // appears as separate pmhx entries with varying specificity — e.g. ["diabetes",
+  // "diabetic nephropathy"] both map to category 'diabetes'; only the weight-2
+  // end-organ match is retained (correct Charlson = 2, not 1+2=3).
+  const bestByCategory = new Map();
+  for (const comp of rawComponents) {
+    const existing = bestByCategory.get(comp.category);
+    if (!existing || comp.weight &gt; existing.weight) {
+      bestByCategory.set(comp.category, comp);
+    }
+  }
+  const components = Array.from(bestByCategory.values());
+  const raw = components.reduce((sum, c) =&gt; sum + c.weight, 0);
+
+  // Age adjustment: age &gt;= 50 → +floor((age - 40) / 10)
+  let ageAdj = raw;
+  const ageNum = (age === null || age === undefined || age === '' || String(age).trim().toUpperCase() === 'N/A')
+    ? null : Number(age);
+  if (ageNum !== null &amp;&amp; !isNaN(ageNum) &amp;&amp; ageNum &gt;= 50) {
+    ageAdj = raw + Math.floor((ageNum - 40) / 10);
+  }
+
+  return { raw, ageAdjusted: ageAdj, components, missing: false };
+}</code></pre>
+</section>
+
+
+<section id="pca">
+  <h2>Principal Component Analysis (PCA)</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js → computePCA()</p>
+    <p><strong>Inputs:</strong> vectors (Array of numeric arrays), optional caseIds, targets, tasks, or nComponents</p>
+    <p><strong>Output:</strong> { points, variance_explained, varianceExplained, cumulative_2pc, cumulative_3pc, totalVariance, n, method }</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Principal Component Analysis via dual-Gram power iteration. Computes top-3 principal components from input vectors. Uses the Gram matrix (N×N) eigendecomposition for small cohorts (N≤200) and randomized range finding with power iterations for large cohorts (N&gt;200). Modified Gram-Schmidt orthonormalization with double-pass for numerical stability. Returns point projections, variance explained per component, and cumulative variance. Sign convention: max-abs element positive (matching numpy/scikit-learn svd_flip).</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \text{Cov} = \frac{1}{n-1} X_c^T X_c, \quad \text{Cov} \, \mathbf{v}_i = \lambda_i \mathbf{v}_i, \quad \text{PC}_i = X_c \mathbf{v}_i $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = [], tasks = []) {
+  let caseIds = [];
+  let targets = [];
+  let taskList = [];
+  let nComponents = 3;
+
+  if (Array.isArray(caseIdsOrNComponents)) {
+    caseIds = caseIdsOrNComponents;
+    targets = Array.isArray(targetsOrLabels) ? targetsOrLabels : [];
+    taskList = Array.isArray(tasks) ? tasks : [];
+    nComponents = 3;
+  } else if (typeof caseIdsOrNComponents === 'number') {
+    nComponents = Math.min(3, Math.max(1, caseIdsOrNComponents));
+    if (Array.isArray(targetsOrLabels)) {
+      caseIds = targetsOrLabels;
+    }
+  }
+
+  if (!vectors || !Array.isArray(vectors) || vectors.length === 0) {
+    return {
+      points: [],
+      variance_explained: [0, 0, 0].slice(0, nComponents),
+      varianceExplained: [0, 0, 0].slice(0, nComponents),
+      cumulative_2pc: 0,
+      cumulative_3pc: 0,
+      totalVariance: 0,
+      n: 0,
+      method: 'Dual Gram PCA eigendecomposition (Live JavaScript Engine).',
+    };
+  }
+
+  const n = vectors.length;
+  const d = (Array.isArray(vectors[0]) || ArrayBuffer.isView(vectors[0])) ? vectors[0].length : 0;
+
+  if (d === 0) {
+    return {
+      points: [],
+      variance_explained: [0, 0, 0].slice(0, nComponents),
+      varianceExplained: [0, 0, 0].slice(0, nComponents),
+      cumulative_2pc: 0,
+      cumulative_3pc: 0,
+      totalVariance: 0,
+      n,
+      method: 'Dual Gram PCA eigendecomposition (Live JavaScript Engine).',
+    };
+  }
+
+  if (n === 1) {
+    const pt = {
+      case_id: caseIds[0] || '0',
+      task: taskList[0] || '',
+      target: targets[0] || '',
+      label: caseIds[0] || '0',
+      pc1: 0,
+      pc2: 0,
+      pc3: 0,
+      x: 0,
+      y: 0,
+      z: 0,
+    };
+    return {
+      points: [pt],
+      variance_explained: [0, 0, 0].slice(0, nComponents),
+      varianceExplained: [0, 0, 0].slice(0, nComponents),
+      cumulative_2pc: 0,
+      cumulative_3pc: 0,
+      totalVariance: 0,
+      n: 1,
+      method: 'Dual Gram PCA eigendecomposition (Live JavaScript Engine).',
+    };
+  }
+
+  // Step 1: Center data
+  const means = new Float64Array(d);
+  for (let j = 0; j &lt; d; j++) {
+    let sum = 0;
+    for (let i = 0; i &lt; n; i++) sum += vectors[i][j];
+    means[j] = sum / n;
+  }
+
+  const Xc = Array.from({ length: n }, (_, i) =&gt; {
+    const row = new Float64Array(d);
+    for (let j = 0; j &lt; d; j++) row[j] = vectors[i][j] - means[j];
+    return row;
+  });
+
+  // Step 2: Compute total trace efficiently: trace(K) = sum(||Xc[i]||^2) * scale
+  const scale = 1.0 / Math.max(1, n - 1);
+  let totalTrace = 0;
+  for (let i = 0; i &lt; n; i++) {
+    let norm2 = 0;
+    const Xi = Xc[i];
+    for (let c = 0; c &lt; d; c++) norm2 += Xi[c] * Xi[c];
+    totalTrace += norm2;
+  }
+  totalTrace *= scale;
+
+  // ... (continues with randomized PCA for N&gt;200 and exact Gram path for N≤200) ...</code></pre>
+</section>
+
+<section id="spearman-correlation">
+  <h2>Spearman Rank Correlation</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js → spearmanRho()</p>
+    <p><strong>Inputs:</strong> x (Array of numbers), y (Array of numbers)</p>
+    <p><strong>Output:</strong> number in [-1, 1] or null if fewer than 5 complete pairs</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Spearman rank correlation coefficient. Ranks both input arrays, then computes Pearson correlation on the ranks. Returns value in [-1, 1]. Handles ties via average ranking. Requires at least 5 complete pairs.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \rho = \frac{\text{cov}(\text{rank}(x), \text{rank}(y))}{\sigma_{\text{rank}(x)} \sigma_{\text{rank}(y)}} $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">export function spearmanRho(x, y) {
+  if (!x || !y || x.length !== y.length) return null;
+  const pairs = [];
+  for (let i = 0; i &lt; x.length; i++) {
+    const xi = x[i];
+    const yi = y[i];
+    if (xi !== null &amp;&amp; xi !== undefined &amp;&amp; !Number.isNaN(xi) &amp;&amp;
+        yi !== null &amp;&amp; yi !== undefined &amp;&amp; !Number.isNaN(yi)) {
+      pairs.push([xi, yi]);
+    }
+  }
+  if (pairs.length &lt; 5) return null;
+  const xs = pairs.map(p =&gt; p[0]);
+  const ys = pairs.map(p =&gt; p[1]);
+  const rx = rankData(xs);
+  const ry = rankData(ys);
+  return pearsonR(rx, ry);
+}</code></pre>
+</section>
+
+<section id="spearman-correlation-matrix">
+  <h2>Spearman Correlation Matrix</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js → spearmanCorrelationMatrix()</p>
+    <p><strong>Inputs:</strong> featureVectors (Object mapping variable names to numeric arrays), minObs (default 5)</p>
+    <p><strong>Output:</strong> { matrix, features, variables, dendrogramOrder, rawMatrix, n_variables, method, excluded }</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Computes pairwise Spearman correlation for all numeric variables using pairwise deletion (minimum 5 co-observed cases). Variables with fewer than 5 overlapping non-missing values are excluded. Ward hierarchical clustering orders the variables for the heatmap.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \rho_{jk} = \text{spearmanRho}(\mathbf{x}_j^{(\text{obs})}, \mathbf{x}_k^{(\text{obs})}) \quad \text{if } n_{jk} \ge 5 $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">export function spearmanCorrelationMatrix(featureVectors, minObs = 5) {
+  if (!featureVectors || typeof featureVectors !== 'object') {
+    return { matrix: [], features: [], variables: [], dendrogramOrder: [], excluded: [] };
+  }
+  const featureNames = Object.keys(featureVectors);
+  const usableVars = [];
+  for (const name of featureNames) {
+    const arr = featureVectors[name];
+    if (Array.isArray(arr)) {
+      const nPresent = arr.filter(x =&gt; x !== null &amp;&amp; x !== undefined &amp;&amp; !Number.isNaN(x)).length;
+      if (nPresent &gt;= minObs) usableVars.push(name);
+    }
+  }
+
+  const k = usableVars.length;
+  if (k === 0) {
+    return {
+      matrix: [],
+      features: [],
+      variables: [],
+      dendrogramOrder: [],
+      n_variables: 0,
+      method: 'Spearman rho',
+      excluded: featureNames,
+    };
+  }
+
+  const rhoMatrix = Array.from({ length: k }, () =&gt; new Array(k).fill(null));
+  for (let i = 0; i &lt; k; i++) {
+    for (let j = 0; j &lt; k; j++) {
+      if (i === j) {
+        rhoMatrix[i][j] = 1.0;
+      } else if (j &gt; i) {
+        const r = spearmanRho(featureVectors[usableVars[i]], featureVectors[usableVars[j]]);
+        rhoMatrix[i][j] = r;
+        rhoMatrix[j][i] = r;
+      }
+    }
+  }
+
+  const order = wardCluster(rhoMatrix, usableVars);
+  const displayMatrix = rhoMatrix.map(row =&gt; row.map(v =&gt; v === null ? null : bankersRound(v, 10000)));
+  const orderedMatrix = order.map(i =&gt; order.map(j =&gt; displayMatrix[i][j]));
+  const orderedNames = order.map(idx =&gt; usableVars[idx]);
+
+  return {
+    matrix: orderedMatrix,
+    features: orderedNames,
+    variables: orderedNames,
+    dendrogramOrder: order,
+    rawMatrix: rhoMatrix.map(row =&gt; [...row]),
+    n_variables: orderedNames.length,
+    method: 'Spearman rho (Pearson on ranks, pairwise complete). Ward agglomerative clustering on squared distance = (1 - |ρ|)².',
+    excluded: featureNames.filter(v =&gt; !usableVars.includes(v)),
+  };
+}</code></pre>
+</section>
+
+<section id="ward-clustering">
+  <h2>Ward Hierarchical Clustering</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js → wardCluster()</p>
+    <p><strong>Inputs:</strong> rhoMatrix (k×k correlation matrix), varNames (Array of variable names)</p>
+    <p><strong>Output:</strong> Array of indices defining deterministic left-leaf traversal order</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Ward's minimum-variance hierarchical agglomerative clustering for ordering variables in the correlation heatmap. Uses the Lance-Williams recurrence on squared distance D² = (1 - |ρ|)². Agglomerative: starts with each variable as its own cluster, iteratively merges the pair that minimizes total within-cluster variance. Returns a deterministic left-leaf traversal order.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ d(C_i, C_j) = \frac{|C_i| \cdot |C_j|}{|C_i| + |C_j|} \|\bar{x}_i - \bar{x}_j\|^2 $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">export function wardCluster(rhoMatrix, varNames) {
+  const k = varNames ? varNames.length : (rhoMatrix ? rhoMatrix.length : 0);
+  if (k &lt;= 1) return Array.from({ length: k }, (_, i) =&gt; i);
+
+  const dist2 = Array.from({ length: k }, (_, i) =&gt;
+    Array.from({ length: k }, (_, j) =&gt; {
+      if (i === j) return 0.0;
+      const r = rhoMatrix[i][j];
+      const d = (r === null || r === undefined || Number.isNaN(r)) ? 1.0 : (1.0 - Math.abs(r));
+      return d * d;
+    })
+  );
+
+  const clusterMembers = Array.from({ length: k }, (_, i) =&gt; [i]);
+  const clusterSizes = new Array(k).fill(1);
+  const active = Array.from({ length: k }, (_, i) =&gt; i);
+
+  const cd = {};
+  for (let a = 0; a &lt; k; a++) {
+    for (let b = a + 1; b &lt; k; b++) {
+      cd[`${a},${b}`] = dist2[a][b];
+    }
+  }
+
+  let lastActive = 0;
+  while (active.length &gt; 1) {
+    let bestPair = null;
+    let bestDist = Infinity;
+
+    for (let i = 0; i &lt; active.length; i++) {
+      for (let j = i + 1; j &lt; active.length; j++) {
+        const a = active[i];
+        const b = active[j];
+        const key = a &lt; b ? `${a},${b}` : `${b},${a}`;
+        const d = cd[key];
+        if (d !== undefined &amp;&amp; d &lt; bestDist) {
+          bestDist = d;
+          bestPair = [a, b];
+        }
+      }
+    }
+
+    if (!bestPair) break;
+    const [a, b] = bestPair;
+    const na = clusterSizes[a];
+    const nb = clusterSizes[b];
+
+    clusterMembers[a] = clusterMembers[a].concat(clusterMembers[b]);
+    clusterSizes[a] = na + nb;
+    const bIdx = active.indexOf(b);
+    active.splice(bIdx, 1);
+    lastActive = a;
+
+    for (const c of active) {
+      if (c === a) continue;
+      const nc = clusterSizes[c];
+      const keyCA = Math.min(c, a) + ',' + Math.max(c, a);
+      const keyCB = Math.min(c, b) + ',' + Math.max(c, b);
+      const keyAB = Math.min(a, b) + ',' + Math.max(a, b);
+
+      const dCA = cd[keyCA] !== undefined ? cd[keyCA] : 1.0;
+      const dCB = cd[keyCB] !== undefined ? cd[keyCB] : 1.0;
+      const dAB = cd[keyAB] !== undefined ? cd[keyAB] : 1.0;
+
+      // Lance-Williams Ward formula on squared distances
+      const num = (nc + na) * dCA + (nc + nb) * dCB - nc * dAB;
+      const denom = nc + na + nb;
+      cd[keyCA] = denom &gt; 0 ? num / denom : 0;
+    }
+
+    // Cleanup keys containing b
+    for (const key of Object.keys(cd)) {
+      const parts = key.split(',');
+      if (parts[0] === String(b) || parts[1] === String(b)) {
+        delete cd[key];
+      }
+    }
+  }
+
+  const result = clusterMembers[lastActive];
+  if (result &amp;&amp; result.length === k) return result;
+  return Array.from({ length: k }, (_, i) =&gt; i);
+}</code></pre>
+</section>
+
+
+<section id="silverman-bandwidth">
+  <h2>Silverman's Rule of Thumb KDE Bandwidth</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js → silvermanBandwidth()</p>
+    <p><strong>Inputs:</strong> Array of numeric values (may contain null/NaN/non-finite entries)</p>
+    <p><strong>Output:</strong> Scalar bandwidth h (float); 0.0 if fewer than 2 valid values or zero spread</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Silverman's rule of thumb for KDE bandwidth selection: h = 0.9 × min(σ, IQR/1.34) × n^(-1/5), where σ is standard deviation, IQR is interquartile range, and n is sample size. Returns 0 if fewer than 2 values or zero spread.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ h = 0.9 \times \min\left(\sigma, \frac{\text{IQR}}{1.34}\right) \times n^{-1/5} $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">export function silvermanBandwidth(values) {
+  if (!values || !Array.isArray(values)) return 0.0;
+  const vs = values.filter(v =&gt; v !== null &amp;&amp; v !== undefined &amp;&amp; !Number.isNaN(v) &amp;&amp; Number.isFinite(v)).sort((a, b) =&gt; a - b);
+  const n = vs.length;
+  if (n &lt; 2) return 0.0;
+
+  const mean = vs.reduce((a, b) =&gt; a + b, 0) / n;
+  const variance = vs.reduce((acc, v) =&gt; acc + (v - mean) ** 2, 0) / (n - 1);
+  const sigma = Math.sqrt(variance);
+
+  const pct = p =&gt; {
+    const k = (n - 1) * p / 100.0;
+    const f = Math.floor(k);
+    const c = Math.ceil(k);
+    if (f === c) return vs[f];
+    return vs[f] * (c - k) + vs[c] * (k - f);
+  };
+  const iqr = pct(75) - pct(25);
+
+  let spread = iqr &gt; 0 ? Math.min(sigma, iqr / 1.34) : sigma;
+  if (spread === 0) spread = sigma;
+  if (spread === 0) return 0.0;
+
+  return 0.9 * spread * Math.pow(n, -0.2);
+}</code></pre>
+</section>
+
+<section id="gaussian-kde">
+  <h2>Gaussian Kernel Density Estimation</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js → gaussianKDE()</p>
+    <p><strong>Inputs:</strong> Array of numeric values; either (bandwidth, evalPoints[]) for Signature A or (nPoints, padding) for Signature B</p>
+    <p><strong>Output:</strong> Signature A → array of density values at eval points; Signature B → { grid, density, bandwidth, points } object</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Gaussian Kernel Density Estimation. For each evaluation point x, computes: f(x) = (1/nh√(2π)) × Σ exp(-0.5 × ((x-vᵢ)/h)²), where h is bandwidth, vᵢ are the data points. Supports both fixed-grid (Signature B) and custom evaluation points (Signature A).</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \hat{f}(x) = \frac{1}{nh\sqrt{2\pi}} \sum_{i=1}^{n} \exp\left(-\frac{1}{2}\left(\frac{x - v_i}{h}\right)^2\right) $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">export function gaussianKDE(values, arg2, arg3) {
+  if (!values || !Array.isArray(values)) {
+    if (Array.isArray(arg3)) return arg3.map(() =&gt; 0.0);
+    return { grid: [], density: [], bandwidth: 0, points: [] };
+  }
+
+  const vs = values.filter(v =&gt; v !== null &amp;&amp; v !== undefined &amp;&amp; !Number.isNaN(v) &amp;&amp; Number.isFinite(v));
+  const n = vs.length;
+
+  // Signature A: (values, bandwidth, evalPoints)
+  if (Array.isArray(arg3)) {
+    const bandwidth = typeof arg2 === 'number' ? arg2 : 0;
+    const evalPoints = arg3;
+    if (n === 0 || bandwidth &lt;= 0) return evalPoints.map(() =&gt; 0.0);
+    const norm = 1.0 / (n * bandwidth * Math.sqrt(2 * Math.PI));
+    return evalPoints.map(x =&gt; {
+      let s = 0.0;
+      for (const v of vs) {
+        const u = (x - v) / bandwidth;
+        s += Math.exp(-0.5 * u * u);
+      }
+      return norm * s;
+    });
+  }
+
+  // Signature B: (values, nPoints = 80, padding = 0.15)
+  const nPoints = typeof arg2 === 'number' ? Math.max(2, Math.floor(arg2)) : 80;
+  const padding = typeof arg3 === 'number' ? arg3 : 0.15;
+  const bw = silvermanBandwidth(vs);
+
+  if (n &lt; 2 || bw &lt;= 0) {
+    return { grid: [], density: [], bandwidth: 0, points: [] };
+  }
+
+  let lo = Infinity, hi = -Infinity;
+  for (const v of vs) { if (v &lt; lo) lo = v; if (v &gt; hi) hi = v; }
+  const pad = hi &gt; lo ? (hi - lo) * padding : bw * 3;
+  const loEval = lo - pad;
+  const hiEval = hi + pad;
+
+  const grid = Array.from({ length: nPoints }, (_, i) =&gt; loEval + (hiEval - loEval) * (i / (nPoints - 1)));
+  const norm = 1.0 / (n * bw * Math.sqrt(2 * Math.PI));
+  const density = grid.map(x =&gt; {
+    let s = 0.0;
+    for (const v of vs) {
+      const u = (x - v) / bw;
+      s += Math.exp(-0.5 * u * u);
+    }
+    return norm * s;
+  });
+
+  return {
+    grid: grid.map(x =&gt; round6(x)),
+    density: density.map(y =&gt; round6(y)),
+    bandwidth: round6(bw),
+    points: grid.map((x, i) =&gt; ({ x: round6(x), y: round6(density[i]) })),
+  };
+}</code></pre>
+</section>
+
+<section id="tukey-box">
+  <h2>Tukey Five-Number Summary</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js → tukeyBox()</p>
+    <p><strong>Inputs:</strong> Array of numeric values (may contain null/NaN/non-finite entries)</p>
+    <p><strong>Output:</strong> Object { q1, median, q3, iqr, whisker_lo, whisker_hi, whiskerMin, whiskerMax, outliers, count } or null if empty</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Tukey five-number summary: minimum, Q1 (25th percentile), median, Q3 (75th percentile), maximum. Uses Type-7 continuous quantile interpolation (R type 7 / NumPy linear default). Also computes IQR = Q3 - Q1 and 1.5×IQR whisker fences. Outliers are values outside the whisker fences.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ Q_p = x_{(\lfloor (n-1)p \rfloor)} + (p(n-1) - \lfloor (n-1)p \rfloor)(x_{(\lceil (n-1)p \rceil)} - x_{(\lfloor (n-1)p \rfloor)}) $$
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">export function tukeyBox(values) {
+  if (!values || !Array.isArray(values) || values.length === 0) return null;
+  const vs = values.filter(v =&gt; v !== null &amp;&amp; v !== undefined &amp;&amp; !Number.isNaN(v) &amp;&amp; typeof v === 'number' &amp;&amp; Number.isFinite(v)).sort((a, b) =&gt; a - b);
+  const n = vs.length;
+  if (n === 0) return null;
+
+  if (n === 1) {
+    const v0 = vs[0];
+    const r0 = round6(v0);
+    return {
+      q1: r0,
+      median: r0,
+      q3: r0,
+      iqr: 0,
+      whisker_lo: r0,
+      whisker_hi: r0,
+      whiskerMin: r0,
+      whiskerMax: r0,
+      outliers: [],
+      count: 1,
+    };
+  }
+
+  // Type-7 continuous quantile interpolation (R type 7 / NumPy linear)
+  const percentile = p =&gt; {
+    const k = (n - 1) * p / 100.0;
+    const f = Math.floor(k);
+    const c = Math.ceil(k);
+    if (f === c) return vs[f];
+    return vs[f] * (c - k) + vs[c] * (k - f);
+  };
+
+  const q1 = percentile(25);
+  const med = percentile(50);
+  const q3 = percentile(75);
+  const iqr = q3 - q1;
+  const loWhisker = q1 - 1.5 * iqr;
+  const hiWhisker = q3 + 1.5 * iqr;
+
+  // Actual observed datum whiskers
+  const loActual = vs.find(v =&gt; v &gt;= loWhisker) ?? q1;
+  const hiActual = [...vs].reverse().find(v =&gt; v &lt;= hiWhisker) ?? q3;
+  const outliers = vs.filter(v =&gt; v &lt; loWhisker || v &gt; hiWhisker);
+
+  return {
+    q1: round6(q1),
+    median: round6(med),
+    q3: round6(q3),
+    iqr: round6(iqr),
+    whisker_lo: round6(loActual),
+    whisker_hi: round6(hiActual),
+    whiskerMin: round6(loActual),
+    whiskerMax: round6(hiActual),
+    outliers: outliers.map(v =&gt; round6(v)),
+    count: n,
+  };
+}</code></pre>
+</section>
+
+<section id="cohort-analytics">
+  <h2>Full Cohort Analytics Pipeline</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js → CohortEngine.computeAll()</p>
+    <p><strong>Inputs:</strong> Array of raw trace objects; optional cohort filter ('all', 'task1', 'task2', 'task3')</p>
+    <p><strong>Output:</strong> Complete cohort analytics payload object with composition, PCA, correlation, missingness, and raincloud sections</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Full cohort analytics pipeline: (1) Composition — task × target class counts, (2) PCA — eigendecomposition of MRI/biopsy embedding covariance matrices, (3) Correlation — Spearman matrix with Ward-ordered dendrogram, (4) Missingness — per-modality missing data rates, (5) Rainclouds — KDE + box plot + jittered points for PSA, PSAD, volume, age, PI-RADS.</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    No single closed-form formula — computeAll is a multi-stage orchestration pipeline. Stage flow: raw traces → normalizeCase → filter → computeComposition → computePCA (MRI) → computePCA (biopsy) → Spearman correlation + Ward linkage → per-modality missingness rates → per-metric raincloud (tukeyBox + silvermanBandwidth + gaussianKDE + jittered dots) → assembled payload.
+  </div>
+  <h3>Code Implementation</h3>
+  <pre><code class="language-javascript">static computeAll(rawTraces = [], filter = 'all') {
+    const t0 = (typeof performance !== 'undefined' &amp;&amp; performance.now) ? performance.now() : Date.now();
+
+    const traces = Array.isArray(rawTraces) ? rawTraces : [];
+    const allCases = traces.map(t =&gt; CohortEngine.normalizeCase(t));
+    const totalCases = allCases.length;
+
+    const filterStr = String(filter || 'all').toLowerCase().trim();
+    const cases = (filterStr === 'task1' || filterStr === 'task2' || filterStr === 'task3')
+      ? allCases.filter(c =&gt; c.task === filterStr)
+      : allCases;
+    const filteredCases = cases.length;
+
+    // B1: Composition
+    const composition = CohortEngine.computeComposition(cases);
+
+    // B2: PCA MRI (Top-3 PCs: 2D &amp; 3D)
+    let pca_mri;
+    const mriCasesWithVec = cases.filter(c =&gt; c.mri_vec !== null);
+    if (mriCasesWithVec.length &gt;= 5) {
+      pca_mri = computePCA(
+        mriCasesWithVec.map(c =&gt; c.mri_vec),
+        mriCasesWithVec.map(c =&gt; c.case_id),
+        mriCasesWithVec.map(c =&gt; c.target),
+        mriCasesWithVec.map(c =&gt; c.task)
+      );
+    } else {
+      const mriPoints = [];
+      for (const c of cases) {
+        const p = c.mri_pca_points || c.mri_vec;
+        if (p &amp;&amp; p.length &gt;= 2) {
+          mriPoints.push({
+            case_id: c.case_id,
+            task: c.task,
+            target: c.target || 'None',
+            label: c.case_id,
+            pc1: round6(p[0]),
+            pc2: round6(p[1]),
+            pc3: round6(p[2] || 0),
+            x: round6(p[0]),
+            y: round6(p[1]),
+            z: round6(p[2] || 0),
+          });
+        }
+      }
+      pca_mri = {
+        points: mriPoints,
+        variance_explained: [0, 0, 0],
+        varianceExplained: [0, 0, 0],
+        cumulative_2pc: 0,
+        cumulative_3pc: 0,
+        totalVariance: 0,
+        n: mriPoints.length,
+        method: 'PCA fallback (&lt;5 cases, no live computation)',
+      };
+    }
+
+    // B2: PCA Biopsy (Top-3 PCs: 2D &amp; 3D)
+    let pca_biopsy;
+    const bxCasesWithVec = cases.filter(c =&gt; c.bx_vec !== null);
+    if (bxCasesWithVec.length &gt;= 5) {
+      pca_biopsy = computePCA(
+        bxCasesWithVec.map(c =&gt; c.bx_vec),
+        bxCasesWithVec.map(c =&gt; c.case_id),
+        bxCasesWithVec.map(c =&gt; c.target),
+        bxCasesWithVec.map(c =&gt; c.task)
+      );
+    } else {
+      const bxPoints = [];
+      for (const c of cases) {
+        const p = c.bx_pca_points || c.bx_vec;
+        if (p &amp;&amp; p.length &gt;= 2) {
+          // ... (continues with composition, PCA, correlation, missingness, raincloud computation) ...</code></pre>
+</section>
+
+    </main>
+  </div>
+
+  <!-- KaTeX JS -->
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <!-- KaTeX auto-render -->
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <!-- Prism core -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <!-- Prism JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false }
+        ]
+      });
+    });
+  </script>
+</body>
+</html>
