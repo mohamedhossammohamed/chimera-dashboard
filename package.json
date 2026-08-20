@@ -1,0 +1,28 @@
+{
+  "name": "chimera-cohort-engine",
+  "version": "1.0.0",
+  "description": "CHIMERA Cohort Statistics & Visualizations Engine - Automated Test Suite",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js tests/js/*.test.js",
+    "test:all": "node --test test/*.test.js tests/js/*.test.js",
+    "test:tier1": "node --test test/tier1_features.test.js",
+    "test:tier2": "node --test test/tier2_boundaries.test.js",
+    "test:tier3": "node --test test/tier3_cross_features.test.js",
+    "test:tier4": "node --test test/tier4_real_world.test.js",
+    "test:runner": "node test/test_runner.js"
+  },
+  "keywords": [
+    "chimera",
+    "cohort",
+    "statistics",
+    "pca",
+    "kde",
+    "spearman",
+    "ward",
+    "testing"
+  ],
+  "author": "CHIMERA QA Team",
+  "license": "UNLICENSED",
+  "private": true
+}

@@ -1,0 +1,272 @@
+/* CHIMERA-Agent Phase B Cohort Analytics Stylesheet (cohort.css) */
+/* [OFFICIAL: RESEARCHER-APPROVED] CHIMERA-Agent Phase B Cohort Analytics */
+/* [SUGGESTION: CO-PILOT] Implementation architecture and SVG rendering */
+
+.cohort-layout {
+  max-width: 1400px;
+  margin: 20px auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start; /* prevent stretch-induced overflow */
+}
+
+.cohort-layout .panel-full {
+  grid-column: 1 / -1;
+}
+
+.cohort-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* prevent grid item overflow */
+}
+
+.cohort-card-header {
+  background-color: var(--bg-card-header);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 10px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-main);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cohort-card-body {
+  padding: 16px;
+  flex: 1;
+  min-width: 0; /* prevent flex child overflow */
+  overflow-x: auto; /* horizontal scroll for wide SVGs */
+  overflow-y: auto; /* vertical scroll for very tall SVGs (e.g. missingness grid) */
+  max-height: 75vh; /* constrain card body height; tall content scrolls */
+}
+
+/* SVG sizing inside cohort cards: use CSS height:auto (valid) instead of
+   the invalid SVG attribute height="auto".  The max-width ensures SVGs
+   never exceed their container width. */
+.cohort-card-body svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.cohort-svg-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.cohort-svg-container svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.cohort-caption {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.cohort-note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-amber-fg);
+  background: var(--color-amber-bg);
+  border: 1px solid var(--color-amber-fg);
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin-top: 8px;
+}
+
+.cohort-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.cohort-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cohort-legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* Tab toggle */
+.cohort-tab-btn {
+  background: var(--bg-input);
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.cohort-tab-btn.active {
+  background: var(--color-blue-bg);
+  border-color: var(--color-blue-fg);
+  color: var(--color-blue-fg);
+}
+
+.cohort-tab-btn:hover {
+  border-color: var(--border-focus);
+}
+
+/* Case extras */
+.case-extra-section {
+  margin-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 12px;
+  clear: both; /* prevent float collisions */
+}
+
+.case-extra-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.case-extra-missing {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 8px 12px;
+  background: var(--bg-table-zebra);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+}
+
+.forest-strip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.forest-strip-label {
+  min-width: 60px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.forest-strip-flag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: 10px;
+}
+
+.forest-flag-positive {
+  background: var(--color-red-bg);
+  border: 1px solid var(--color-red-fg);
+  color: var(--color-red-fg);
+}
+
+.forest-flag-negative {
+  background: var(--color-green-bg);
+  border: 1px solid var(--color-green-fg);
+  color: var(--color-green-fg);
+}
+
+.forest-flag-unknown {
+  background: var(--bg-table-zebra);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.cci-line {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-main);
+  padding: 8px 12px;
+  background: var(--bg-table-zebra);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+}
+
+.cci-score {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.discordance-gauge-missing {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-amber-fg);
+  background: var(--color-amber-bg);
+  border: 1px solid var(--color-amber-fg);
+  border-radius: 4px;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.embedding-sig-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.embedding-sig-table th,
+.embedding-sig-table td {
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.embedding-sig-table th {
+  background-color: var(--bg-card-header);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.embedding-sig-table .num-cell {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+.backend-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

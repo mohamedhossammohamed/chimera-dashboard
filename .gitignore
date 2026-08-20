@@ -1,0 +1,89 @@
+# ==============================================================================
+# CHIMERA-Agent Project .gitignore & Co-Pilot Quarantine Firewall
+# ==============================================================================
+
+# Private Agentic Workspace, Co-Pilot Engine & Governance (Quarantined)
+issues/
+graphify-out/
+.scratch/
+scripts/.scratch/
+scratch/
+.system_generated/
+*.zip
+
+# Python & Environment Artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+.venv
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Testing, Formatting & Linting Caches
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# IDE & Editor Metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Runtime logs
+*.log
+
+# ==============================================================================
+# Patient Data Firewall — CONFIDENTIAL
+# No patient trace data or generated bundles shall be committed to the repo.
+# Data lives in a sibling directory (../chimera-data/) on the user's hardware.
+# ==============================================================================
+dashboard/traces/
+dashboard/bundles/
+dashboard/cohort/*.json
+chimera-data/
+chimera_visualization_delivery/
+train_release/
+
+# Internal working directories (not part of the deliverable)
+.agents/
+.swarm/
+.system_generated/
+issues/
+graphify-out/
+.scratch/
+scratch/
+
+# Markdown documentation — not pushed to the repo
+*.md

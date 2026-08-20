@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHIMERA-Agent Clinical Interpretability Workbench</title>
+  <link rel="stylesheet" href="css/standard.css">
+  <link rel="stylesheet" href="css/cohort.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Master Header -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="brand-title">CHIMERA-AGENT // STANDARD VIEW</div>
+        <span class="badge-task" id="current-task-badge">TASK 1</span>
+        <span class="badge-case" id="current-case-id">LOADING...</span>
+      </div>
+
+      <div class="controls-group">
+        <input type="file" id="folder-upload" webkitdirectory multiple style="display: none;">
+        <button id="btn-upload-folder" class="json-btn" style="font-family: var(--font-mono); font-size: 11px; padding: 4px 10px; cursor: pointer; margin-right: 8px;">Upload Folder</button>
+        <label for="case-select" class="label-select" id="case-count-label">EVALUATION TRACES (0):</label>
+        <select id="case-select" class="select-case">
+          <option value="" disabled selected>No data loaded — upload a folder</option>
+        </select>
+        <div class="tab-toggle-group" style="display: inline-flex; gap: 4px; margin-left: 10px;">
+          <button id="tab-standard" class="cohort-tab-btn active">Standard View</button>
+          <button id="tab-cohort" class="cohort-tab-btn">Cohort Analytics</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Standard View Container -->
+    <main id="standard-view" class="standard-layout">
+      <!-- 1. Demographics & Biometrics -->
+      <section class="std-card">
+        <div class="std-card-header">
+          <span>Clinical Demographics & Biometric Indicators</span>
+          <span style="font-size: 10px; color: var(--text-muted);">STANDARDIZED PROFILE</span>
+        </div>
+        <div class="std-card-body" id="panel-demographics"></div>
+      </section>
+
+      <!-- 2. Diagnostic Decision Comparator -->
+      <section class="std-card">
+        <div class="std-card-header">
+          <span>Diagnostic Decision & Concordance Comparator</span>
+          <span style="font-size: 10px; color: var(--text-muted);">EVALUATION GATE</span>
+        </div>
+        <div class="std-card-body" id="panel-decision"></div>
+      </section>
+
+      <!-- 3. Variable Importance Ranking -->
+      <section class="std-card">
+        <div class="std-card-header">
+          <span>Predictive Attribution Weights</span>
+          <span style="font-size: 10px; color: var(--text-muted);">RATIONAL ATTRIBUTION</span>
+        </div>
+        <div class="std-card-body" id="panel-weights"></div>
+      </section>
+
+      <!-- 4. Embedding Statistical Profile -->
+      <section class="std-card">
+        <div class="std-card-header">
+          <span>Multimodal Embedding Statistical Profile</span>
+          <span style="font-size: 10px; color: var(--text-muted);">TENSOR TELEMETRY</span>
+        </div>
+        <div class="std-card-body" id="panel-embeddings"></div>
+      </section>
+
+      <!-- 5. Pure SVG Kaplan-Meier Survival Horizon (Task 3 Only) -->
+      <section class="std-card panel-full" id="section-survival">
+        <div class="std-card-header">
+          <span>Post-Prostatectomy BCR-Free Survival Horizon (Kaplan-Meier Step Curve)</span>
+          <span style="font-size: 10px; color: var(--text-muted);">INLINE SVG // PRINT COMPLIANT</span>
+        </div>
+        <div class="std-card-body" id="panel-survival"></div>
+      </section>
+
+      <!-- 6. Clinical EHR Text Reader -->
+      <section class="std-card panel-full">
+        <div class="std-card-header">
+          <span>Longitudinal Clinical Records & Pathology Narrative Reader</span>
+          <span style="font-size: 10px; color: var(--text-muted);">SANITIZED NLP ENTITIES</span>
+        </div>
+        <div class="std-card-body" id="panel-clinical-text"></div>
+      </section>
+
+      <!-- 7. Raw JSON Tree Inspector -->
+      <section class="std-card panel-full">
+        <div class="std-card-header">
+          <span>Trace Payload & Raw JSON Telemetry Explorer</span>
+          <span style="font-size: 10px; color: var(--text-muted);">FULL SCHEMA REPRODUCIBILITY</span>
+        </div>
+        <div class="std-card-body" id="panel-json-tree"></div>
+      </section>
+    </main>
+
+    <!-- Cohort Analytics View (Phase B) -->
+    <section id="cohort-view" class="cohort-layout" style="display: none;">
+      <div class="cohort-grid">
+        <div id="cohort-composition" class="cohort-card"></div>
+        <div id="cohort-pca-mri" class="cohort-card"></div>
+        <div id="cohort-pca-biopsy" class="cohort-card"></div>
+        <div id="cohort-correlation" class="cohort-card"></div>
+        <div id="cohort-missingness" class="cohort-card"></div>
+        <div id="cohort-raincloud" class="cohort-card"></div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

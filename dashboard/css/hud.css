@@ -1,0 +1,324 @@
+/* CHIMERA-Agent Stark-Style HUD Design System (hud.css) */
+:root {
+  --bg-space: #06090e;
+  --bg-hud-panel: rgba(13, 20, 32, 0.78);
+  --bg-hud-surface: rgba(18, 28, 45, 0.85);
+  --bg-hud-subtle: rgba(10, 16, 26, 0.6);
+  --border-cyan: #00f0ff;
+  --border-dim: rgba(0, 240, 255, 0.22);
+  --border-subtle: rgba(56, 139, 253, 0.18);
+  
+  --hud-cyan: #00f0ff;
+  --hud-blue: #388bfd;
+  --hud-green: #00ff88;
+  --hud-amber: #ffaa00;
+  --hud-red: #ff3366;
+  
+  --text-bright: #ffffff;
+  --text-cyan: #d0f8ff;
+  --text-muted: #6b86a8;
+  
+  --font-hud: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "SF Mono", Monaco, Inconsolata, "Fira Code", monospace;
+  
+  --shadow-cyan-glow: 0 0 15px rgba(0, 240, 255, 0.25);
+  --shadow-panel: 0 8px 32px 0 rgba(0, 0, 0, 0.55);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-space);
+  color: var(--text-cyan);
+  font-family: var(--font-hud);
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 50% 10%, rgba(0, 240, 255, 0.05) 0%, transparent 60%),
+    linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+}
+
+/* Glassmorphism Panel Shell */
+.hud-panel {
+  background: var(--bg-hud-panel);
+  border: 1px solid var(--border-dim);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 8px;
+  box-shadow: var(--shadow-panel);
+  position: relative;
+  overflow: hidden;
+}
+
+.hud-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--hud-cyan), transparent);
+}
+
+.hud-panel-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--hud-cyan);
+}
+
+.hud-panel-body {
+  padding: 14px;
+}
+
+/* Master Header */
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: rgba(6, 9, 14, 0.92);
+  border-bottom: 1px solid var(--border-dim);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hud-logo {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--text-bright);
+  text-shadow: 0 0 10px var(--hud-cyan);
+}
+
+.hud-badge {
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid var(--hud-cyan);
+  color: var(--hud-cyan);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* Master 3-Column Layout */
+.hud-viewport-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr 380px;
+  gap: 16px;
+  padding: 16px 20px;
+  min-height: calc(100vh - 140px);
+}
+
+/* Left & Right Wings */
+.hud-wing {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Center Stage Viewport */
+.center-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.three-container {
+  width: 100%;
+  height: 480px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-dim);
+  background: radial-gradient(circle at center, #0a1322 0%, #03060a 100%);
+  box-shadow: inset 0 0 30px rgba(0, 240, 255, 0.1);
+}
+
+#three-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 3D Viewport Controls & Tooltip */
+.viewport-overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--hud-cyan);
+  text-shadow: 0 0 6px var(--hud-cyan);
+}
+
+.viewport-mode-tabs {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.mode-btn {
+  background: rgba(10, 16, 26, 0.85);
+  border: 1px solid var(--border-dim);
+  color: var(--text-cyan);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-btn:hover, .mode-btn.active {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: var(--hud-cyan);
+  color: #fff;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
+#hud-tooltip {
+  position: absolute;
+  display: none;
+  background: rgba(6, 12, 22, 0.92);
+  border: 1px solid var(--hud-cyan);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #fff;
+  pointer-events: none;
+  z-index: 50;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
+  transform: translate(-50%, -120%);
+}
+
+/* Demographics Dial Grid */
+.demographics-hud-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.hud-dial-box {
+  background: var(--bg-hud-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 8px;
+  text-align: center;
+}
+
+.hud-dial-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.hud-dial-value {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-bright);
+  margin-top: 2px;
+}
+
+/* Decision Comparator */
+.decision-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.decision-pod {
+  background: var(--bg-hud-subtle);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.decision-pod.target { border-left: 3px solid var(--hud-blue); }
+.decision-pod.prediction { border-left: 3px solid var(--hud-green); }
+.decision-pod.prediction.discordant { border-left: 3px solid var(--hud-red); }
+
+.decision-pod-tag {
+  font-size: 14px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  margin-top: 4px;
+}
+
+/* Bottom Telemetry Dock */
+.bottom-dock {
+  padding: 0 20px 20px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.survival-canvas-box {
+  width: 100%;
+  height: 180px;
+  position: relative;
+}
+
+#survival-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Holographic EHR Terminal */
+.ehr-terminal {
+  max-height: 220px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  background: rgba(3, 6, 10, 0.85);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.ehr-token {
+  color: var(--hud-cyan);
+  background: rgba(0, 240, 255, 0.15);
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-weight: 700;
+}
+
+.ehr-token-alert {
+  color: var(--hud-red);
+  background: rgba(255, 51, 102, 0.18);
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-weight: 700;
+}
