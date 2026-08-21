@@ -1251,7 +1251,7 @@ export class CohortEngine {
     const bxVec = meanPool(mod['Biopsy slide'] || mod.biopsy_slide || mod.biopsy?.embedding || mod.biopsy?.vector);
     const pxVec = meanPool(mod['Prostatectomy slide'] || mod.prostatectomy_slide || mod.prostatectomy?.embedding || mod.prostatectomy?.vector);
 
-    // Extract precomputed PCA coordinates if embedded in trace
+    // Extract precalculated PCA coordinates if embedded in trace
     const mriPcaPoints = mod.mri?.pca_points?.[0]?.pos || mod.mri_pca_points || null;
     const bxPcaPoints = mod.biopsy?.pca_points?.[0]?.pos || mod.biopsy_pca_points || null;
     const pxPcaPoints = mod.prostatectomy?.pca_points?.[0]?.pos || mod.prostatectomy_pca_points || null;
@@ -1695,15 +1695,15 @@ export class CohortEngine {
     // M-047: Annotate PCA method status for graceful degradation transparency.
     // When full embeddings are not available in trace JSON (only vector_sample
     // with 6 values), meanPool returns null, live PCA is skipped, and we fall
-    // back to pre-computed pca_points. variance_explained is [0, 0, 0] which is
+    // back to pre-calculated pca_points. variance_explained is [0, 0, 0] which is
     // honest but confusing without context — the method field explains why.
     if (pca_mri.n === 0 || (Array.isArray(pca_mri.variance_explained) && pca_mri.variance_explained.every(v => v === 0))) {
-      pca_mri.method = 'Pre-computed PCA coordinates (full embeddings not available in trace JSON for live computation).';
+      pca_mri.method = 'Pre-calculated PCA coordinates (full embeddings not available in trace JSON for live computation).';
     } else {
       pca_mri.method = 'Live dual-Gram power iteration PCA.';
     }
     if (pca_biopsy.n === 0 || (Array.isArray(pca_biopsy.variance_explained) && pca_biopsy.variance_explained.every(v => v === 0))) {
-      pca_biopsy.method = 'Pre-computed PCA coordinates (full embeddings not available in trace JSON for live computation).';
+      pca_biopsy.method = 'Pre-calculated PCA coordinates (full embeddings not available in trace JSON for live computation).';
     } else {
       pca_biopsy.method = 'Live dual-Gram power iteration PCA.';
     }

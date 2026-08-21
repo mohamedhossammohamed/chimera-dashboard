@@ -267,12 +267,12 @@ function renderSurgicalPathologyFlagStrip(panel, trace) {
 
   const section = makeSection('R-15: Surgical Pathology Flag Strip (Weight-Ordered)');
 
-  // Provenance badge — computed via NLP regex extraction
+  // Provenance badge — calculated via NLP regex extraction
   const surgProv = document.createElement('a');
   surgProv.href = 'computations.html#surgical-pathology-parser';
-  surgProv.className = 'provenance-badge computed';
+  surgProv.className = 'provenance-badge calculated';
   surgProv.target = '_blank';
-  surgProv.textContent = 'COMPUTED';
+  surgProv.textContent = 'CALCULATED';
   surgProv.style.marginBottom = '6px';
   surgProv.style.display = 'inline-flex';
   section.appendChild(surgProv);
@@ -321,18 +321,18 @@ function renderCCILine(panel, trace) {
 
   const section = makeSection('R-14: Charlson Comorbidity Index (CCI) — Actuarial Line');
 
-  // Provenance badge — computed via keyword matching + age adjustment
+  // Provenance badge — calculated via keyword matching + age adjustment
   const cciProv = document.createElement('a');
   cciProv.href = 'computations.html#charlson-comorbidity-index';
-  cciProv.className = 'provenance-badge computed';
+  cciProv.className = 'provenance-badge calculated';
   cciProv.target = '_blank';
-  cciProv.textContent = 'COMPUTED';
+  cciProv.textContent = 'CALCULATED';
   cciProv.style.marginBottom = '6px';
   cciProv.style.display = 'inline-flex';
   section.appendChild(cciProv);
 
   if (!Array.isArray(pmhx) || pmhx.length === 0) {
-    section.appendChild(makeMissingBox('pmhx absent or empty — CCI cannot be computed (MISSING).'));
+    section.appendChild(makeMissingBox('pmhx absent or empty — CCI cannot be calculated (MISSING).'));
     panel.appendChild(section);
     return;
   }
@@ -536,14 +536,14 @@ function renderEmbeddingSignature(panel, trace) {
     { key: 'prostatectomy', label: 'Prostatectomy (960-d)' },
   ];
 
-  const section = makeSection('R-12: Embedding Signature Panel (Backend-Computed)');
+  const section = makeSection('R-12: Embedding Signature Panel (Backend-Calculated)');
 
-  // Provenance badge — vector stats computed in-browser from uploaded embedding vectors
+  // Provenance badge — vector stats calculated in-browser from uploaded embedding vectors
   const embProv = document.createElement('a');
   embProv.href = 'computations.html#vector-statistics';
-  embProv.className = 'provenance-badge computed';
+  embProv.className = 'provenance-badge calculated';
   embProv.target = '_blank';
-  embProv.textContent = 'COMPUTED';
+  embProv.textContent = 'CALCULATED';
   embProv.style.marginBottom = '6px';
   embProv.style.display = 'inline-flex';
   section.appendChild(embProv);
@@ -576,9 +576,9 @@ function renderEmbeddingSignature(panel, trace) {
 
   const tbody = document.createElement('tbody');
 
-  // Track whether any modality's stats were recomputed from vector_sample
-  // (vs. read directly from backend-computed trace JSON fields).
-  let anyRecomputed = false;
+  // Track whether any modality's stats were recalculated from vector_sample
+  // (vs. read directly from backend-calculated trace JSON fields).
+  let anyRecalculated = false;
 
   for (const m of modalityDefs) {
     const rep = mods[m.key];
@@ -611,7 +611,7 @@ function renderEmbeddingSignature(panel, trace) {
     shapeCell.textContent = shapeStr;
     row.appendChild(shapeCell);
 
-    // Compute stats: prefer backend-computed full-vector statistics (rep.mean /
+    // Compute stats: prefer backend-calculated full-vector statistics (rep.mean /
     // rep.std / rep.min / rep.max) when available. Only fall back to recomputing
     // from vector_sample when the backend did not provide statistics — and in
     // that case use the full vector if present (rep.vector) rather than the
@@ -624,7 +624,7 @@ function renderEmbeddingSignature(panel, trace) {
         : (Array.isArray(rep.vector_sample) ? rep.vector_sample : null);
       if (fullVec && fullVec.length > 0) {
         stats = computeVectorStats(fullVec);
-        anyRecomputed = true;
+        anyRecalculated = true;
       }
     }
 
@@ -688,17 +688,17 @@ function renderEmbeddingSignature(panel, trace) {
   table.appendChild(tbody);
   section.appendChild(table);
 
-  // Provenance label: clarify whether stats are backend-computed or client-recomputed
+  // Provenance label: clarify whether stats are backend-calculated or client-recalculated
   // from a (possibly truncated) vector_sample. When vector_sample is present, the
-  // recomputed mean/std/min/max may diverge from the backend full-vector statistics
+  // recalculated mean/std/min/max may diverge from the backend full-vector statistics
   // rendered in the Standard View embeddings panel above (H3 divergence guard).
-  if (anyRecomputed) {
+  if (anyRecalculated) {
     const sampledLabel = document.createElement('div');
     sampledLabel.className = 'backend-label sampled-stats-label';
     sampledLabel.style.marginTop = '6px';
     sampledLabel.style.fontWeight = '600';
     sampledLabel.style.color = 'var(--color-amber-fg)';
-    sampledLabel.textContent = 'Sampled statistics (client-recomputed from vector_sample)';
+    sampledLabel.textContent = 'Sampled statistics (client-recalculated from vector_sample)';
     section.appendChild(sampledLabel);
 
     const sampledNote = document.createElement('div');
@@ -707,13 +707,13 @@ function renderEmbeddingSignature(panel, trace) {
     sampledNote.style.fontFamily = 'var(--font-mono)';
     sampledNote.style.fontSize = '10px';
     sampledNote.style.color = 'var(--text-dim)';
-    sampledNote.textContent = 'Note: Statistics computed from available vector sample. May differ from backend full-vector statistics shown above.';
+    sampledNote.textContent = 'Note: Statistics calculated from available vector sample. May differ from backend full-vector statistics shown above.';
     section.appendChild(sampledNote);
   } else {
     const label = document.createElement('div');
     label.className = 'backend-label';
     label.style.marginTop = '6px';
-    label.textContent = 'Backend-computed — statistics from trace JSON, not recomputed in browser';
+    label.textContent = 'Backend-calculated — statistics from trace JSON, not recalculated in browser';
     section.appendChild(label);
   }
 

@@ -1281,7 +1281,7 @@ export function parseSurgicalPathology(reportText) {
     <p><strong>Output:</strong> Object with raw CCI score, age-adjusted CCI score, matched components array, and missing flag</p>
   </div>
   <h3>Natural Language</h3>
-  <p>Charlson Comorbidity Index computed from past medical history (pmhx) entries. Each entry is matched against a keyword map of 17 weighted conditions (MI=1, CHF=1, COPD=1, Dementia=1, etc.). Category-based deduplication prevents double-counting. Age adjustment: +floor((age-40)/10) for age >=50.</p>
+  <p>Charlson Comorbidity Index calculated from past medical history (pmhx) entries. Each entry is matched against a keyword map of 17 weighted conditions (MI=1, CHF=1, COPD=1, Dementia=1, etc.). Category-based deduplication prevents double-counting. Age adjustment: +floor((age-40)/10) for age >=50.</p>
   <h3>Mathematical Formula</h3>
   <div class="math">
     $$ \text{CCI}_{\text{adj}} = \text{CCI}_{\text{raw}} + \left\lfloor \frac{\text{age} - 40}{10} \right\rfloor \times \mathbb{1}[\text{age} \ge 50] $$

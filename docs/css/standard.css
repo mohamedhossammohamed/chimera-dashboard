@@ -632,7 +632,7 @@ mark.entity-epe {
 /* ===========================================================================
    Provenance Labels — data source indicators
    UPLOADED: green dot, value came from the user's uploaded JSON trace
-   COMPUTED: blue calculator icon, value was derived in-browser; clicking
+   CALCULATED: blue calculator icon, value was derived in-browser; clicking
              opens computations.html#<method> for full documentation
    =========================================================================== */
 .provenance-badge {
@@ -663,7 +663,7 @@ mark.entity-epe {
   font-size: 8px;
 }
 
-.provenance-badge.computed {
+.provenance-badge.calculated {
   background: rgba(56, 139, 253, 0.12);
   color: var(--color-blue-fg);
   border: 1px solid rgba(56, 139, 253, 0.25);
@@ -671,18 +671,18 @@ mark.entity-epe {
   text-decoration: none;
 }
 
-.provenance-badge.computed:hover {
+.provenance-badge.calculated:hover {
   background: rgba(56, 139, 253, 0.20);
   border-color: rgba(56, 139, 253, 0.45);
 }
 
-.provenance-badge.computed::before {
+.provenance-badge.calculated::before {
   content: '\03A3'; /* Sigma — mathematical computation */
   font-size: 10px;
   font-weight: 700;
 }
 
-/* Provenance banner for cohort-level "all computed" sections */
+/* Provenance banner for cohort-level "all calculated" sections */
 .provenance-banner {
   display: flex;
   align-items: center;

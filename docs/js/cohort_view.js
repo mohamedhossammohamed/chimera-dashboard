@@ -758,8 +758,8 @@ export const CohortView = {
   _rawTraces: null,
 
   async loadArtifacts(loadedTraces = null) {
-    // Live-only mode: all cohort analytics computed in-browser from raw traces.
-    // Static artifact loading has been removed — no pre-computed JSON files needed.
+    // Live-only mode: all cohort analytics calculated in-browser from raw traces.
+    // Static artifact loading has been removed — no pre-calculated JSON files needed.
     if (loadedTraces && Array.isArray(loadedTraces) && loadedTraces.length > 0) {
       this._rawTraces = loadedTraces;
       try {
@@ -805,11 +805,11 @@ export const CohortView = {
     root.innerHTML = '';
 
     // ------------------------------------------------------------------
-    // Provenance Banner — all cohort visualizations are computed in-browser
+    // Provenance Banner — all cohort visualizations are calculated in-browser
     // ------------------------------------------------------------------
     const provBanner = document.createElement('div');
     provBanner.className = 'provenance-banner';
-    provBanner.innerHTML = '<span class="provenance-badge computed" style="cursor:default">COMPUTED</span> All cohort visualizations are computed in-browser from uploaded traces. <a href="computations.html#cohort-analytics" target="_blank">View computation documentation &rarr;</a>';
+    provBanner.innerHTML = '<span class="provenance-badge calculated" style="cursor:default">CALCULATED</span> All cohort visualizations are calculated in-browser from uploaded traces. <a href="computations.html#cohort-analytics" target="_blank">View computation documentation &rarr;</a>';
     root.appendChild(provBanner);
 
     // ------------------------------------------------------------------

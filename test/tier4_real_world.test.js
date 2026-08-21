@@ -133,9 +133,9 @@ describe('Tier 4: Real-World Clinical Application Scenarios (423 Real Patient Tr
   it('Scenario 4: Dual-Gram 2D & 3D PCA Manifold Projections (MRI 1024-d & Biopsy 960-d)', () => {
     const resAll = CohortEngine.computeAll(realTraces, 'all');
 
-    // Verify MRI PCA — points from pre-computed pca_points or live computation.
+    // Verify MRI PCA — points from pre-calculated pca_points or live computation.
     // Variance is > 0 when full embeddings are available; may be 0 when only
-    // pre-computed coordinates exist (trace JSON doesn't include full vectors).
+    // pre-calculated coordinates exist (trace JSON doesn't include full vectors).
     assert.ok(resAll.pca_mri.points.length > 0);
     assert.ok(resAll.pca_mri.variance_explained.length >= 2);
     // Verify variance is non-zero when embeddings are available

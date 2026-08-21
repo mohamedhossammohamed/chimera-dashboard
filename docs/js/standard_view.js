@@ -96,7 +96,7 @@ export class StandardView {
       { key: 'bx_isup', label: 'Biopsy ISUP Grade Group', unit: '—', ref: '1 – 5 scale', val: demographics.bx_isup, status: this.getISUPStatus(demographics.bx_isup), provenance: 'uploaded' },
       { key: 'bx_gl_prim', label: 'Gleason Primary Pattern', unit: '—', ref: '3 – 5 pattern', val: demographics.bx_gl_prim, status: '—', provenance: 'uploaded' },
       { key: 'bx_gl_sec', label: 'Gleason Secondary Pattern', unit: '—', ref: '3 – 5 pattern', val: demographics.bx_gl_sec, status: '—', provenance: 'uploaded' },
-      { key: 'trajectory', label: 'PSA Trajectory', unit: '—', ref: 'PSADT-based', val: trajectoryResult.label, status: this.getTrajectoryBadge(trajectoryResult.category), provenance: 'computed', method: 'psa-kinetics-psadt' }
+      { key: 'trajectory', label: 'PSA Trajectory', unit: '—', ref: 'PSADT-based', val: trajectoryResult.label, status: this.getTrajectoryBadge(trajectoryResult.category), provenance: 'calculated', method: 'psa-kinetics-psadt' }
     ];
 
     const tableRows = rows.map(r => {
@@ -113,8 +113,8 @@ export class StandardView {
         valHtml = `<span class="copyable-cell" data-copy='${this.escapeAttr(rawJsonVal)}'>${this.escapeHTML(String(r.val))}</span>`;
       }
 
-      const provBadge = r.provenance === 'computed'
-        ? `<a href="computations.html#${r.method || ''}" class="provenance-badge computed" title="Computed in-browser — click for documentation" target="_blank">COMPUTED</a>`
+      const provBadge = r.provenance === 'calculated'
+        ? `<a href="computations.html#${r.method || ''}" class="provenance-badge calculated" title="Calculated in-browser — click for documentation" target="_blank">CALCULATED</a>`
         : '<span class="provenance-badge uploaded" title="Parsed from uploaded JSON trace">UPLOADED</span>';
 
       return `
@@ -437,9 +437,9 @@ export class StandardView {
 
     const eauProvBadge = document.createElement('a');
     eauProvBadge.href = 'computations.html#eau-risk-classification';
-    eauProvBadge.className = 'provenance-badge computed';
+    eauProvBadge.className = 'provenance-badge calculated';
     eauProvBadge.target = '_blank';
-    eauProvBadge.textContent = 'COMPUTED';
+    eauProvBadge.textContent = 'CALCULATED';
     eauProvBadge.style.marginBottom = '8px';
     eauProvBadge.style.display = 'inline-flex';
     eauSection.appendChild(eauProvBadge);
@@ -474,9 +474,9 @@ export class StandardView {
 
       const caprasProvBadge = document.createElement('a');
       caprasProvBadge.href = 'computations.html#capra-s';
-      caprasProvBadge.className = 'provenance-badge computed';
+      caprasProvBadge.className = 'provenance-badge calculated';
       caprasProvBadge.target = '_blank';
-      caprasProvBadge.textContent = 'COMPUTED';
+      caprasProvBadge.textContent = 'CALCULATED';
       caprasProvBadge.style.marginBottom = '6px';
       caprasProvBadge.style.display = 'inline-flex';
       caprasSection.appendChild(caprasProvBadge);
@@ -509,9 +509,9 @@ export class StandardView {
 
     const concProvBadge = document.createElement('a');
     concProvBadge.href = 'computations.html#concordance-matrix';
-    concProvBadge.className = 'provenance-badge computed';
+    concProvBadge.className = 'provenance-badge calculated';
     concProvBadge.target = '_blank';
-    concProvBadge.textContent = 'COMPUTED';
+    concProvBadge.textContent = 'CALCULATED';
     concProvBadge.style.marginBottom = '8px';
     concProvBadge.style.display = 'inline-flex';
     concSection.appendChild(concProvBadge);
