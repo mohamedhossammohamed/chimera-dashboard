@@ -1,6 +1,4 @@
 // standard_components.js — Pure Vanilla JS/SVG Clinical Renderers
-// [OFFICIAL: RESEARCHER-APPROVED] Cleveland-McGill perceptual framework, EAU 2026 risk tiers
-// [SUGGESTION: CO-PILOT] SVG rendering implementation and component architecture
 //
 // Zero-dependency clinical visualisation module. Pure native browser APIs:
 // document.createElementNS for SVG, plain HTML elements for grids/tables.
@@ -270,7 +268,7 @@ export function renderClevelandBulletStrip(container, value, thresholds) {
   // Value chip ABOVE the strip, anchored to dot x, clamped to SVG bounds.
   const chipUnit = thresholds.unit || '';
   const chipText = (upperClamped ? '>' : (lowerClamped ? '<' : '')) +
-                   fmtNum(v, v < 1 ? 2 : 1) +
+                   fmtNum(v, v < 10 ? 2 : 1) +
                    (chipUnit ? ' ' + chipUnit : '');
   const chipFont = 12;
   const chipCharW = chipFont * 0.6; // monospace char width approx
@@ -380,10 +378,29 @@ export function renderKaplanMeierSVG(container, time_points, survival_probs,
   const rawMaxT = Math.max.apply(null, time_points);
   const maxT = Math.max(1.0, (rawMaxT || 0) * 1.1);
 
-  // X tick computation: 0,12,24,36,48,60 or auto nice intervals if max<60
+  // X tick computation: dynamic nice intervals spanning the full plot range.
   let xTicks;
   if (maxT >= 60) {
-    xTicks = [0, 12, 24, 36, 48, 60];
+    // Choose a nice interval (12, 24, or 36 months) that produces 5-8 ticks
+    // spanning the full plot range, including the final value when it is not
+    // close to an existing tick.
+    const candidates = [12, 24, 36];
+    let step = 12;
+    for (let c = 0; c < candidates.length; c++) {
+      const count = Math.floor(maxT / candidates[c]) + 1;
+      if (count >= 5 && count <= 8) { step = candidates[c]; break; }
+      step = candidates[c];
+    }
+    xTicks = [];
+    for (let t = 0; t <= maxT - 1e-9; t += step) xTicks.push(Math.round(t));
+    // Ensure the final tick reaches maxT if the last step undershoots by a
+    // meaningful margin (>= half a step); otherwise the last tick is close
+    // enough and adding maxT would crowd the axis.
+    if (xTicks.length === 0 ||
+        (xTicks[xTicks.length - 1] < maxT - 1e-9 &&
+         (maxT - xTicks[xTicks.length - 1]) >= step * 0.5)) {
+      xTicks.push(Math.round(maxT));
+    }
   } else {
     const step = maxT <= 12 ? 2 : (maxT <= 24 ? 6 : 12);
     xTicks = [];
@@ -498,7 +515,9 @@ export function renderKaplanMeierSVG(container, time_points, survival_probs,
   // Patient event_time vertical dashed line
   if (event_time !== null && event_time !== undefined &&
       typeof event_time === 'number' && !isNaN(event_time)) {
-    const ex = xOf(event_time);
+    // Clamp the event line x-coordinate to the plot area bounds so it never
+    // renders outside the axes when event_time exceeds max(time_points).
+    const ex = Math.max(M.left, Math.min(xOf(event_time), W - M.right));
     svg.appendChild(svgEl('line', {
       x1: ex.toFixed(2), y1: M.top,
       x2: ex.toFixed(2), y2: M.top + ph,
@@ -533,11 +552,17 @@ export function renderKaplanMeierSVG(container, time_points, survival_probs,
       return n_at_risk[idx];
     }
     // Fallback: compute from time_points as patient-level event/censoring times.
-    // n_at_risk at time t = count of patients with event/censoring time >= t
-    // (still under observation at time t).
+    // n_at_risk at time t = count of unique patients with event/censoring time
+    // >= t (still under observation at time t). KM time_points are curve-level
+    // unique event times, not patient-level times, so we count unique patients
+    // at risk rather than just unique curve points.
     let n = 0;
+    const seen = {};
     for (let i = 0; i < time_points.length; i++) {
-      if (time_points[i] >= atT - 1e-9) n++;
+      if (time_points[i] >= atT - 1e-9 && !seen[time_points[i]]) {
+        seen[time_points[i]] = true;
+        n++;
+      }
     }
     return n;
   };
@@ -596,6 +621,7 @@ export function renderEAUScorecard(container, tier, criteria_matched) {
 
   // Normalized missing-sentinel check via shared constants module.
   const isMissing = isSentinel(tier);
+  const isUnclassified = tier === 'Intermediate (unclassified)';
 
   if (isMissing) {
     const warn = document.createElement('div');
@@ -606,6 +632,15 @@ export function renderEAUScorecard(container, tier, criteria_matched) {
     warn.style.marginBottom = '10px';
     warn.textContent = 'Insufficient data for EAU stratification';
     container.appendChild(warn);
+  } else if (isUnclassified) {
+    const warn = document.createElement('div');
+    warn.style.color = '#8a6d3b';
+    warn.style.fontFamily = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+    warn.style.fontSize = '12px';
+    warn.style.fontWeight = '700';
+    warn.style.marginBottom = '10px';
+    warn.textContent = 'Intermediate (unclassified) — data incomplete for Favorable/Unfavorable stratification';
+    container.appendChild(warn);
   }
 
   const grid = document.createElement('div');
@@ -614,7 +649,8 @@ export function renderEAUScorecard(container, tier, criteria_matched) {
   grid.style.gap = '10px';
 
   tiers.forEach(function (tdef) {
-    const isActive = !isMissing && tier === tdef.name;
+    const isActive = !isMissing && !isUnclassified && tier === tdef.name;
+    const isPartial = isUnclassified && (tdef.name === 'Favorable Intermediate' || tdef.name === 'Unfavorable Intermediate');
     const card = document.createElement('div');
     card.style.border = '1px solid #cccccc';
     card.style.borderRadius = '6px';
@@ -630,6 +666,11 @@ export function renderEAUScorecard(container, tier, criteria_matched) {
       card.style.borderTopWidth = '4px';
       card.style.transform = 'scale(1.05)';
       card.style.position = 'relative';
+    } else if (isPartial) {
+      card.style.border = '2px dashed #8a6d3b';
+      card.style.borderTopColor = tdef.color;
+      card.style.borderTopWidth = '4px';
+      card.style.opacity = '0.75';
     } else {
       card.style.opacity = '0.5';
     }
@@ -673,7 +714,7 @@ export function renderEAUScorecard(container, tier, criteria_matched) {
   line.style.fontSize = '11px';
   line.style.color = '#e6edf3';
   line.textContent = 'Criteria Matched: ' +
-    (isMissing ? EAU_SENTINEL : (criteria_matched || '—'));
+    (isMissing ? EAU_SENTINEL : (isUnclassified ? (criteria_matched || 'Intermediate (unclassified)') : (criteria_matched || '—')));
   container.appendChild(line);
 }
 

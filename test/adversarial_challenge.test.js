@@ -1,6 +1,6 @@
 // test/adversarial_challenge.test.js
-// Ruthless Adversarial Scientific Audit & Empirical Stress-Test Suite for Milestone M1
-// Testing: dashboard/js/cohort_engine.js
+// Boundary and stress tests for cohort_engine.js
+// Testing: docs/js/cohort_engine.js
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
@@ -38,7 +38,7 @@ function assertValidFiniteNumber(val, name = 'val') {
   assert.ok(Number.isFinite(val), `${name} must be finite, got ${val}`);
 }
 
-describe('Adversarial Challenge 1: Extreme Numerical Inputs & Boundary Resilience', () => {
+describe('Challenge 1: Extreme Numerical Inputs & Boundary Resilience', () => {
   it('1.1: tukeyBox handles identical values, constant arrays, and singletons with zero IQR', () => {
     // Constant array
     const constArr = [7.7, 7.7, 7.7, 7.7, 7.7, 7.7, 7.7];
@@ -183,7 +183,7 @@ describe('Adversarial Challenge 1: Extreme Numerical Inputs & Boundary Resilienc
   });
 });
 
-describe('Adversarial Challenge 2: Spearman Rank Tie-Breaking & Collinearity', () => {
+describe('Challenge 2: Spearman Rank Tie-Breaking & Collinearity', () => {
   it('2.1: rankData computes exact fractional mid-ranks for complex multi-way ties', () => {
     // Alternating 2-way ties: [10, 10, 20, 20, 30, 30]
     // 1-based ranks: 1, 2 -> 1.5; 3, 4 -> 3.5; 5, 6 -> 5.5
@@ -252,7 +252,7 @@ describe('Adversarial Challenge 2: Spearman Rank Tie-Breaking & Collinearity', (
   });
 });
 
-describe('Adversarial Challenge 3: Ward Hierarchical Clustering & Dendrogram Ordering', () => {
+describe('Challenge 3: Ward Hierarchical Clustering & Dendrogram Ordering', () => {
   it('3.1: wardCluster handles trivial cluster sizes K=0, K=1, K=2', () => {
     assert.deepEqual(wardCluster([], []), []);
     assert.deepEqual(wardCluster([[1.0]], ['A']), [0]);
@@ -316,7 +316,7 @@ describe('Adversarial Challenge 3: Ward Hierarchical Clustering & Dendrogram Ord
   });
 });
 
-describe('Adversarial Challenge 4: High-Dimensional Dual-Gram PCA & Rank Deficiency', () => {
+describe('Challenge 4: High-Dimensional Dual-Gram PCA & Rank Deficiency', () => {
   it('4.1: computePCA on Rank-0 (all identical / zero variance) matrix returns fail-closed zeros', () => {
     // All rows identical in 50-dimensional space
     const N = 20;
@@ -429,7 +429,7 @@ describe('Adversarial Challenge 4: High-Dimensional Dual-Gram PCA & Rank Deficie
   });
 });
 
-describe('Adversarial Challenge 5: Multimodal Missingness & Clinical Staging Invariants across Real Cohort', () => {
+describe('Challenge 5: Multimodal Missingness & Clinical Staging Invariants across Real Cohort', () => {
   it('5.1: CohortEngine.normalizeCase and computeMissingness across all 423 local cases', () => {
     const tracesDir = path.join(ROOT, '..', 'chimera-data', 'traces', 'all_local_cases');
     assert.ok(fs.existsSync(tracesDir), 'Trace directory must exist');
@@ -470,15 +470,14 @@ describe('Adversarial Challenge 5: Multimodal Missingness & Clinical Staging Inv
       }
     }
 
-    console.log(`[AUDIT] Task 1 Biopsy missingness violations: ${t1BxViolations.length} / 195 cases`);
-    console.log(`[AUDIT] Task 1 Prostatectomy missingness violations: ${t1PxViolations.length} / 195 cases`);
-    console.log(`[AUDIT] Task 2 Prostatectomy missingness violations: ${t2PxViolations.length} / 153 cases`);
+    console.log(`Task 1 Biopsy missingness violations: ${t1BxViolations.length} / 195 cases`);
+    console.log(`Task 1 Prostatectomy missingness violations: ${t1PxViolations.length} / 195 cases`);
+    console.log(`Task 2 Prostatectomy missingness violations: ${t2PxViolations.length} / 153 cases`);
 
     if (t1BxViolations.length > 0) {
-      console.log(`[DEFECT FOUND] Examples of Task 1 cases with Biopsy=true: ${t1BxViolations.slice(0, 5).join(', ')}`);
+      console.log(`Examples of Task 1 cases with Biopsy=true: ${t1BxViolations.slice(0, 5).join(', ')}`);
     }
 
-    // Note: In strict compliance, this assertion documents the bug if present
     assert.equal(
       t1BxViolations.length,
       0,
@@ -487,7 +486,7 @@ describe('Adversarial Challenge 5: Multimodal Missingness & Clinical Staging Inv
   });
 });
 
-describe('Adversarial Challenge 6: Throughput, Latency & Memory Allocation Benchmarking', () => {
+describe('Challenge 6: Throughput, Latency & Memory Allocation Benchmarking', () => {
   it('6.1: Benchmark CohortEngine.computeAll across 100 consecutive full-cohort iterations', () => {
     const tracesDir = path.join(ROOT, '..', 'chimera-data', 'traces', 'all_local_cases');
     const files = fs.readdirSync(tracesDir).filter(f => f.endsWith('.json'));
@@ -518,7 +517,7 @@ describe('Adversarial Challenge 6: Throughput, Latency & Memory Allocation Bench
     const p50Lat = latencies[Math.floor(ITERATIONS * 0.50)];
     const p95Lat = latencies[Math.floor(ITERATIONS * 0.95)];
 
-    console.log(`\n================== BENCHMARK REPORT ==================`);
+    console.log(`\nBenchmark Report:`);
     console.log(`Iterations: ${ITERATIONS} runs on 423 Multimodal Patient Cases`);
     console.log(`Latency Mean: ${meanLat.toFixed(2)} ms`);
     console.log(`Latency Min:  ${minLat.toFixed(2)} ms`);
@@ -526,7 +525,6 @@ describe('Adversarial Challenge 6: Throughput, Latency & Memory Allocation Bench
     console.log(`Latency P95:  ${p95Lat.toFixed(2)} ms`);
     console.log(`Latency Max:  ${maxLat.toFixed(2)} ms`);
     console.log(`Heap Delta:   ${heapDeltaMb.toFixed(2)} MB over ${ITERATIONS} runs`);
-    console.log(`======================================================\n`);
 
     // Timing is advisory only — correctness is verified, not speed
     if (p95Lat >= 50.0) {

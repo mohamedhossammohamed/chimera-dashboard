@@ -1,7 +1,5 @@
 // CHIMERA-Agent 1D/2D Standard View Engine (standard_view.js)
 // Zero-Dependency, Pure DOM & SVG Scientific Workbench
-// [OFFICIAL: RESEARCHER-APPROVED] CHIMERA-Agent Phase A Integration
-// [SUGGESTION: CO-PILOT] Bundle loading and component wiring
 import { renderClevelandBulletStrip, renderKaplanMeierSVG, renderEAUScorecard, renderConcordanceMatrix, isMissingClinicalValue } from './standard_components.js';
 import { parseSurgicalPathology } from './surgical_path_parser.js';
 import { showFeedback } from './feedback.js';
@@ -85,8 +83,8 @@ export class StandardView {
 
     // Trajectory categorization via PSAKinetics engine. Computes PSADT then
     // classifies the longitudinal PSA trajectory. Falls back to a local
-    // classifier matching the Python contract if FIX-TRAJ has not landed the
-    // trajectory() method on PSAKinetics yet (defensive — see FIX_REPORT.md).
+    // classifier matching the Python contract if the engine has not yet
+    // exposed the trajectory() method on PSAKinetics (defensive).
     const psaTrend = (clinicalRecords && Array.isArray(clinicalRecords.psa_trend)) ? clinicalRecords.psa_trend : [];
     const trajectoryResult = this.computeTrajectory(psaTrend);
 
@@ -259,9 +257,9 @@ export class StandardView {
 
   // --- PSA Trajectory Categorization ---
   // Computes PSADT via PSAKinetics and classifies the longitudinal trajectory.
-  // Prefers the engine's trajectory() method (added by FIX-TRAJ); falls back to
+  // Prefers the engine's trajectory() method when available; falls back to
   // a local classifier that mirrors the Python contract exactly so the UI is
-  // functional even if FIX-TRAJ lands after this wiring.
+  // functional even if the engine method is absent.
   static computeTrajectory(psaTrend) {
     const EMPTY = { category: EAU_SENTINEL, label: null, psadt: null };
     if (!Array.isArray(psaTrend) || psaTrend.length === 0) return EMPTY;
@@ -272,7 +270,7 @@ export class StandardView {
     } catch (e) {
       return EMPTY;
     }
-    // Prefer engine method when present (FIX-TRAJ contract).
+    // Prefer engine method when present.
     if (kinetics && typeof kinetics.trajectory === 'function') {
       let category;
       try {
@@ -458,7 +456,7 @@ export class StandardView {
     renderEAUScorecard(eauContainer, eauResult.tier, eauResult.criteria);
 
     // --- Additive: CAPRA-S (post-surgical) Scorecard (Task 3 only) ---
-    // [OFFICIAL: RESEARCHER-APPROVED] UCSF CAPRA-S (Cooperberg et al., Cancer 2011)
+    // UCSF CAPRA-S (Cooperberg et al., Cancer 2011)
     if (task === 'task3') {
       const surgPath = this.activeTrace?.clinical_records?.surgical_pathology_report;
       const caprasResult = this.computeCAPRAS(demo.psa, surgPath);
@@ -533,7 +531,7 @@ export class StandardView {
     const psaNum = (psa === null || psa === undefined || psa === '' || String(psa).trim().toUpperCase() === 'N/A' || String(psa).trim().toUpperCase() === 'MISSING' || String(psa).trim().toUpperCase() === 'NOT AVAILABLE')
       ? null : Number(psa);
     const isupNum = (bxIsup === null || bxIsup === undefined || bxIsup === '' || String(bxIsup).trim().toUpperCase() === 'N/A' || String(bxIsup).trim().toUpperCase() === 'MISSING' || String(bxIsup).trim().toUpperCase() === 'NOT AVAILABLE')
-      ? null : Number(bxIsup);
+      ? null : Math.floor(Number(bxIsup));
     const ctStr = (ct === null || ct === undefined || ct === '' || String(ct).trim().toUpperCase() === 'N/A' || String(ct).trim().toUpperCase() === 'MISSING' || String(ct).trim().toUpperCase() === 'NOT AVAILABLE')
       ? null : String(ct).trim();
 
@@ -572,12 +570,21 @@ export class StandardView {
     if (hasISUP && isupNum === 3) {
       return { tier: 'Unfavorable Intermediate', criteria: `ISUP 3` };
     }
+    // 3b. Unfavorable Intermediate: ISUP 1 AND PSA 10-20 AND high-risk patterns
+    if (hasPSA && psaNum >= 10 && psaNum <= 20 && hasISUP && isupNum === 1 && hasHighRisk) {
+      return { tier: 'Unfavorable Intermediate', criteria: `PSA ${psaNum} 10-20; ISUP 1; high-risk patterns present` };
+    }
+    // 3c. Favorable Intermediate: ISUP 2 AND PSA 10-20 AND cT1-2a AND no high-risk
+    if (hasPSA && psaNum >= 10 && psaNum <= 20 && hasISUP && isupNum === 2 &&
+        hasCT && ctRank <= 2.1 && !hasHighRisk) {
+      return { tier: 'Favorable Intermediate', criteria: `PSA ${psaNum} 10-20; ISUP 2; ${ctStr}; no high-risk patterns` };
+    }
     if (hasPSA && psaNum >= 10 && psaNum <= 20) {
       if (hasISUP && isupNum === 2) {
         return { tier: 'Unfavorable Intermediate', criteria: `PSA ${psaNum} 10-20; ISUP 2` };
       }
       if (!hasISUP) {
-        return { tier: 'Unfavorable Intermediate', criteria: `PSA ${psaNum} 10-20` };
+        return { tier: 'Intermediate (unclassified)', criteria: `PSA ${psaNum} 10-20; ISUP unclassified` };
       }
     }
     if (ctRank === 2.2) {
@@ -601,6 +608,12 @@ export class StandardView {
     // Partial classification fallback: ISUP 2 with high-risk patterns upgrade
     if (hasPSA && psaNum < 10 && hasISUP && isupNum === 2 && hasHighRisk) {
       return { tier: 'Unfavorable Intermediate', criteria: `PSA ${psaNum} < 10; ISUP 2; high-risk patterns present — upgraded` };
+    }
+
+    // 6. Catch-all: PSA 10-20 with valid ISUP + CT but no high-risk — not enough
+    // criteria for Favorable/Unfavorable, but NOT missing data either.
+    if (hasPSA && psaNum >= 10 && psaNum <= 20 && hasISUP && hasCT && !hasHighRisk) {
+      return { tier: 'Intermediate (unclassified)', criteria: `PSA ${psaNum} 10-20; ISUP ${isupNum}; ${ctStr}; insufficient criteria for Favorable/Unfavorable` };
     }
 
     return { tier: EAU_SENTINEL, criteria: 'Insufficient staging data for tier classification' };

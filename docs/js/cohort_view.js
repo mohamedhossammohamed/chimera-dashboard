@@ -36,6 +36,7 @@ const TARGET_COLORS = {
   '0': '#2ca02c',
   'None': '#7f7f7f',
   'null': '#7f7f7f',
+  'unknown': '#4a5568',
 };
 
 function el(tag, attrs, text) {
@@ -384,10 +385,19 @@ function renderCorrelation(container, fullData, filterKey) {
       svg.appendChild(rect);
 
       if (val !== null) {
+        // Choose text color based on the actual cell background luminance so
+        // the label stays readable across the full Viridis range (WCAG AA
+        // requires >=4.5:1 contrast). The previous fixed threshold (val > 0.6)
+        // left near-white text on light-green cells (~1.8:1 contrast).
+        const hex = fill.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16) / 255;
+        const g = parseInt(hex.substr(2, 2), 16) / 255;
+        const b = parseInt(hex.substr(4, 2), 16) / 255;
+        const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
         svg.appendChild(el('text', {
           x: x + cellSize / 2, y: y + cellSize / 2 + 4,
           'text-anchor': 'middle',
-          fill: val > 0.6 ? '#0d1117' : '#e6edf3',
+          fill: lum > 0.6 ? '#0d1117' : '#e6edf3',
           'font-family': 'ui-monospace, monospace', 'font-size': 11, 'font-weight': 600,
         }, val.toFixed(2)));
       }
@@ -402,16 +412,16 @@ function renderCorrelation(container, fullData, filterKey) {
     }, vars[i]));
   }
 
-  // X-axis labels rotated UPWARDS (-45 deg) with text-anchor: end so text
-  // extends up-LEFT from the column center, staying within column space and
-  // avoiding collision with the colorbar on the right.
+  // X-axis labels rotated UPWARDS (45 deg in SVG y-down) with text-anchor: end
+  // so text extends up-LEFT from the column center, staying above the heatmap
+  // and avoiding collision with the colorbar on the right.
   for (let j = 0; j < k; j++) {
     const x = labelW + j * cellSize + cellSize / 2;
     const y = labelH - 12;
     svg.appendChild(el('text', {
       x: x, y: y,
       'text-anchor': 'end', fill: '#e6edf3', 'font-family': 'ui-monospace, monospace', 'font-size': 11, 'font-weight': 600,
-      transform: `rotate(-45 ${x} ${y})`,
+      transform: `rotate(45 ${x} ${y})`,
     }, vars[j]));
   }
 
@@ -779,26 +789,6 @@ export const CohortView = {
     root.appendChild(provBanner);
 
     // ------------------------------------------------------------------
-    // Clinical Spectrum Disclaimer Banner
-    // Persistent notice that the cohort spans three distinct clinical contexts.
-    // ------------------------------------------------------------------
-    const disclaimerBanner = document.createElement('div');
-    disclaimerBanner.className = 'cohort-disclaimer-banner';
-    disclaimerBanner.style.cssText = [
-      'background:rgba(227,179,65,0.06)',
-      'border:1px solid rgba(227,179,65,0.25)',
-      'border-radius:6px',
-      'padding:12px 16px',
-      'margin-bottom:16px',
-      'font-family:var(--font-mono)',
-      'font-size:11px',
-      'line-height:1.55',
-      'color:var(--text-secondary)',
-    ].join(';');
-    disclaimerBanner.textContent = 'This cohort visualization spans three clinical contexts: Pre-Biopsy Screening (Task 1), Risk Stratification (Task 2), and Post-Prostatectomy BCR Monitoring (Task 3). Distributions reflect the full clinical spectrum and should not be compared across tasks without clinical justification.';
-    root.appendChild(disclaimerBanner);
-
-    // ------------------------------------------------------------------
     // Global Task-Scope Selector Banner
     // All 5 B-views recompute dynamically when the filter changes.
     // ------------------------------------------------------------------
@@ -811,7 +801,7 @@ export const CohortView = {
 
     // Populate per-task case counts from initial computation.
     // Engine emits totalCases/filteredCases (top-level) and composition.tasks.{task}.total.
-    // FIX-CE adds n_cases/n aliases at top-level; we read canonical names first for robustness.
+    // n_cases/n aliases are also present at top-level; we read canonical names first for robustness.
     if (initialData && initialData.composition && initialData.composition.tasks) {
       const t = initialData.composition.tasks;
       TASK_OPTIONS[0].n = initialData.totalCases || initialData.n_cases || initialData.filteredCases || initialData.n || (loadedTraces ? loadedTraces.length : '?');
@@ -841,27 +831,6 @@ export const CohortView = {
 
     const renderAllViews = (data, filterKey) => {
       contentArea.innerHTML = '';
-
-      const nCases = data.filteredCases || data.totalCases || data.n_cases || data.n || '?';
-      const scopeTitle = filterKey === 'all'
-        ? `Full Combined Cohort — N=${nCases} (Tasks 1 + 2 + 3)`
-        : `Task-Specific Stratum — ${filterKey.toUpperCase()}, n=${nCases}`;
-
-      const disclaimer = document.createElement('div');
-      disclaimer.style.cssText = [
-        'background:rgba(227,179,65,0.08)', 'border:1px solid rgba(227,179,65,0.4)',
-        'border-radius:6px', 'padding:14px 18px', 'margin-bottom:20px',
-        'font-family:var(--font-mono)', 'font-size:11px', 'line-height:1.5',
-        'color:var(--text-primary)',
-      ].join(';');
-      disclaimer.innerHTML = `
-        <div style="font-weight:700;color:#d29922;margin-bottom:6px;">⚠️ ${scopeTitle} — CLINICAL COHORT SPECTRUM &amp; MISSINGNESS NOTICE</div>
-        <ul style="margin:0;padding-left:18px;color:var(--text-secondary);">
-          <li><strong>Task Spectrum Divergence:</strong> Task 1 (pre-biopsy screening), Task 2 (post-biopsy risk stratification), and Task 3 (post-prostatectomy BCR survival) represent three clinically distinct populations. Cross-task pooling must be interpreted with caution.</li>
-          <li><strong>Structural Non-Applicability:</strong> Missingness for biopsy slides in Task 1 or surgical pathology in Tasks 1 &amp; 2 reflects structural clinical stage boundaries, not data collection omissions.</li>
-        </ul>
-      `;
-      contentArea.appendChild(disclaimer);
 
       // B1: Composition
       const b1Card = this._makeCard('B1: Cohort Composition (Task × Target)', 'ORDERED STACKED BARS');

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' cdn.jsdelivr.net; connect-src 'self';">
   <title>CHIMERA Computation Documentation</title>
 
   <!-- KaTeX CSS -->
@@ -319,6 +320,11 @@
         <li><a href="#gaussian-kde">Gaussian KDE</a></li>
         <li><a href="#tukey-box">Tukey Box Plot</a></li>
         <li><a href="#cohort-analytics">Cohort Analytics Pipeline</a></li>
+        <li><a href="#vector-statistics">Vector Statistics</a></li>
+        <li><a href="#concordance-matrix">Concordance Matrix</a></li>
+        <li><a href="#kaplan-meier">Kaplan-Meier Estimator</a></li>
+        <li><a href="#robust-zscore">Robust Z-Score</a></li>
+        <li><a href="#percentile-rank">Percentile Rank</a></li>
       </ul>
     </nav>
     <main id="content">
@@ -436,7 +442,7 @@
     <p><strong>Output:</strong> Object { tier: string, reason: string } &mdash; tier is one of 5 EAU 2026 risk levels or sentinel</p>
   </div>
   <h3>Natural Language</h3>
-  <p>Classifies prostate cancer risk into 5 EAU 2026 tiers using an ordered precedence cascade: (1) Locally Advanced if cT3-4, (2) High if ISUP 4/5 or PSA &gt;20 or cT2c, (3) Unfavorable Intermediate if ISUP 3 or (ISUP 2 + PSA 10-20) or cT2b, (4) Favorable Intermediate if ISUP 1-2 + PSA &lt;10 + cT1-2a + no high-risk patterns, (5) Low if ISUP 1 + PSA &lt;10 + cT1-2a.</p>
+  <p>Classifies prostate cancer risk into 5 EAU 2026 tiers using an ordered precedence cascade: (1) Locally Advanced if cT3-4, (2) High if ISUP 4/5 or PSA &gt;20 or cT2c, (3) Unfavorable Intermediate if ISUP 3 or (ISUP 2 + PSA 10-20 under non-Favorable conditions, e.g. high-risk patterns or cT2b+) or cT2b, (4) Favorable Intermediate if ISUP 2 + PSA &le;20 + cT1-2a + no high-risk patterns, (5) Low if ISUP 1 + PSA &lt;10 + cT1-2a. ISUP 1 + PSA 10-20 does not qualify for Favorable Intermediate; it is routed through the high-risk pattern check (upgraded to Unfavorable Intermediate if high-risk patterns are present, otherwise sentinel).</p>
   <h3>Mathematical Formula</h3>
   <div class="math">
     $$
@@ -446,8 +452,8 @@
       \hline
       1 & \text{Locally Advanced} & \text{cT3-4} \\
       2 & \text{High} & \text{ISUP 4/5 OR PSA} > 20 \text{ OR cT2c} \\
-      3 & \text{Unfavorable Intermediate} & \text{ISUP 3 OR (ISUP 2 + PSA 10-20) OR cT2b} \\
-      4 & \text{Favorable Intermediate} & \text{ISUP 1-2 + PSA} < 10 \text{ + cT1-2a + no high-risk} \\
+      3 & \text{Unfavorable Intermediate} & \text{ISUP 3 OR (ISUP 2 + PSA 10-20, non-Favorable) OR cT2b} \\
+      4 & \text{Favorable Intermediate} & \text{ISUP 2 + PSA} \le 20 \text{ + cT1-2a + no high-risk} \\
       5 & \text{Low} & \text{ISUP 1 + PSA} < 10 \text{ + cT1-2a} \\
       \hline
     \end{array}
@@ -496,21 +502,26 @@
       criteria.push(`ISUP 3`);
       return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
     }
-    // 3b. Favourable Intermediate: ISUP 1 AND PSA 10-20 AND cT1-2a AND no high-risk
-    if (psaVal !== null &amp;&amp; psaVal &gt;= 10 &amp;&amp; psaVal &lt;= 20 &amp;&amp; isup === 1 &amp;&amp;
+    // 3b. Favourable Intermediate: ISUP 2 AND PSA 10-20 AND cT1-2a AND no high-risk
+    if (psaVal !== null &amp;&amp; psaVal &gt;= 10 &amp;&amp; psaVal &lt;= 20 &amp;&amp; isup === 2 &amp;&amp;
         ctRank &amp;&amp; (ctRank.major === 1 || (ctRank.major === 2 &amp;&amp; ctRank.minor &lt;= 1)) &amp;&amp; !hasHighRisk) {
-      criteria.push(`PSA ${psaVal} 10-20; ISUP 1; ${ct}; no high-risk patterns`);
+      criteria.push(`PSA ${psaVal} 10-20; ISUP 2; ${ct}; no high-risk patterns`);
       return { tier: 'Favorable Intermediate', reason: criteria.join('; ') };
+    }
+    // 3c. ISUP 1 + PSA 10-20 + high-risk patterns → upgraded to Unfavorable Intermediate
+    if (psaVal !== null &amp;&amp; psaVal &gt;= 10 &amp;&amp; psaVal &lt;= 20 &amp;&amp; isup === 1 &amp;&amp; hasHighRisk) {
+      criteria.push(`PSA ${psaVal} 10-20; ISUP 1; high-risk patterns present — upgraded`);
+      return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
     }
     if (psaVal !== null &amp;&amp; psaVal &gt;= 10 &amp;&amp; psaVal &lt;= 20) {
       if (isup !== null &amp;&amp; isup === 2) {
         criteria.push(`PSA ${psaVal} 10-20; ISUP 2`);
         return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
       }
-      // PSA 10-20 alone with no ISUP info — still intermediate
+      // PSA 10-20 alone with no ISUP info — insufficient staging data
       if (isup === null) {
-        criteria.push(`PSA ${psaVal} 10-20`);
-        return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
+        criteria.push(`PSA ${psaVal} 10-20; ISUP grade missing`);
+        return { tier: 'Intermediate (unclassified)', reason: criteria.join('; ') };
       }
     }
     if (ctRank &amp;&amp; ctRank.major === 2 &amp;&amp; ctRank.minor === 2) {
@@ -1435,10 +1446,10 @@ function computeCCI(pmhx, age) {
     <p><strong>Output:</strong> Scalar bandwidth h (float); 0.0 if fewer than 2 valid values or zero spread</p>
   </div>
   <h3>Natural Language</h3>
-  <p>Silverman's rule of thumb for KDE bandwidth selection: h = 0.9 × min(σ, IQR/1.34) × n^(-1/5), where σ is standard deviation, IQR is interquartile range, and n is sample size. Returns 0 if fewer than 2 values or zero spread.</p>
+  <p>Silverman's rule of thumb for KDE bandwidth selection: h = 0.9 × min(σ, IQR/1.349) × n^(-1/5), where σ is standard deviation, IQR is interquartile range, and n is sample size. Returns 0 if fewer than 2 values or zero spread.</p>
   <h3>Mathematical Formula</h3>
   <div class="math">
-    $$ h = 0.9 \times \min\left(\sigma, \frac{\text{IQR}}{1.34}\right) \times n^{-1/5} $$
+    $$ h = 0.9 \times \min\left(\sigma, \frac{\text{IQR}}{1.349}\right) \times n^{-1/5} $$
   </div>
   <h3>Code Implementation</h3>
   <pre><code class="language-javascript">export function silvermanBandwidth(values) {
@@ -1460,7 +1471,7 @@ function computeCCI(pmhx, age) {
   };
   const iqr = pct(75) - pct(25);
 
-  let spread = iqr &gt; 0 ? Math.min(sigma, iqr / 1.34) : sigma;
+  let spread = iqr &gt; 0 ? Math.min(sigma, iqr / 1.349) : sigma;
   if (spread === 0) spread = sigma;
   if (spread === 0) return 0.0;
 
@@ -1702,6 +1713,81 @@ function computeCCI(pmhx, age) {
         const p = c.bx_pca_points || c.bx_vec;
         if (p &amp;&amp; p.length &gt;= 2) {
           // ... (continues with composition, PCA, correlation, missingness, raincloud computation) ...</code></pre>
+</section>
+
+<section id="vector-statistics">
+  <h2>Vector Statistics</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> case_extras.js &rarr; embedded provenance badge</p>
+    <p><strong>Inputs:</strong> Numeric feature vector (Array of numbers)</p>
+    <p><strong>Output:</strong> Summary statistics object (mean, median, standard deviation, min, max, count)</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Computes descriptive summary statistics for a numeric feature vector. Returns central tendency (mean, median), dispersion (standard deviation), and range (min, max) along with the valid element count. Used by the case-level provenance badge to surface embedding vector quality metrics.</p>
+</section>
+
+<section id="concordance-matrix">
+  <h2>Concordance Matrix</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> standard_view.js &rarr; concordance provenance badge</p>
+    <p><strong>Inputs:</strong> Predicted labels (Array), true labels (Array), optional class names</p>
+    <p><strong>Output:</strong> Confusion matrix (2D array) with per-class concordance statistics</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Computes a concordance (confusion) matrix comparing predicted classifications against ground-truth labels. Each cell M[i][j] counts cases where the true class is i and the predicted class is j. Diagonal entries represent concordant (correctly classified) cases; off-diagonal entries represent discordant (misclassified) cases. Used by the standard view provenance badge to surface classification agreement metrics.</p>
+</section>
+
+<section id="kaplan-meier">
+  <h2>Kaplan-Meier Estimator</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js &rarr; kaplanMeier()</p>
+    <p><strong>Inputs:</strong> Array of survival times (numbers), Array of event indicators (1 = event occurred, 0 = censored)</p>
+    <p><strong>Output:</strong> { time_points, survival_probabilities, event_status, n_at_risk, ci_lower, ci_upper }</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Kaplan-Meier (product-limit) estimator for survival probability. At each distinct event time t_i, the survival function is updated by multiplying the previous survival estimate by the conditional probability of surviving past t_i. Censored observations contribute to the at-risk count up to their censoring time but do not trigger a survival step. Returns the step-function survival curve with pointwise 95% confidence intervals via Greenwood's formula (linear transform, clamped to [0, 1]).</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \hat{S}(t) = \prod_{t_i \leq t} \left(1 - \frac{d_i}{n_i}\right) $$
+    <br><br>
+    $$ \text{Var}(\hat{S}(t)) = \hat{S}(t)^2 \sum_{t_i \leq t} \frac{d_i}{n_i (n_i - d_i)} $$
+    <br><br>
+    $$ \text{CI}_{95\%}(t) = \hat{S}(t) \pm 1.96 \sqrt{\text{Var}(\hat{S}(t))}, \quad \text{clamped to } [0, 1] $$
+    <br><br>
+    where $t_i$ are the ordered distinct event times, $d_i$ is the number of events at $t_i$, and $n_i$ is the number at risk just before $t_i$.
+  </div>
+</section>
+
+<section id="robust-zscore">
+  <h2>Robust Z-Score</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js &rarr; robustZ(values, x)</p>
+    <p><strong>Inputs:</strong> Array of numeric values (reference distribution), single value x (number to score)</p>
+    <p><strong>Output:</strong> number | null (single robust z-score for x; null for non-finite inputs or zero IQR)</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Robust z-score using the median and interquartile range (IQR) instead of mean and standard deviation. Resistant to outliers and non-normal distributions. The scaling factor 1.349 is the IQR of a standard normal distribution, making the robust z-score comparable to a classical z-score under normality. Returns null for inputs with zero IQR (degenerate distribution).</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ z = \frac{x - \text{median}(X)}{\text{IQR}(X) / 1.349} $$
+  </div>
+</section>
+
+<section id="percentile-rank">
+  <h2>Percentile Rank (Mid-Rank)</h2>
+  <div class="provenance-info">
+    <p><strong>Source:</strong> cohort_engine.js &rarr; percentile(values, x)</p>
+    <p><strong>Inputs:</strong> Array of numeric values (reference distribution), single value x (number to rank)</p>
+    <p><strong>Output:</strong> integer in [0, 100] (rounded via banker's rounding), or null for empty/invalid input</p>
+  </div>
+  <h3>Natural Language</h3>
+  <p>Percentile rank using the mid-rank (average rank) method for handling ties. For a given value x, computes the proportion of values in the reference distribution that are less than x, plus half the proportion equal to x, scaled to 0–100. The mid-rank correction ensures that tied values receive the average of the ranks they would occupy, producing a continuous rank that avoids bias from discrete ties. The result is rounded to an integer using banker's rounding (half-to-even).</p>
+  <h3>Mathematical Formula</h3>
+  <div class="math">
+    $$ \text{PR}(x) = \text{round}\left(\frac{100}{N} \left( \#\{x_j < x\} + \frac{1}{2}\#\{x_j = x\} \right)\right) $$
+    <br><br>
+    where $N$ is the total number of values in the reference distribution and $\text{round}$ uses banker's rounding (half-to-even).
+  </div>
 </section>
 
     </main>

@@ -1,7 +1,5 @@
 // CHIMERA-Agent In-Browser Clinical Computation Engine (clinical_engine.js)
 // Zero-Dependency Pure ES6 Module for Clinical Scoring, Nomograms, Kinetics & Live Bundle Rendering.
-// [OFFICIAL: RESEARCHER-APPROVED] EAU 2026, CAPRA, CAPRA-S, PSA Kinetics standard formulas.
-// [SUGGESTION: CO-PILOT] Pure client-side JS implementation.
 
 import { parseSurgicalPathology } from './surgical_path_parser.js';
 import { EAU_SENTINEL } from './constants.js';
@@ -18,6 +16,21 @@ export function safeFloat(val) {
   }
   const n = parseFloat(s);
   return (Number.isNaN(n) || !Number.isFinite(n)) ? null : n;
+}
+
+// Shared missing-value predicate for the markdown biomarker table. Returns
+// true for null, undefined, NaN, empty string, and common sentinel strings
+// ("N/A", "NA", "null", "none"). Prevents NaN/empty-string from slipping
+// through the status checks and rendering as "🟢 Normal"/"🟢 Low Risk" — a
+// false negative for missing data.
+export function isMissing(v) {
+  if (v === null || v === undefined) return true;
+  if (typeof v === 'number') return Number.isNaN(v);
+  if (typeof v === 'string') {
+    const s = v.trim().toUpperCase();
+    return s === '' || s === 'N/A' || s === 'NA' || s === 'NULL' || s === 'NONE';
+  }
+  return false;
 }
 
 export class DateParser {
@@ -245,21 +258,26 @@ export class EAURiskClassifier {
       criteria.push(`ISUP 3`);
       return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
     }
-    // 3b. Favourable Intermediate: ISUP 1 AND PSA 10-20 AND cT1-2a AND no high-risk
-    if (psaVal !== null && psaVal >= 10 && psaVal <= 20 && isup === 1 &&
+    // 3b. Favourable Intermediate: ISUP 2 AND PSA 10-20 AND cT1-2a AND no high-risk
+    if (psaVal !== null && psaVal >= 10 && psaVal <= 20 && isup === 2 &&
         ctRank && (ctRank.major === 1 || (ctRank.major === 2 && ctRank.minor <= 1)) && !hasHighRisk) {
-      criteria.push(`PSA ${psaVal} 10-20; ISUP 1; ${ct}; no high-risk patterns`);
+      criteria.push(`PSA ${psaVal} 10-20; ISUP 2; ${ct}; no high-risk patterns`);
       return { tier: 'Favorable Intermediate', reason: criteria.join('; ') };
+    }
+    // 3c. ISUP 1 + PSA 10-20 + high-risk patterns → upgraded to Unfavorable Intermediate
+    if (psaVal !== null && psaVal >= 10 && psaVal <= 20 && isup === 1 && hasHighRisk) {
+      criteria.push(`PSA ${psaVal} 10-20; ISUP 1; high-risk patterns present — upgraded`);
+      return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
     }
     if (psaVal !== null && psaVal >= 10 && psaVal <= 20) {
       if (isup !== null && isup === 2) {
         criteria.push(`PSA ${psaVal} 10-20; ISUP 2`);
         return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
       }
-      // PSA 10-20 alone with no ISUP info — still intermediate
+      // PSA 10-20 alone with no ISUP info — insufficient staging data
       if (isup === null) {
-        criteria.push(`PSA ${psaVal} 10-20`);
-        return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
+        criteria.push(`PSA ${psaVal} 10-20; ISUP grade missing`);
+        return { tier: 'Intermediate (unclassified)', reason: criteria.join('; ') };
       }
     }
     if (ctRank && ctRank.major === 2 && ctRank.minor === 2) {
@@ -283,6 +301,13 @@ export class EAURiskClassifier {
     if (psaVal !== null && psaVal < 10 && isup === 2 && hasHighRisk) {
       criteria.push(`PSA ${psaVal} < 10; ISUP 2; high-risk patterns present — upgraded`);
       return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
+    }
+
+    // 6. Catch-all: PSA 10-20 with valid ISUP + CT but no high-risk — not enough
+    // criteria for Favorable/Unfavorable, but NOT missing data either.
+    if (psaVal !== null && psaVal >= 10 && psaVal <= 20 && isup !== null && ctRank && !hasHighRisk) {
+      criteria.push(`PSA ${psaVal} 10-20; ISUP ${isup}; ${ct}; insufficient criteria for Favorable/Unfavorable`);
+      return { tier: 'Intermediate (unclassified)', reason: criteria.join('; ') };
     }
 
     return { tier: EAU_SENTINEL, reason: 'Non-standard risk parameter constellation' };
@@ -513,11 +538,11 @@ export class ClinicalBundleGenerator {
     lines.push(`| Metric | Value | Reference / Normal | Status |`);
     lines.push(`| :--- | :--- | :--- | :--- |`);
     lines.push(`| Age | ${d.age !== undefined ? d.age + ' yrs' : 'missing'} | — | — |`);
-    lines.push(`| Serum PSA | ${d.psa !== undefined ? d.psa + ' ng/mL' : 'missing'} | < 4.0 ng/mL | ${d.psa > 10 ? '🔴 Elevated' : (d.psa >= 4 ? '🟡 Borderline' : '🟢 Normal')} |`);
-    lines.push(`| PSA Density (PSAD) | ${d.psad !== undefined ? d.psad + ' ng/mL/cc' : 'missing'} | < 0.15 ng/mL/cc | ${d.psad >= 0.15 ? '🔴 High Risk' : '🟢 Low Risk'} |`);
-    lines.push(`| Prostate Volume | ${d.vol !== undefined ? d.vol + ' cc' : 'missing'} | 20 – 30 cc | ${d.vol > 30 ? '🟡 Enlarged' : '🟢 Normal'} |`);
-    lines.push(`| PI-RADS v2.1 | ${d.pirads !== undefined ? d.pirads : 'missing'} | 1 – 5 scale | ${d.pirads >= 4 ? '🔴 Malignant Suspicion' : (d.pirads === 3 ? '🟡 Equivocal' : '🟢 Benign')} |`);
-    lines.push(`| Biopsy ISUP Grade | ${d.bx_isup !== undefined ? d.bx_isup : 'missing'} | Grade Group 1 – 5 | ${d.bx_isup >= 3 ? '🔴 High Grade' : (d.bx_isup ? '🟡 Low/Intermediate' : '—')} |`);
+    lines.push(`| Serum PSA | ${isMissing(d.psa) ? 'missing' : d.psa + ' ng/mL'} | < 4.0 ng/mL | ${isMissing(d.psa) ? '⚪ DATA NOT RECORDED' : (safeFloat(d.psa) > 10 ? '🔴 Elevated' : (safeFloat(d.psa) >= 4 ? '🟡 Borderline' : '🟢 Normal'))} |`);
+    lines.push(`| PSA Density (PSAD) | ${isMissing(d.psad) ? 'missing' : d.psad + ' ng/mL/cc'} | < 0.15 ng/mL/cc | ${isMissing(d.psad) ? '⚪ DATA NOT RECORDED' : (safeFloat(d.psad) > 0.20 ? '🔴 High Risk' : (safeFloat(d.psad) > 0.15 ? '� Elevated' : '�🟢 Low Risk'))} |`);
+    lines.push(`| Prostate Volume | ${isMissing(d.vol) ? 'missing' : d.vol + ' cc'} | 20 – 30 cc | ${isMissing(d.vol) ? '⚪ DATA NOT RECORDED' : (safeFloat(d.vol) > 30 ? '🟡 Enlarged' : '🟢 Normal')} |`);
+    lines.push(`| PI-RADS v2.1 | ${isMissing(d.pirads) ? 'missing' : d.pirads} | 1 – 5 scale | ${isMissing(d.pirads) ? '⚪ DATA NOT RECORDED' : (safeFloat(d.pirads) >= 4 ? '🔴 Malignant Suspicion' : (safeFloat(d.pirads) === 3 ? '🟡 Equivocal' : '🟢 Benign'))} |`);
+    lines.push(`| Biopsy ISUP Grade | ${isMissing(d.bx_isup) ? 'missing' : d.bx_isup} | Grade Group 1 – 5 | ${isMissing(d.bx_isup) ? '⚪ DATA NOT RECORDED' : (safeFloat(d.bx_isup) >= 3 ? '🔴 High Grade' : (safeFloat(d.bx_isup) ? '🟡 Low/Intermediate' : '—'))} |`);
     lines.push(`| Clinical T Stage | ${d.ct || 'missing'} | cT1 – cT4 | — |\n`);
 
     // 2. Clinical Guideline Risk Scores

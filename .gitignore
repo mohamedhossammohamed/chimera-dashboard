@@ -1,8 +1,8 @@
 # ==============================================================================
-# CHIMERA-Agent Project .gitignore & Co-Pilot Quarantine Firewall
+# CHIMERA-Agent Project .gitignore
 # ==============================================================================
 
-# Private Agentic Workspace, Co-Pilot Engine & Governance (Quarantined)
+# Private Internal Workspace & Governance (Quarantined)
 issues/
 graphify-out/
 .scratch/
@@ -72,6 +72,8 @@ dmypy.json
 dashboard/traces/
 dashboard/bundles/
 dashboard/cohort/*.json
+docs/traces/
+docs/bundles/
 chimera-data/
 chimera_visualization_delivery/
 train_release/
@@ -87,3 +89,6 @@ scratch/
 
 # Markdown documentation — not pushed to the repo
 *.md
+
+# Plain-text development plans — not pushed to the repo
+*.txt

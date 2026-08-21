@@ -139,7 +139,6 @@ describe('Tier 4: Real-World Clinical Application Scenarios (423 Real Patient Tr
     assert.ok(resAll.pca_mri.points.length > 0);
     assert.ok(resAll.pca_mri.variance_explained.length >= 2);
     // Verify variance is non-zero when embeddings are available
-    // (previously this was weakened to only check length — restored)
     if (resAll.pca_mri.n > 1 && resAll.pca_mri.totalVariance > 0) {
       assert.ok(resAll.pca_mri.variance_explained[0] > 0, 'PC1 variance must be > 0 when embeddings exist');
     }

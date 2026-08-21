@@ -1,7 +1,5 @@
 // CHIMERA-Agent In-Browser Cohort Analytics Engine (cohort_engine.js)
 // Zero-Dependency Pure ES6 Module for Real-time Cohort Statistics, PCA, Spearman-Ward & KDE.
-// [OFFICIAL: RESEARCHER-APPROVED] Exact mathematical specifications for Phase B artifacts.
-// [SUGGESTION: CO-PILOT] High-performance pure JS implementation.
 
 import { safeFloat as importedSafeFloat } from './clinical_engine.js';
 
@@ -431,7 +429,7 @@ export function robustZ(values, x) {
   const q1 = quantile(values, 25);
   const q3 = quantile(values, 75);
   const iqr = (q1 !== null && q3 !== null) ? (q3 - q1) : 0;
-  if (iqr === 0) return 0;
+  if (iqr === 0) return null;
   return (x - med) / (iqr / 1.349);
 }
 
@@ -507,7 +505,7 @@ export function silvermanBandwidth(values) {
   };
   const iqr = pct(75) - pct(25);
 
-  let spread = iqr > 0 ? Math.min(sigma, iqr / 1.34) : sigma;
+  let spread = iqr > 0 ? Math.min(sigma, iqr / 1.349) : sigma;
   if (spread === 0) spread = sigma;
   if (spread === 0) return 0.0;
 
@@ -537,7 +535,7 @@ export function gaussianKDE(values, arg2, arg3) {
   if (Array.isArray(arg3)) {
     const bandwidth = typeof arg2 === 'number' ? arg2 : 0;
     const evalPoints = arg3;
-    if (n === 0 || bandwidth <= 0) return evalPoints.map(() => 0.0);
+    if (n === 0 || bandwidth <= 0 || Number.isNaN(bandwidth)) return evalPoints.map(() => 0.0);
     const norm = 1.0 / (n * bandwidth * Math.sqrt(2 * Math.PI));
     return evalPoints.map(x => {
       let s = 0.0;
@@ -1024,9 +1022,9 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
   });
   const eig3 = powerIter(K3);
 
-  const var1 = totalTrace > 0 ? (eig1.lambda / totalTrace) * 100 : 0;
-  const var2 = totalTrace > 0 ? (eig2.lambda / totalTrace) * 100 : 0;
-  const var3 = totalTrace > 0 ? (eig3.lambda / totalTrace) * 100 : 0;
+  const var1 = totalTrace > 0 ? (Math.max(0, eig1.lambda) / totalTrace) * 100 : 0;
+  const var2 = totalTrace > 0 ? (Math.max(0, eig2.lambda) / totalTrace) * 100 : 0;
+  const var3 = totalTrace > 0 ? (Math.max(0, eig3.lambda) / totalTrace) * 100 : 0;
   const cum2pc = var1 + var2;
   const cum3pc = var1 + var2 + var3;
 
@@ -1081,7 +1079,7 @@ export function computePCA(vectors, caseIdsOrNComponents = 3, targetsOrLabels = 
  */
 export function kaplanMeier(times, events) {
   if (!times || !Array.isArray(times) || times.length === 0) {
-    return { time_points: [], survival_probabilities: [], event_status: [], n_at_risk: [] };
+    return { time_points: [], survival_probabilities: [], event_status: [], n_at_risk: [], ci_lower: [], ci_upper: [] };
   }
   const sorted = times.map((t, i) => ({ t, e: events[i] || 0 }))
     .sort((a, b) => a.t - b.t);
@@ -1091,24 +1089,40 @@ export function kaplanMeier(times, events) {
   const survivalProbs = [1.0];
   const eventStatus = [0];
   const nAtRisk = [sorted.length];
+  const ciLower = [1.0];
+  const ciUpper = [1.0];
+  let greenwoodSum = 0.0;
   for (const t of uniqueTimes) {
     const atRisk = sorted.filter(d => d.t >= t).length;
     const eventsAtT = sorted.filter(d => d.t === t && d.e === 1).length;
     const censoredAtT = sorted.filter(d => d.t === t && d.e === 0).length;
     if (eventsAtT > 0) {
       survival *= (1 - eventsAtT / atRisk);
+      if (atRisk > eventsAtT) {
+        greenwoodSum += eventsAtT / (atRisk * (atRisk - eventsAtT));
+      }
+      const se = survival > 0 ? Math.sqrt(survival * survival * greenwoodSum) : 0;
+      const lower = Math.max(0, survival - 1.96 * se);
+      const upper = Math.min(1, survival + 1.96 * se);
       timePoints.push(t);
       survivalProbs.push(survival);
       eventStatus.push(1);
-      nAtRisk.push(atRisk - eventsAtT - censoredAtT);
+      nAtRisk.push(atRisk);
+      ciLower.push(lower);
+      ciUpper.push(upper);
     } else if (censoredAtT > 0) {
       timePoints.push(t);
       survivalProbs.push(survival);
       eventStatus.push(0);
-      nAtRisk.push(atRisk - censoredAtT);
+      nAtRisk.push(atRisk);
+      const se = survival > 0 ? Math.sqrt(survival * survival * greenwoodSum) : 0;
+      const lower = Math.max(0, survival - 1.96 * se);
+      const upper = Math.min(1, survival + 1.96 * se);
+      ciLower.push(lower);
+      ciUpper.push(upper);
     }
   }
-  return { time_points: timePoints, survival_probabilities: survivalProbs, event_status: eventStatus, n_at_risk: nAtRisk };
+  return { time_points: timePoints, survival_probabilities: survivalProbs, event_status: eventStatus, n_at_risk: nAtRisk, ci_lower: ciLower, ci_upper: ciUpper };
 }
 
 export class CohortEngine {
@@ -1286,9 +1300,9 @@ export class CohortEngine {
 
   static computeComposition(cases) {
     const tasks = {
-      task1: { total: 0, classes: { yes: { n: 0, pct: 0 }, no: { n: 0, pct: 0 } } },
-      task2: { total: 0, classes: { active_surveillance: { n: 0, pct: 0 }, continued_surveillance: { n: 0, pct: 0 }, watchful_waiting: { n: 0, pct: 0 }, active_treatment: { n: 0, pct: 0 } } },
-      task3: { total: 0, classes: { '1': { n: 0, pct: 0 }, '0': { n: 0, pct: 0 } } },
+      task1: { total: 0, classes: { yes: { n: 0, pct: 0 }, no: { n: 0, pct: 0 }, unknown: { n: 0, pct: 0 } } },
+      task2: { total: 0, classes: { active_surveillance: { n: 0, pct: 0 }, continued_surveillance: { n: 0, pct: 0 }, watchful_waiting: { n: 0, pct: 0 }, active_treatment: { n: 0, pct: 0 }, unknown: { n: 0, pct: 0 } } },
+      task3: { total: 0, classes: { '1': { n: 0, pct: 0 }, '0': { n: 0, pct: 0 }, unknown: { n: 0, pct: 0 } } },
     };
 
     for (const c of cases) {
@@ -1296,6 +1310,8 @@ export class CohortEngine {
       tasks[c.task].total++;
       if (c.target && tasks[c.task].classes[c.target]) {
         tasks[c.task].classes[c.target].n++;
+      } else {
+        tasks[c.task].classes.unknown.n++;
       }
     }
 
@@ -1356,7 +1372,7 @@ export class CohortEngine {
     }
 
     const order = wardCluster(rhoMatrix, usableVars);
-    const displayMatrix = rhoMatrix.map(row => row.map(v => v === null ? null : Math.round(v * 10000) / 10000));
+    const displayMatrix = rhoMatrix.map(row => row.map(v => v === null ? null : bankersRound(v, 10000)));
     const orderedMatrix = order.map(i => order.map(j => displayMatrix[i][j]));
     const orderedNames = order.map(idx => usableVars[idx]);
 
@@ -1648,10 +1664,10 @@ export class CohortEngine {
         n: n,
         cases: cases.map(c => {
           const x = c.variables[metric];
-          if (x === null || x === undefined || Number.isNaN(x) || typeof x !== 'number' || !Number.isFinite(x) || scale === 0) {
+          if (x === null || x === undefined || Number.isNaN(x) || typeof x !== 'number' || !Number.isFinite(x)) {
             return { case_id: c.case_id, value: x, robust_z: null, percentile: null };
           }
-          const rz = (x - med) / scale;
+          const rz = scale > 0 ? round6((x - med) / scale) : null;
           // Inline percentile rank using mid-rank formula (matches Python
           // CohortStats.percentile exactly: rank_below + 0.5*count_equal,
           // then int(round(pct)) with Python banker's rounding).
@@ -1666,7 +1682,7 @@ export class CohortEngine {
           return {
             case_id: c.case_id,
             value: x,
-            robust_z: round6(rz),
+            robust_z: rz,
             percentile: pythonRound(pct),
           };
         }),

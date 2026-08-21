@@ -1,5 +1,5 @@
-// [OFFICIAL: RESEARCHER-APPROVED] CHIMERA-Agent Phase B Case-Level Extras
-// [SUGGESTION: CO-PILOT] CCI keyword mapping and surgical pathology extraction
+// CHIMERA-Agent Phase B Case-Level Extras
+// CCI keyword mapping and surgical pathology extraction
 //
 // CaseExtras: ES module that appends case-level interpretability components
 // into existing Standard View panels without replacing their content.
@@ -521,7 +521,10 @@ function computeVectorStats(vec) {
     if (isNaN(nn)) continue;
     sqSum += (nn - mean) ** 2;
   }
-  const std = Math.sqrt(sqSum / n);
+  // Sample standard deviation (÷(n-1), Bessel's correction). For n === 1 the
+  // sample std is undefined; we report 0 to avoid NaN while staying honest
+  // (a single observation carries no dispersion information).
+  const std = n > 1 ? Math.sqrt(sqSum / (n - 1)) : 0;
   return { mean, std, min, max, n };
 }
 
@@ -608,11 +611,21 @@ function renderEmbeddingSignature(panel, trace) {
     shapeCell.textContent = shapeStr;
     row.appendChild(shapeCell);
 
-    // Compute stats: prefer vector_sample if available, else use backend-computed values
+    // Compute stats: prefer backend-computed full-vector statistics (rep.mean /
+    // rep.std / rep.min / rep.max) when available. Only fall back to recomputing
+    // from vector_sample when the backend did not provide statistics — and in
+    // that case use the full vector if present (rep.vector) rather than the
+    // truncated vector_sample, to avoid contradicting adjacent panels.
     let stats = null;
-    if (Array.isArray(rep.vector_sample) && rep.vector_sample.length > 0) {
-      stats = computeVectorStats(rep.vector_sample);
-      anyRecomputed = true;
+    const hasBackendStats = (rep.mean !== undefined && rep.mean !== null) &&
+                            (rep.std !== undefined && rep.std !== null);
+    if (!hasBackendStats) {
+      const fullVec = Array.isArray(rep.vector) ? rep.vector
+        : (Array.isArray(rep.vector_sample) ? rep.vector_sample : null);
+      if (fullVec && fullVec.length > 0) {
+        stats = computeVectorStats(fullVec);
+        anyRecomputed = true;
+      }
     }
 
     // L2 Norm

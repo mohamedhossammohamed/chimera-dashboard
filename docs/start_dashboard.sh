@@ -6,7 +6,7 @@ echo "================================================================="
 echo "   CHIMERA-Agent Clinical Interpretability Dashboard"
 echo "================================================================="
 echo "Starting ultra-lightweight local dashboard server on port ${PORT}..."
-echo "Open your browser to: http://localhost:${PORT}/dashboard/"
+echo "Open your browser to: http://localhost:${PORT}/docs/"
 echo "Press Ctrl+C to terminate."
 echo "================================================================="
 

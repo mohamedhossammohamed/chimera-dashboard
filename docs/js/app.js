@@ -1,9 +1,6 @@
 // Master Standard View Application Coordinator (app.js)
-// [OFFICIAL: RESEARCHER-APPROVED] CHIMERA-Agent Phase A Integration
-// [SUGGESTION: CO-PILOT] In-browser live execution and bundle generation
 import { TraceReader, sanitizeJson, isTrainReleaseSplitFormat, mergeTrainReleaseFiles } from './data.js';
 import { StandardView } from './standard_view.js';
-import { renderClevelandBulletStrip, renderKaplanMeierSVG, renderEAUScorecard, renderConcordanceMatrix } from './standard_components.js';
 import { CohortView } from './cohort_view.js';
 import { CaseExtras } from './case_extras.js';
 import { ClinicalBundleGenerator } from './clinical_engine.js';
@@ -101,7 +98,7 @@ class StandardWorkbenchApp {
 
     for (const t of uniqueTraces) {
       const opt = document.createElement('option');
-      opt.value = t.file || t.case_id;
+      opt.value = `${(t.task || '').toLowerCase()}:${t.case_id}`;
       opt.textContent = `[${(t.task || '').toUpperCase()}] ${t.case_id}`;
       sel.appendChild(opt);
     }
@@ -256,7 +253,7 @@ class StandardWorkbenchApp {
     sel.innerHTML = '';
     for (const t of filtered) {
       const opt = document.createElement('option');
-      opt.value = t.file || t.case_id;
+      opt.value = `${(t.task || '').toLowerCase()}:${t.case_id}`;
       opt.textContent = `[${(t.task || '').toUpperCase()}] ${t.case_id}`;
       sel.appendChild(opt);
     }
@@ -449,8 +446,19 @@ class StandardWorkbenchApp {
   }
 
   async selectCase(tracePath) {
-    // Upload-first: traces are already in memory. Find by case_id.
-    const loaded = this.loadedTraces.find(t => t.case_id === tracePath);
+    // Upload-first: traces are already in memory. Find by composite (task, case_id) key
+    // so duplicate case_ids across different tasks resolve to the correct trace.
+    const sepIdx = tracePath.indexOf(':');
+    let taskFilter = '';
+    let caseId = tracePath;
+    if (sepIdx !== -1) {
+      taskFilter = tracePath.slice(0, sepIdx).toLowerCase();
+      caseId = tracePath.slice(sepIdx + 1);
+    }
+    const loaded = this.loadedTraces.find(t =>
+      t.case_id === caseId &&
+      (t.task || '').toLowerCase() === taskFilter
+    );
     if (loaded) {
       this.activeTrace = loaded;
       this.loadBundle(this.activeTrace);

@@ -3,10 +3,6 @@
 // values used across clinical_engine.js, standard_view.js, and
 // standard_components.js.
 //
-// [OFFICIAL: RESEARCHER-APPROVED] Canonical fail-closed sentinel for
-// unrecorded/non-classifiable EAU data (KI-8).
-// [SUGGESTION: CO-PILOT] Shared module extraction to eliminate duplication.
-
 // Canonical EAU "data not recorded" sentinel. Every module that needs to
 // represent unrecorded/non-classifiable clinical data MUST import this
 // constant instead of defining a local copy.

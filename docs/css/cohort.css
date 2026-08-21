@@ -1,13 +1,11 @@
 /* CHIMERA-Agent Phase B Cohort Analytics Stylesheet (cohort.css) */
-/* [OFFICIAL: RESEARCHER-APPROVED] CHIMERA-Agent Phase B Cohort Analytics */
-/* [SUGGESTION: CO-PILOT] Implementation architecture and SVG rendering */
 
 .cohort-layout {
   max-width: 1400px;
   margin: 20px auto;
   padding: 0 20px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 20px;
   align-items: start; /* prevent stretch-induced overflow */
 }

@@ -620,7 +620,7 @@ describe('Tier 1: Feature 9 - Zero-Image Pure SVG/Canvas Rendering', () => {
     assert.equal(card.card.className, 'cohort-card panel-full');
   });
 
-  it('9.3: disclaimer banner renders clinical spectrum notice', async () => {
+  it('9.3: clinical spectrum disclaimer banners are removed from cohort view', async () => {
     const { CohortView } = await import('../docs/js/cohort_view.js');
     const { TraceReader } = await import('../docs/js/data.js');
     const container = document.getElementById('cohort-view');
@@ -643,7 +643,7 @@ describe('Tier 1: Feature 9 - Zero-Image Pure SVG/Canvas Rendering', () => {
     CohortView._data = { _loaded: false };
     await CohortView.renderCohortTab(traces);
     const disclaimer = container.querySelector('.cohort-disclaimer-banner');
-    assert.ok(disclaimer, 'Disclaimer banner must be rendered');
+    assert.equal(disclaimer, null, 'Disclaimer banner must not be rendered');
   });
 
   it('9.4: makes valid card containers for all B1-B5 sections', async () => {

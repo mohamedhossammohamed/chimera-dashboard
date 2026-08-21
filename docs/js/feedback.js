@@ -1,4 +1,4 @@
-// [OFFICIAL: RESEARCHER-APPROVED] CHIMERA-Agent Shared Non-Blocking Feedback
+// CHIMERA-Agent Shared Non-Blocking Feedback
 //
 // Standalone toast utility extracted from app.js showFeedback so that static
 // view methods (which have no access to the app controller instance) can emit

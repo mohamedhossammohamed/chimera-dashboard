@@ -121,9 +121,10 @@ export function mergeTrainReleaseCase(caseFiles) {
         shape: [1, vec.length],
         norm: Math.sqrt(vec.reduce((s, v) => s + v * v, 0)),
         vector_sample: vec.slice(0, 6),
+        embedding: mriRaw,
       };
     } else {
-      modality_representations.mri = { shape: [0], norm: 0, vector_sample: [] };
+      modality_representations.mri = { shape: [0], norm: 0, vector_sample: [], embedding: [] };
     }
     // Biopsy
     const bxRaw = neuralReps['Biopsy slide'];
@@ -133,9 +134,10 @@ export function mergeTrainReleaseCase(caseFiles) {
         shape: [1, vec.length],
         norm: Math.sqrt(vec.reduce((s, v) => s + v * v, 0)),
         vector_sample: vec.slice(0, 6),
+        embedding: bxRaw,
       };
     } else {
-      modality_representations.biopsy = { shape: [0], norm: 0, vector_sample: [] };
+      modality_representations.biopsy = { shape: [0], norm: 0, vector_sample: [], embedding: [] };
     }
     // Prostatectomy
     const pxRaw = neuralReps['Prostatectomy slide'];
@@ -145,9 +147,10 @@ export function mergeTrainReleaseCase(caseFiles) {
         shape: [1, vec.length],
         norm: Math.sqrt(vec.reduce((s, v) => s + v * v, 0)),
         vector_sample: vec.slice(0, 6),
+        embedding: pxRaw,
       };
     } else {
-      modality_representations.prostatectomy = { shape: [0], norm: 0, vector_sample: [] };
+      modality_representations.prostatectomy = { shape: [0], norm: 0, vector_sample: [], embedding: [] };
     }
   }
 
@@ -364,7 +367,7 @@ export class TraceReader {
       clinical_records: objField(trace.clinical_records, {}, 'clinical_records'),
       ground_truth: { ...DEFAULT_GROUND_TRUTH, ...objField(trace.ground_truth, DEFAULT_GROUND_TRUTH, 'ground_truth') },
       // Merge partial model_prediction with task-specific defaults so missing
-      // fields are populated rather than left undefined (XFI-2).
+      // fields are populated rather than left undefined.
       model_prediction: { ...DEFAULT_MODEL_PREDICTION, ...objField(trace.model_prediction, DEFAULT_MODEL_PREDICTION, 'model_prediction') },
       evaluation: objField(trace.evaluation, { is_correct: null }, 'evaluation')
     };
@@ -381,7 +384,6 @@ export class TraceReader {
     normalized.schema_valid = errors.length === 0;
 
     // Deep-clone so downstream mutations cannot corrupt the original parsed trace.
-    // CRITICAL: coupled with app.js preloadAllTraces dedup fix (FIX-AP) — both must ship together.
     return {
       success: true,
       data: clone(normalized)
