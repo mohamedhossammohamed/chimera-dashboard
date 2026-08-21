@@ -332,7 +332,11 @@ function renderPCA(container, data, modalityLabel) {
       cx: cx.toFixed(2), cy: cy.toFixed(2), r: 4.5,
       fill: color, 'fill-opacity': 0.75, stroke: '#0d1117', 'stroke-width': 0.8,
     });
-    dot.appendChild(el('title', {}, `${p.case_id} | task: ${p.task} | target: ${p.target} | PC1: ${p.pc1.toFixed(3)} | PC2: ${p.pc2.toFixed(3)}`));
+    dot.style.cursor = 'pointer';
+    dot.appendChild(el('title', {}, `${p.task.toUpperCase()} | ${p.case_id} | target: ${p.target} | PC1: ${p.pc1.toFixed(3)} | PC2: ${p.pc2.toFixed(3)} — click to view case`));
+    dot.addEventListener('click', () => {
+      document.dispatchEvent(new CustomEvent('chimera:navigate-case', { detail: { task: p.task, case_id: p.case_id } }));
+    });
     svg.appendChild(dot);
   }
 
