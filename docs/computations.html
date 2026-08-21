@@ -547,6 +547,13 @@
       return { tier: 'Unfavorable Intermediate', reason: criteria.join('; ') };
     }
 
+    // 6. Catch-all: PSA 10-20 with valid ISUP + CT but no high-risk — not enough
+    // criteria for Favorable/Unfavorable, but NOT missing data either.
+    if (psaVal !== null &amp;&amp; psaVal &gt;= 10 &amp;&amp; psaVal &lt;= 20 &amp;&amp; isup !== null &amp;&amp; ctRank &amp;&amp; !hasHighRisk) {
+      criteria.push(`PSA ${psaVal} 10-20; ISUP ${isup}; ${ct}; insufficient criteria for Favorable/Unfavorable`);
+      return { tier: 'Intermediate (unclassified)', reason: criteria.join('; ') };
+    }
+
     return { tier: EAU_SENTINEL, reason: 'Non-standard risk parameter constellation' };
   }</code></pre>
 </section>
@@ -823,7 +830,7 @@
     <p><strong>Output:</strong> Object with Gleason primary/secondary scores and binary flags (margin, ece, svi, lni, lvi) as 'present'/'absent'/null</p>
   </div>
   <h3>Natural Language</h3>
-  <p>Two-phase negation-aware regex extraction from free-text surgical pathology reports. Phase 1: find all mentions of clinical trigger terms (e.g., 'seminal vesicle', 'margin', 'extraprostatic'). Phase 2: check ±40 chars of context for negation words (no, not, without, negative, absent, none, free, clear, unremarkable, uninvolved). Clause boundaries prevent negation bleeding across sentences. List negation propagation: 'no evidence of ECE, SVI, LVI' negates all three. Distant metastasis exclusion: 'bone metastasis' excluded from LNI. Numeric negation: '0/15 lymph nodes positive' → absent. Unextractable fields remain null (never assumed negative).</p>
+  <p>Two-phase negation-aware regex extraction from free-text surgical pathology reports. Phase 1: find all mentions of clinical trigger terms (e.g., 'seminal vesicle', 'margin', 'extraprostatic'). Phase 2: check ±40 chars of context for negation words (no, not, without, negative, absent, none, free, clear, unremarkable, uninvolved). Clause boundaries prevent negation bleeding across sentences. List negation propagation: 'no evidence of ECE, SVI, LVI' negates all three, with a positive-term guard that stops propagation when a subsequent clause contains an explicit positive finding (e.g., 'no evidence of ECE, SVI, margins positive' does not negate margins). List positive propagation: 'ECE, SVI, LNI present' propagates positivity backward to all comma-separated items, stopping at clauses with explicit negation polarity. NOS handling: 'not otherwise specified' is treated as unknown (null), not negation — checked against the full clause to avoid window truncation defeating the lookahead. Gleason parsing supports three formats: standard 'Gleason 3+4', sum-first 'Gleason score: 7 (3+4)' or 'Gleason: 7 = 3+4', and separate-pattern 'Gleason pattern 3, pattern 4', all with highest-grade selection (tiebreak by higher primary). TNM pN notation: pN0 → LNI absent, pN1/pN2 → LNI present, pNx → not assessed (null). Mixed margin override: any un-negated positive margin term in the same sentence overrides a negative classification. Distant metastasis exclusion: 'bone metastasis' excluded from LNI. Numeric negation: '0/15 lymph nodes positive' → absent. Unextractable fields remain null (never assumed negative).</p>
   <h3>Mathematical Formula</h3>
   <div class="math">
     No closed-form equation — the parser is an algorithmic two-phase scan. Pseudocode:
@@ -853,10 +860,18 @@
     &nbsp;&nbsp;F ← hasPositive ? 'present' : hasNegated ? 'absent' : null
   </div>
   <h3>Code Implementation</h3>
-  <pre><code class="language-javascript">function findListNegationRanges(lower) {
+  <pre><code class="language-javascript">/**
+ * Find ranges where list negation propagates.
+ * "no evidence of ECE, SVI, LVI" → all three are negated.
+ * Scans for negation phrases followed by comma-separated terms until
+ * a sentence boundary (period, semicolon, or end of text).
+ */
+function findListNegationRanges(lower) {
   const ranges = [];
   // Match "no evidence of", "no sign of", "free of" at clause start
   const listNegRe = /\b(?:no\s+evidence\s+of|no\s+sign\s+of|free\s+of)\b/gi;
+  // Positive terms that stop negation propagation at clause boundaries
+  const positiveTermRe = /\b(?:positive|present|involved|identified|noted|seen|invasion|invasive|involvement|yes)\b|\(\+\)/i;
   let m;
   while ((m = listNegRe.exec(lower)) !== null) {
     const phraseStart = m.index;
@@ -866,10 +881,24 @@
     while (pos &lt; lower.length &amp;&amp; /\s/.test(lower[pos])) pos++;
     if (pos &gt;= lower.length) continue;
     // Scan forward through commas until sentence boundary (. ; \n)
+    // or a clause that explicitly states a positive finding.
     let listEnd = pos;
     while (listEnd &lt; lower.length) {
       const ch = lower[listEnd];
       if (ch === '.' || ch === ';' || ch === '\n') break;
+      if (ch === ',') {
+        // Check the upcoming clause (after this comma) for positive terms.
+        // If found, stop negation before this clause — e.g. "no evidence of
+        // ECE, SVI, margins positive" should not negate "margins positive".
+        let clauseEnd = listEnd + 1;
+        while (clauseEnd &lt; lower.length) {
+          const c = lower[clauseEnd];
+          if (c === '.' || c === ';' || c === '\n' || c === ',') break;
+          clauseEnd++;
+        }
+        const upcomingClause = lower.substring(listEnd + 1, clauseEnd);
+        if (positiveTermRe.test(upcomingClause)) break;
+      }
       listEnd++;
     }
     // The negation range covers from phraseStart to listEnd
@@ -878,7 +907,116 @@
   return ranges;
 }
 
-function classifyField(lower, triggerRe, positiveRe, checkNumeric, notAssessableRe, excludeRe, listNegRanges) {
+/**
+ * Find ranges where list positive propagation applies.
+ * "ECE, SVI, LNI present" → all three are positive.
+ * Scans for "present" or "positive" at the end of a comma-separated list
+ * and propagates the positive status backward to all items in the list.
+ * Mirrors the negation propagation in findListNegationRanges.
+ */
+function findListPositiveRanges(lower) {
+  const ranges = [];
+  const posRe = /\b(?:present|positive)\b/gi;
+  // Explicit negation/polarity words that mark a clause as already-decided.
+  // Backward positive propagation MUST stop at such a clause — otherwise
+  // "ECE absent, SVI present" would flip ECE to present, and
+  // "Margins negative, ECE present" would flip margins to positive.
+  // Propagation only continues through comma items with NO explicit polarity.
+  const explicitNegRe = /\b(?:absent|negative|no|none|clear|free|not|without)\b/i;
+  let m;
+  while ((m = posRe.exec(lower)) !== null) {
+    const wordStart = m.index;
+    const wordEnd = m.index + m[0].length;
+    // Scan backward from the positive word to find the list start
+    let pos = wordStart;
+    // Skip whitespace before the positive word
+    while (pos &gt; 0 &amp;&amp; /\s/.test(lower[pos - 1])) pos--;
+    // Must have at least one comma in the list for propagation
+    let hasComma = false;
+    let listStart = pos;
+    while (listStart &gt; 0) {
+      const ch = lower[listStart - 1];
+      if (ch === '.' || ch === ';' || ch === '\n') break;
+      if (ch === ',') {
+        // Inspect the clause immediately before this comma. If it contains
+        // an explicit negation/polarity word, stop propagation here — that
+        // clause has already committed to a polarity and must not be flipped.
+        let clauseStart = listStart - 1;
+        while (clauseStart &gt; 0) {
+          const pc = lower[clauseStart - 1];
+          if (pc === '.' || pc === ';' || pc === '\n' || pc === ',') break;
+          clauseStart--;
+        }
+        const prevClause = lower.substring(clauseStart, listStart - 1);
+        if (explicitNegRe.test(prevClause)) break;
+        hasComma = true;
+        listStart--;
+        while (listStart &gt; 0 &amp;&amp; /\s/.test(lower[listStart - 1])) listStart--;
+        continue;
+      }
+      listStart--;
+    }
+    // Only propagate if there's at least one comma (actual list)
+    if (hasComma) {
+      ranges.push({ start: listStart, end: wordEnd });
+    }
+  }
+  return ranges;
+}
+
+/**
+ * Check whether a mention at [start, end) in lowercased text is negated.
+ * Scans within the current clause (delimited by . ; ! ? , \n) plus a
+ * ±20 char window, but never crosses clause boundaries. This prevents
+ * false negation from adjacent clauses like "Margins negative. ECE present".
+ * Special case: "no evidence of" can look back past one comma boundary.
+ */
+function isNegated(lower, start, end) {
+  const clause = clauseBounds(lower, start);
+  const winStart = Math.max(clause.start, start - 20);
+  const winEnd = Math.min(clause.end, end + 20);
+  if (NEGATION_RE.test(lower.substring(winStart, winEnd))) return true;
+  // Check for "no evidence of" in the previous clause (across one comma only, not periods).
+  // CRITICAL: Only span if "no evidence of" is at the END of the previous clause
+  // (nothing meaningful follows it). If a field trigger follows "no evidence of"
+  // in the previous clause, that trigger already consumed the negation — spanning
+  // would falsely negate the current field. E.g. "No evidence of ECE, SVI present"
+  // must NOT negate SVI because ECE consumed the "no evidence of".
+  if (clause.start &gt; 0) {
+    const prevChar = lower[clause.start - 1];
+    if (prevChar === ',') {
+      const prevClause = clauseBounds(lower, clause.start - 1);
+      const prevText = lower.substring(prevClause.start, prevClause.end);
+      const match = EVIDENCE_NEG_RE.exec(prevText);
+      if (match) {
+        // Check what follows "no evidence of" in the previous clause
+        const afterEvidence = prevText.substring(match.index + match[0].length).trim();
+        // Only span if nothing meaningful follows (empty or just punctuation)
+        if (afterEvidence === '' || /^[,;.\s]*$/.test(afterEvidence)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+/**
+ * Two-phase negation-aware classifier for a binary pathology field.
+ *
+ * Scans all trigger-term mentions. For each mention, checks the ±40 char
+ * window for numeric negation (0/N), not-assessable patterns, negation words,
+ * and positive/affirmative terms. Aggregates across all mentions: any
+ * un-negated positive → 'present'; else any negated → 'absent'; else null.
+ *
+ * @param {string} lower - Full lowercased report text.
+ * @param {RegExp} triggerRe - Global regex matching clinical terms for this field.
+ * @param {RegExp} positiveRe - Regex matching positive/affirmative terms.
+ * @param {boolean} checkNumeric - Whether to check for 0/N numeric negation.
+ * @param {RegExp|null} notAssessableRe - Regex matching not-assessable patterns.
+ * @returns {'present'|'absent'|null}
+ */
+function classifyField(lower, triggerRe, positiveRe, checkNumeric, notAssessableRe, excludeRe, listNegRanges, listPosRanges) {
   let hasPositive = false;
   let hasNegated = false;
   triggerRe.lastIndex = 0;
@@ -903,10 +1041,47 @@ function classifyField(lower, triggerRe, positiveRe, checkNumeric, notAssessable
       continue;
     }
 
+    // List positive propagation: "ECE, SVI, LNI present" → all positive
+    if (listPosRanges &amp;&amp; listPosRanges.some(r =&gt; start &gt;= r.start &amp;&amp; end &lt;= r.end)) {
+      hasPositive = true;
+      continue;
+    }
+
     // Not assessed (e.g. "not noted", "not evaluated") → unknown, skip mention.
     // This must take precedence over negation: "LVI: not noted" is NOT 'absent',
     // it means the pathologist did not assess it. Skipping keeps the field null.
-    if (NOT_ASSESSED_RE.test(window)) continue;
+    // Check both the ±20 char window AND the full clause (plus the adjacent
+    // comma-separated continuation clause) so that "ECE present, not noted"
+    // correctly suppresses the positive finding.
+    if (NOT_ASSESSED_RE.test(window) || NOT_ASSESSED_RE.test(lower.substring(clause.start, clause.end))) continue;
+    {
+      let nextEnd = clause.end;
+      while (nextEnd &lt; lower.length) {
+        const ch = lower[nextEnd];
+        if (ch === '.' || ch === ';' || ch === '\n') break;
+        nextEnd++;
+      }
+      if (NOT_ASSESSED_RE.test(lower.substring(clause.end, nextEnd))) continue;
+    }
+
+    // Not-otherwise-specified (NOS): "not otherwise specified" is a descriptive
+    // qualifier, not a negation. Checked against the FULL clause (not the ±20
+    // char window) because the window can truncate "specified", defeating the
+    // NEGATION_RE lookahead and causing "not" to match → false 'absent'.
+    // NOS means unknown → skip mention (contributes neither polarity).
+    // Also check the adjacent comma-separated continuation clause so that
+    // "lymphovascular invasion, not otherwise specified" correctly suppresses
+    // the positive finding (NOS is in the next comma clause).
+    if (NOS_RE.test(lower.substring(clause.start, clause.end))) continue;
+    {
+      let nextEnd = clause.end;
+      while (nextEnd &lt; lower.length) {
+        const ch = lower[nextEnd];
+        if (ch === '.' || ch === ';' || ch === '\n') break;
+        nextEnd++;
+      }
+      if (NOS_RE.test(lower.substring(clause.end, nextEnd))) continue;
+    }
 
     // Numeric negation: "0/15 lymph nodes positive" → absent
     // Check both the ±20 char window AND the full clause, so that
@@ -928,6 +1103,13 @@ function classifyField(lower, triggerRe, positiveRe, checkNumeric, notAssessable
   return null;
 }
 
+/**
+ * Parses a surgical pathology report text and extracts structured flags.
+ * Handles null/undefined/empty/non-string input gracefully by returning all nulls.
+ *
+ * @param {string|null|undefined} reportText - Raw surgical pathology report text.
+ * @returns {{gleason_prim: number|null, gleason_sec: number|null, margin: string|null, ece: string|null, svi: string|null, lni: string|null, lvi: string|null}}
+ */
 export function parseSurgicalPathology(reportText) {
   const empty = { gleason_prim: null, gleason_sec: null, margin: null, ece: null, svi: null, lni: null, lvi: null };
   if (!reportText || typeof reportText !== 'string') return empty;
@@ -935,6 +1117,7 @@ export function parseSurgicalPathology(reportText) {
   const result = { ...empty };
   const lower = reportText.toLowerCase();
   const listNegRanges = findListNegationRanges(lower);
+  const listPosRanges = findListPositiveRanges(lower);
 
   // Pathologic Gleason (primary + secondary) — highest-grade selection
   // ISUP 2019 / Epstein 2005 / Kunz 2009: highest sum (prim+sec) correlates
@@ -944,6 +1127,27 @@ export function parseSurgicalPathology(reportText) {
   const glMatches = reportText.matchAll(/Gleason\s+(?:score\s*|pattern\s*)?[:=]?\s*(\d{1,2})\s*\+\s*(\d{1,2})/gi);
   let highestPrim = null, highestSec = null, highestSum = -1;
   for (const m of glMatches) {
+    const prim = parseInt(m[1], 10);
+    const sec = parseInt(m[2], 10);
+    const sum = prim + sec;
+    if (sum &gt; highestSum || (sum === highestSum &amp;&amp; prim &gt; highestPrim)) {
+      highestSum = sum; highestPrim = prim; highestSec = sec;
+    }
+  }
+  // Sum-first format: "Gleason score: 7 (3+4)" or "Gleason: 7 = 3+4"
+  // Total score followed by parenthesized or "=" breakdown.
+  const glSumMatches = reportText.matchAll(/Gleason\s*(?:score\s*)?[:=]?\s*(\d{1,2})\s*(?:\(\s*|=)\s*(\d{1,2})\s*\+\s*(\d{1,2})\s*\)?/gi);
+  for (const m of glSumMatches) {
+    const prim = parseInt(m[2], 10);
+    const sec = parseInt(m[3], 10);
+    const sum = prim + sec;
+    if (sum &gt; highestSum || (sum === highestSum &amp;&amp; prim &gt; highestPrim)) {
+      highestSum = sum; highestPrim = prim; highestSec = sec;
+    }
+  }
+  // Separate-pattern format: "Gleason pattern 3, pattern 4"
+  const glSepMatches = reportText.matchAll(/Gleason\s+pattern\s+(\d{1,2})\s*,\s*pattern\s+(\d{1,2})/gi);
+  for (const m of glSepMatches) {
     const prim = parseInt(m[1], 10);
     const sec = parseInt(m[2], 10);
     const sum = prim + sec;
@@ -965,13 +1169,39 @@ export function parseSurgicalPathology(reportText) {
     false,
     null,
     null,
-    listNegRanges
+    listNegRanges,
+    listPosRanges
   );
   // Handle R0 explicitly: if "R0" appears and no R1/positive, it's negative
   if (marginRaw === null &amp;&amp; /\br0\b/i.test(reportText) &amp;&amp; !/\br1\b/i.test(reportText)) {
     result.margin = 'negative';
   } else {
     result.margin = marginRaw === 'present' ? 'positive' : marginRaw === 'absent' ? 'negative' : null;
+  }
+  // Mixed margin findings: "negative for tumor, positive at apex"
+  // Any positive margin in the same sentence overrides negative. Commas
+  // separate sub-findings within the same margin clause, so check the full
+  // sentence (delimited by . ; \n, NOT commas) for positive margin terms.
+  // Only override if the positive term is in a clause that is NOT negated
+  // (e.g. "no positive margins" should NOT override — "positive" is negated).
+  if (result.margin === 'negative') {
+    const marginSentRe = /\bmargins?\b/g;
+    let mm;
+    outer: while ((mm = marginSentRe.exec(lower)) !== null) {
+      let sentStart = mm.index;
+      while (sentStart &gt; 0 &amp;&amp; lower[sentStart - 1] !== '.' &amp;&amp; lower[sentStart - 1] !== '\n' &amp;&amp; lower[sentStart - 1] !== ';') sentStart--;
+      let sentEnd = mm.index + mm[0].length;
+      while (sentEnd &lt; lower.length &amp;&amp; lower[sentEnd] !== '.' &amp;&amp; lower[sentEnd] !== '\n' &amp;&amp; lower[sentEnd] !== ';') sentEnd++;
+      const sentence = lower.substring(sentStart, sentEnd);
+      // Split into comma-separated clauses; check each for un-negated positive
+      const clauses = sentence.split(',');
+      for (const clause of clauses) {
+        if (/\b(?:positive|r1|involved)\b|\(\+\)/i.test(clause) &amp;&amp; !NEGATION_RE.test(clause)) {
+          result.margin = 'positive';
+          break outer;
+        }
+      }
+    }
   }
 
   // ECE (Extraprostatic / Extracapsular Extension)
@@ -982,7 +1212,8 @@ export function parseSurgicalPathology(reportText) {
     false,
     null,
     null,
-    listNegRanges
+    listNegRanges,
+    listPosRanges
   );
 
   // SVI (Seminal Vesicle Invasion)
@@ -993,7 +1224,8 @@ export function parseSurgicalPathology(reportText) {
     false,
     null,
     null,
-    listNegRanges
+    listNegRanges,
+    listPosRanges
   );
 
   // LNI (Lymph Node Involvement) — "lymph node", "nodal", "LNI", NOT "lymphovascular"
@@ -1005,8 +1237,22 @@ export function parseSurgicalPathology(reportText) {
     true,
     NOT_ASSESSABLE_RE,
     DISTANT_METS_RE,
-    listNegRanges
+    listNegRanges,
+    listPosRanges
   );
+  // TNM nodal notation: pN0 (LNI absent), pN1/pN2 (LNI present), pNx (not assessed).
+  // Handled separately from the main LNI classifier since pN uses a compact
+  // notation that doesn't fit the standard negation/positive term model.
+  let pnHasPositive = false, pnHasNegated = false, pnNotAssessed = false;
+  for (const m of reportText.matchAll(/\bpn([0-2x])\b/gi)) {
+    const v = m[1].toLowerCase();
+    if (v === '0') pnHasNegated = true;
+    else if (v === '1' || v === '2') pnHasPositive = true;
+    else if (v === 'x') pnNotAssessed = true;
+  }
+  if (result.lni === 'present' || pnHasPositive) result.lni = 'present';
+  else if (result.lni === 'absent' || pnHasNegated) result.lni = 'absent';
+  // else remains null (pnNotAssessed alone → null, not assessed)
 
   // LVI (Lymphovascular Invasion) — "lymphovascular", "vascular invasion",
   // "LVI", or "angiolymphatic". NOT "lymph node" (that's LNI, handled above with
@@ -1019,7 +1265,8 @@ export function parseSurgicalPathology(reportText) {
     false,
     null,
     null,
-    listNegRanges
+    listNegRanges,
+    listPosRanges
   );
 
   return result;
@@ -1720,21 +1967,21 @@ function computeCCI(pmhx, age) {
   <div class="provenance-info">
     <p><strong>Source:</strong> case_extras.js &rarr; embedded provenance badge</p>
     <p><strong>Inputs:</strong> Numeric feature vector (Array of numbers)</p>
-    <p><strong>Output:</strong> Summary statistics object (mean, median, standard deviation, min, max, count)</p>
+    <p><strong>Output:</strong> Summary statistics object (mean, standard deviation, min, max, n)</p>
   </div>
   <h3>Natural Language</h3>
-  <p>Computes descriptive summary statistics for a numeric feature vector. Returns central tendency (mean, median), dispersion (standard deviation), and range (min, max) along with the valid element count. Used by the case-level provenance badge to surface embedding vector quality metrics.</p>
+  <p>Computes descriptive summary statistics for a numeric feature vector. Returns central tendency (mean), dispersion (sample standard deviation with Bessel's correction), and range (min, max) along with the valid element count (n). Used by the case-level provenance badge to surface embedding vector quality metrics.</p>
 </section>
 
 <section id="concordance-matrix">
   <h2>Concordance Matrix</h2>
   <div class="provenance-info">
-    <p><strong>Source:</strong> standard_view.js &rarr; concordance provenance badge</p>
-    <p><strong>Inputs:</strong> Predicted labels (Array), true labels (Array), optional class names</p>
-    <p><strong>Output:</strong> Confusion matrix (2D array) with per-class concordance statistics</p>
+    <p><strong>Source:</strong> standard_components.js &rarr; renderConcordanceMatrix()</p>
+    <p><strong>Inputs:</strong> PI-RADS score (scalar 1-5), ISUP grade group (scalar 1-5)</p>
+    <p><strong>Output:</strong> 5&times;5 SVG grid mapping PI-RADS scores (rows) against ISUP grade groups (columns), with each cell labeled concordant, discordant, or equivocal</p>
   </div>
   <h3>Natural Language</h3>
-  <p>Computes a concordance (confusion) matrix comparing predicted classifications against ground-truth labels. Each cell M[i][j] counts cases where the true class is i and the predicted class is j. Diagonal entries represent concordant (correctly classified) cases; off-diagonal entries represent discordant (misclassified) cases. Used by the standard view provenance badge to surface classification agreement metrics.</p>
+  <p>Renders a 5&times;5 PI-RADS vs ISUP agreement matrix. Each cell classifies the relationship between a PI-RADS score and an ISUP grade group as concordant (PI-RADS and ISUP agree on risk level), discordant (they disagree), or equivocal (borderline agreement). The classification thresholds are clinically defined: PI-RADS 1-2 with ISUP 1 is concordant (low risk), PI-RADS 4-5 with ISUP 3-5 is concordant (high risk), and mismatches are discordant. Used by the standard view to surface imaging-histology agreement for individual cases.</p>
 </section>
 
 <section id="kaplan-meier">

@@ -271,14 +271,38 @@ function classifyField(lower, triggerRe, positiveRe, checkNumeric, notAssessable
     // Not assessed (e.g. "not noted", "not evaluated") → unknown, skip mention.
     // This must take precedence over negation: "LVI: not noted" is NOT 'absent',
     // it means the pathologist did not assess it. Skipping keeps the field null.
-    if (NOT_ASSESSED_RE.test(window)) continue;
+    // Check both the ±20 char window AND the full clause (plus the adjacent
+    // comma-separated continuation clause) so that "ECE present, not noted"
+    // correctly suppresses the positive finding.
+    if (NOT_ASSESSED_RE.test(window) || NOT_ASSESSED_RE.test(lower.substring(clause.start, clause.end))) continue;
+    {
+      let nextEnd = clause.end;
+      while (nextEnd < lower.length) {
+        const ch = lower[nextEnd];
+        if (ch === '.' || ch === ';' || ch === '\n') break;
+        nextEnd++;
+      }
+      if (NOT_ASSESSED_RE.test(lower.substring(clause.end, nextEnd))) continue;
+    }
 
     // Not-otherwise-specified (NOS): "not otherwise specified" is a descriptive
     // qualifier, not a negation. Checked against the FULL clause (not the ±20
     // char window) because the window can truncate "specified", defeating the
     // NEGATION_RE lookahead and causing "not" to match → false 'absent'.
     // NOS means unknown → skip mention (contributes neither polarity).
+    // Also check the adjacent comma-separated continuation clause so that
+    // "lymphovascular invasion, not otherwise specified" correctly suppresses
+    // the positive finding (NOS is in the next comma clause).
     if (NOS_RE.test(lower.substring(clause.start, clause.end))) continue;
+    {
+      let nextEnd = clause.end;
+      while (nextEnd < lower.length) {
+        const ch = lower[nextEnd];
+        if (ch === '.' || ch === ';' || ch === '\n') break;
+        nextEnd++;
+      }
+      if (NOS_RE.test(lower.substring(clause.end, nextEnd))) continue;
+    }
 
     // Numeric negation: "0/15 lymph nodes positive" → absent
     // Check both the ±20 char window AND the full clause, so that

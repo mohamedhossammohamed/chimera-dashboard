@@ -259,8 +259,8 @@ function renderSurgicalPathologyFlagStrip(panel, trace) {
       desc: 'Surgical Margin Status' },
     { key: 'n1', label: 'N1', presentLabel: 'PRESENT', absentLabel: 'ABSENT', value: flags.n1,
       desc: 'Lymph Node Metastasis' },
-    { key: 'epe', label: 'EPE', presentLabel: 'PRESENT', absentLabel: 'ABSENT', value: flags.epe,
-      desc: 'Extraprostatic Extension' },
+    { key: 'epe', label: 'ECE', presentLabel: 'PRESENT', absentLabel: 'ABSENT', value: flags.epe,
+      desc: 'Extracapsular Extension' },
     { key: 'lvi', label: 'LVI', presentLabel: 'PRESENT', absentLabel: 'ABSENT', value: flags.lvi,
       desc: 'Lymphovascular Invasion' },
   ];

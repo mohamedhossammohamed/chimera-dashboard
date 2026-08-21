@@ -149,12 +149,15 @@ export function renderClevelandBulletStrip(container, value, thresholds) {
 
   // Background bands — clinical semantic fills, opaque for label contrast.
   // Band label color chosen per band: dark on grey/amber, white on red.
-  const bandDefs = [
-    { from: dMin, to: nm, fill: '#e0e0e0', label: 'Normal', labelFill: '#1f2328' },
-    { from: nm, to: bm, fill: '#f0ad4e', label: 'Borderline', labelFill: '#1f2328' },
-    { from: bm, to: dMax, fill: '#d9534f',
-      label: thresholds.pathological_label || 'Pathological', labelFill: '#ffffff' }
-  ];
+  const bandDefs = [];
+  if (typeof thresholds.normal_min === 'number') {
+    bandDefs.push({ from: dMin, to: thresholds.normal_min, fill: '#6c757d', label: 'Atrophic', labelFill: '#ffffff' });
+    bandDefs.push({ from: thresholds.normal_min, to: nm, fill: '#e0e0e0', label: 'Normal', labelFill: '#1f2328' });
+  } else {
+    bandDefs.push({ from: dMin, to: nm, fill: '#e0e0e0', label: 'Normal', labelFill: '#1f2328' });
+  }
+  bandDefs.push({ from: nm, to: bm, fill: '#f0ad4e', label: 'Elevated', labelFill: '#1f2328' });
+  bandDefs.push({ from: bm, to: dMax, fill: '#d9534f', label: thresholds.pathological_label || 'Pathological', labelFill: '#ffffff' });
 
   // Layout constants (see LAYOUT INVARIANT above).
   const bandY = 22, bandH = 30, stripY = 38, bandLabelY = 30;

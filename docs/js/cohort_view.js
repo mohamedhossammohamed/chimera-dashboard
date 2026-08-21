@@ -573,6 +573,8 @@ function renderRaincloud(container, data) {
   const strata = data.strata || [];
   const metric = data.metric || '';
   const unit = data.unit || '';
+  const METRIC_LABELS = { psa: 'PSA', psad: 'PSA Density', vol: 'Prostate Volume', age: 'Age', pirads: 'PI-RADS' };
+  const metricLabel = METRIC_LABELS[metric] || metric;
 
   if (strata.length === 0) {
     container.innerHTML = '<div class="case-extra-missing">No raincloud data available.</div>';
@@ -629,7 +631,7 @@ function renderRaincloud(container, data) {
   svg.appendChild(el('text', {
     x: pad.left + plotW / 2, y: height - 14,
     'text-anchor': 'middle', fill: '#e6edf3', 'font-family': 'ui-monospace, monospace', 'font-size': 12, 'font-weight': 600,
-  }, `${metric} (${unit})`));
+  }, `${metricLabel}${unit ? ' (' + unit + ')' : ''}`));
 
   // Render each stratum
   let yOff = pad.top;
@@ -710,7 +712,7 @@ function renderRaincloud(container, data) {
       const dx = mapX(d.value);
       const dy = cy + stratumH * 0.38 + (d.jitter || 0) * stratumH * 0.12;
       const dot = el('circle', { cx: dx.toFixed(2), cy: dy.toFixed(2), r: 2, fill: color, 'fill-opacity': 0.6 });
-      dot.appendChild(el('title', {}, `${metric}=${d.value}`));
+      dot.appendChild(el('title', {}, `${metricLabel}=${d.value}`));
       svg.appendChild(dot);
     }
 
