@@ -87,8 +87,9 @@ graphify-out/
 .scratch/
 scratch/
 
-# Markdown documentation — not pushed to the repo
+# Markdown documentation — not pushed to the repo (except README)
 *.md
+!README.md
 
 # Plain-text development plans — not pushed to the repo
 *.txt
