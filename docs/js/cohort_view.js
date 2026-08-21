@@ -477,90 +477,95 @@ function renderMissingness(container, data) {
     'FamilyHistory': 'Family History',
   };
 
-  const cellW = 20;
-  const cellH = 4;
-  const colSpacing = 24;
+  const cellW = 28;
+  const cellH = 6;
+  const colSpacing = 32;
   const labelW = 100;
   const labelH = 110;
   const gridW = nMod * colSpacing;
   const width = labelW + gridW + 100;
-  const height = labelH + nCases * (cellH + 1) + 50;
 
-  const svg = createSvg(width, height);
-
-  // X-axis column headers rotated UPWARDS (-45 deg) with text-anchor: start
-  for (let j = 0; j < nMod; j++) {
-    const x = labelW + j * colSpacing + cellW / 2;
-    const y = labelH - 12;
-    const labelText = MOD_LABELS[modalities[j]] || modalities[j];
-    svg.appendChild(el('text', {
-      x: x, y: y,
-      'text-anchor': 'start', fill: '#e6edf3', 'font-family': 'ui-monospace, monospace', 'font-size': 11, 'font-weight': 600,
-      transform: `rotate(-45 ${x} ${y})`,
-    }, labelText));
-  }
-
-  // Task rows
-  let prevTask = null;
-  let taskStartRow = 0;
+  // Group cases by task — each task gets its own SVG panel
+  const taskGroups = { task1: [], task2: [], task3: [] };
   for (let i = 0; i < nCases; i++) {
     const task = cases[i].task;
-    if (task !== prevTask) {
-      if (prevTask !== null) {
-        const sepY = labelH + i * (cellH + 1);
-        svg.appendChild(el('line', { x1: labelW - 10, y1: sepY, x2: labelW + gridW, y2: sepY, stroke: '#3b5275', 'stroke-width': 1.5 }));
-        const bandMidRow = (taskStartRow + i) / 2;
-        const bandMidY = labelH + bandMidRow * (cellH + 1) + cellH / 2 + 4;
-        svg.appendChild(el('text', {
-          x: labelW - 14, y: bandMidY,
-          'text-anchor': 'end', fill: '#58a6ff', 'font-family': 'ui-monospace, monospace', 'font-size': 12, 'font-weight': 700,
-        }, prevTask.toUpperCase()));
-      }
-      taskStartRow = i;
-      prevTask = task;
+    if (taskGroups[task]) {
+      taskGroups[task].push(i);
     }
+  }
 
+  const taskOrder = ['task1', 'task2', 'task3'];
+
+  for (const task of taskOrder) {
+    const groupIndices = taskGroups[task];
+    if (groupIndices.length === 0) continue;
+
+    const groupN = groupIndices.length;
+    const height = labelH + groupN * (cellH + 1) + 50;
+
+    // Header label above each task panel
+    const header = document.createElement('div');
+    header.className = 'cohort-caption';
+    header.textContent = `${task.toUpperCase()} — ${groupN} cases`;
+    container.appendChild(header);
+
+    const svg = createSvg(width, height);
+
+    // X-axis column headers rotated UPWARDS (-45 deg) with text-anchor: start
     for (let j = 0; j < nMod; j++) {
-      const present = matrix[i][j] === 1;
-      const x = labelW + j * colSpacing;
-      const y = labelH + i * (cellH + 1);
-      const fill = present ? '#238636' : '#da3633';
-      const rect = el('rect', { x, y, width: cellW, height: cellH, fill, stroke: '#0d1117', 'stroke-width': 0.3, rx: 1 });
-
-      let tooltip = `${cases[i].case_id} | ${MOD_LABELS[modalities[j]] || modalities[j]}: ${present ? 'PRESENT' : 'MISSING'}`;
-      rect.appendChild(el('title', {}, tooltip));
-      svg.appendChild(rect);
+      const x = labelW + j * colSpacing + cellW / 2;
+      const y = labelH - 12;
+      const labelText = MOD_LABELS[modalities[j]] || modalities[j];
+      svg.appendChild(el('text', {
+        x: x, y: y,
+        'text-anchor': 'start', fill: '#e6edf3', 'font-family': 'ui-monospace, monospace', 'font-size': 11, 'font-weight': 600,
+        transform: `rotate(-45 ${x} ${y})`,
+      }, labelText));
     }
+
+    // Rows for this task
+    for (let r = 0; r < groupN; r++) {
+      const i = groupIndices[r];
+
+      for (let j = 0; j < nMod; j++) {
+        const present = matrix[i][j] === 1;
+        const x = labelW + j * colSpacing;
+        const y = labelH + r * (cellH + 1);
+        const fill = present ? '#238636' : '#da3633';
+        const rect = el('rect', { x, y, width: cellW, height: cellH, fill, stroke: '#0d1117', 'stroke-width': 0.3, rx: 1 });
+        rect.style.cursor = 'pointer';
+
+        const tooltip = `${cases[i].task.toUpperCase()} | ${cases[i].case_id} | ${MOD_LABELS[modalities[j]] || modalities[j]}: ${present ? 'PRESENT' : 'MISSING'} — click to view case`;
+        rect.appendChild(el('title', {}, tooltip));
+
+        rect.addEventListener('click', () => {
+          document.dispatchEvent(new CustomEvent('chimera:navigate-case', { detail: { task: cases[i].task, case_id: cases[i].case_id } }));
+        });
+
+        svg.appendChild(rect);
+      }
+    }
+
+    // Legend at bottom
+    const legY = labelH + groupN * (cellH + 1) + 16;
+    svg.appendChild(el('rect', { x: labelW, y: legY, width: 14, height: 12, fill: '#238636', rx: 2 }));
+    svg.appendChild(el('text', { x: labelW + 20, y: legY + 10, fill: '#8b9bb4', 'font-family': 'ui-monospace, monospace', 'font-size': 11 }, 'Present'));
+    svg.appendChild(el('rect', { x: labelW + 90, y: legY, width: 14, height: 12, fill: '#da3633', rx: 2 }));
+    svg.appendChild(el('text', { x: labelW + 110, y: legY + 10, fill: '#8b9bb4', 'font-family': 'ui-monospace, monospace', 'font-size': 11 }, 'Missing'));
+
+    svg.style.maxWidth = width + 'px';
+    const svgScroll = document.createElement('div');
+    svgScroll.style.overflow = 'auto';
+    svgScroll.style.maxHeight = '70vh';
+    svgScroll.style.border = '1px solid var(--border-subtle)';
+    svgScroll.style.borderRadius = '4px';
+    svgScroll.appendChild(svg);
+    container.appendChild(svgScroll);
   }
-
-  if (prevTask !== null) {
-    const bandMidRow = (taskStartRow + nCases) / 2;
-    const bandMidY = labelH + bandMidRow * (cellH + 1) + cellH / 2 + 4;
-    svg.appendChild(el('text', {
-      x: labelW - 14, y: bandMidY,
-      'text-anchor': 'end', fill: '#58a6ff', 'font-family': 'ui-monospace, monospace', 'font-size': 12, 'font-weight': 700,
-    }, prevTask.toUpperCase()));
-  }
-
-  // Legend at bottom
-  const legY = labelH + nCases * (cellH + 1) + 16;
-  svg.appendChild(el('rect', { x: labelW, y: legY, width: 14, height: 12, fill: '#238636', rx: 2 }));
-  svg.appendChild(el('text', { x: labelW + 20, y: legY + 10, fill: '#8b9bb4', 'font-family': 'ui-monospace, monospace', 'font-size': 11 }, 'Present'));
-  svg.appendChild(el('rect', { x: labelW + 90, y: legY, width: 14, height: 12, fill: '#da3633', rx: 2 }));
-  svg.appendChild(el('text', { x: labelW + 110, y: legY + 10, fill: '#8b9bb4', 'font-family': 'ui-monospace, monospace', 'font-size': 11 }, 'Missing'));
-
-  svg.style.maxWidth = width + 'px';
-  const svgScroll = document.createElement('div');
-  svgScroll.style.overflow = 'auto';
-  svgScroll.style.maxHeight = '70vh';
-  svgScroll.style.border = '1px solid var(--border-subtle)';
-  svgScroll.style.borderRadius = '4px';
-  svgScroll.appendChild(svg);
-  container.appendChild(svgScroll);
 
   const expDiv = document.createElement('div');
   expDiv.className = 'cohort-caption';
-  expDiv.textContent = `B4: Missingness grid (${nCases} cases x ${nMod} modalities). Dark green = present, dark red = missing.`;
+  expDiv.textContent = `B4: Missingness grid (${nCases} cases x ${nMod} modalities). Dark green = present, dark red = missing. Click any row to navigate to that case.`;
   container.appendChild(expDiv);
 }
 

@@ -535,6 +535,23 @@ class StandardWorkbenchApp {
       tabCohort.classList.add('active');
       await this.loadCohortData();
     });
+
+    // Custom event listener for cross-view case navigation (e.g. missingness grid click)
+    document.addEventListener('chimera:navigate-case', (e) => {
+      const { task, case_id } = e.detail;
+      if (!task || !case_id) return;
+      // Switch to standard view
+      standardView.style.display = '';
+      cohortView.style.display = 'none';
+      tabStandard.classList.add('active');
+      tabCohort.classList.remove('active');
+      // Update case selector dropdown
+      const compositeKey = `${task.toLowerCase()}:${case_id}`;
+      const sel = document.getElementById('case-select');
+      if (sel) sel.value = compositeKey;
+      // Navigate to the case
+      this.selectCase(compositeKey);
+    });
   }
 
   // --- Phase B: In-Browser Live Cohort Analytics Render via CohortView ---
