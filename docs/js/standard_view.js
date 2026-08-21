@@ -1,10 +1,10 @@
 // CHIMERA-Agent 1D/2D Standard View Engine (standard_view.js)
 // Zero-Dependency, Pure DOM & SVG Scientific Workbench
-import { renderClevelandBulletStrip, renderKaplanMeierSVG, renderEAUScorecard, renderConcordanceMatrix, isMissingClinicalValue } from './standard_components.js';
+import { renderClevelandBulletStrip, renderEAUScorecard, renderConcordanceMatrix, isMissingClinicalValue } from './standard_components.js';
 import { parseSurgicalPathology } from './surgical_path_parser.js';
 import { showFeedback } from './feedback.js';
 import { PSAKinetics } from './clinical_engine.js';
-import { CohortEngine, kaplanMeier } from './cohort_engine.js';
+import { CohortEngine } from './cohort_engine.js';
 import { EAU_SENTINEL } from './constants.js';
 
 // Shared clinical threshold constants — single source of truth for both the
@@ -63,16 +63,13 @@ export class StandardView {
     // 3. Variable Importance Weights Panel
     this.renderWeights('panel-weights', trace.model_prediction?.variable_weights);
 
-    // 4. Pure SVG Kaplan-Meier Survival Horizon (Task 3 Only)
-    this.renderSurvivalComponent('panel-survival', trace, task);
-
-    // 5. Embedding Statistical Summary Panel
+    // 4. Embedding Statistical Summary Panel
     this.renderEmbeddings('panel-embeddings', trace.modality_representations);
 
-    // 6. Clinical EHR Text Reader Panel
+    // 5. Clinical EHR Text Reader Panel
     this.renderClinicalText('panel-clinical-text', trace.clinical_records);
 
-    // 7. Interactive Raw JSON Tree Inspector Panel
+    // 6. Interactive Raw JSON Tree Inspector Panel
     this.renderJSONTree('panel-json-tree', trace);
   }
 
@@ -761,72 +758,7 @@ export class StandardView {
     `;
   }
 
-  // --- 4. Kaplan-Meier Survival Horizon (Task 3 Only) ---
-  // Single renderer: delegates to standard_components.renderKaplanMeierSVG
-  // (auto-scaling maxT). The legacy hardcoded renderSurvivalSVG was removed to
-  // eliminate duplicate KM curves stacked in panel-survival.
-  static renderSurvivalComponent(containerId, trace, task) {
-    const el = document.getElementById(containerId);
-    if (!el) return;
-
-    if (task !== 'task3') {
-      el.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; font-style: italic; padding: 8px 0;">Kaplan-Meier survival step curve applies to Task 3 (Post-Radical Prostatectomy BCR Recurrence) cases.</div>';
-      return;
-    }
-
-    const gt = trace.ground_truth || {};
-    const pred = trace.model_prediction || {};
-    const cohortCurve = pred.survival_curve;
-
-    let timePoints, survivalProbs, eventStatus, eventTime;
-
-    if (cohortCurve && Array.isArray(cohortCurve.time_points) &&
-        cohortCurve.time_points.length > 0 &&
-        Array.isArray(cohortCurve.survival_probabilities) &&
-        cohortCurve.survival_probabilities.length === cohortCurve.time_points.length) {
-      // Use the cohort survival curve from the model prediction.
-      timePoints = cohortCurve.time_points;
-      survivalProbs = cohortCurve.survival_probabilities;
-      eventStatus = undefined;  // let renderer infer from survival probability drops
-      eventTime = (gt.months_to_recurrence !== undefined && gt.months_to_recurrence !== null)
-        ? Number(gt.months_to_recurrence) : undefined;
-    } else if (gt.months_to_recurrence !== undefined && gt.months_to_recurrence !== null) {
-      // Single-patient KM curve via product-limit estimator
-      const tEvent = Number(gt.months_to_recurrence);
-      const isEvent = gt.event === 1;
-      const km = kaplanMeier([tEvent], [isEvent ? 1 : 0]);
-      timePoints = km.time_points;
-      survivalProbs = km.survival_probabilities;
-      eventStatus = km.event_status;
-      eventTime = tEvent;
-    } else {
-      // No survival data at all.
-      el.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; font-style: italic;">No survival curve time-points provided in trace.</div>';
-      return;
-    }
-
-    el.innerHTML = '';
-
-    const sectionTitle = document.createElement('div');
-    sectionTitle.style.fontFamily = 'var(--font-mono)';
-    sectionTitle.style.fontSize = '11px';
-    sectionTitle.style.fontWeight = '700';
-    sectionTitle.style.color = 'var(--text-main)';
-    sectionTitle.style.marginTop = '16px';
-    sectionTitle.style.marginBottom = '8px';
-    sectionTitle.style.borderBottom = '1px solid var(--border-subtle)';
-    sectionTitle.style.paddingBottom = '4px';
-    sectionTitle.textContent = 'Kaplan-Meier Step Curve (Cleveland-McGill Component)';
-    el.appendChild(sectionTitle);
-
-    const kmContainer = document.createElement('div');
-    el.appendChild(kmContainer);
-
-    renderKaplanMeierSVG(kmContainer, timePoints, survivalProbs, eventStatus, eventTime,
-                         cohortCurve && Array.isArray(cohortCurve.n_at_risk) ? cohortCurve.n_at_risk : undefined);
-  }
-
-  // --- 5. Embedding Statistical Summary & Raw Vector Sample ---
+  // --- 4. Embedding Statistical Summary & Raw Vector Sample ---
   static renderEmbeddings(containerId, modalityRepresentations = {}) {
     const el = document.getElementById(containerId);
     if (!el) return;
