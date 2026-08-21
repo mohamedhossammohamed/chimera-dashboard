@@ -481,9 +481,9 @@ function renderMissingness(container, data) {
     'FamilyHistory': 'Family History',
   };
 
-  const cellW = 28;
-  const cellH = 6;
-  const colSpacing = 32;
+  const cellW = 36;
+  const cellH = 8;
+  const colSpacing = 40;
   const labelW = 100;
   const labelH = 110;
   const gridW = nMod * colSpacing;
@@ -500,6 +500,13 @@ function renderMissingness(container, data) {
 
   const taskOrder = ['task1', 'task2', 'task3'];
 
+  // Flex-row wrapper so the three task panels sit side by side
+  const rowWrap = document.createElement('div');
+  rowWrap.style.display = 'flex';
+  rowWrap.style.gap = '16px';
+  rowWrap.style.alignItems = 'flex-start';
+  rowWrap.style.flexWrap = 'wrap';
+
   for (const task of taskOrder) {
     const groupIndices = taskGroups[task];
     if (groupIndices.length === 0) continue;
@@ -507,11 +514,14 @@ function renderMissingness(container, data) {
     const groupN = groupIndices.length;
     const height = labelH + groupN * (cellH + 1) + 50;
 
-    // Header label above each task panel
+    // Each task panel: header + scrollable SVG stacked vertically
+    const panel = document.createElement('div');
+    panel.style.flex = '0 0 auto';
+
     const header = document.createElement('div');
     header.className = 'cohort-caption';
     header.textContent = `${task.toUpperCase()} — ${groupN} cases`;
-    container.appendChild(header);
+    panel.appendChild(header);
 
     const svg = createSvg(width, height);
 
@@ -564,8 +574,11 @@ function renderMissingness(container, data) {
     svgScroll.style.border = '1px solid var(--border-subtle)';
     svgScroll.style.borderRadius = '4px';
     svgScroll.appendChild(svg);
-    container.appendChild(svgScroll);
+    panel.appendChild(svgScroll);
+    rowWrap.appendChild(panel);
   }
+
+  container.appendChild(rowWrap);
 
   const expDiv = document.createElement('div');
   expDiv.className = 'cohort-caption';
