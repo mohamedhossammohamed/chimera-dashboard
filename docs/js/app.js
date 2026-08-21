@@ -12,6 +12,96 @@ function sanitizeFilename(name) {
   return String(name || '').replace(/[^a-zA-Z0-9._-]/g, '_');
 }
 
+// ---------------------------------------------------------------------------
+// TraceStore — IndexedDB persistence for uploaded traces.
+// Saves parsed trace data so it survives page refreshes / session restarts.
+// Browsers cannot re-read files from filesystem paths, so we store the
+// parsed JSON payloads directly. IndexedDB handles large payloads that
+// would overflow localStorage's ~5MB cap.
+// ---------------------------------------------------------------------------
+const TraceStore = {
+  DB_NAME: 'chimera-trace-store',
+  STORE: 'traces',
+  META_KEY: '__meta',
+  _db: null,
+
+  async _open() {
+    if (this._db) return this._db;
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(this.DB_NAME, 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(this.STORE)) {
+          db.createObjectStore(this.STORE);
+        }
+      };
+      req.onsuccess = () => { this._db = req.result; resolve(this._db); };
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  async save(traces, fileNames) {
+    try {
+      const db = await this._open();
+      const tx = db.transaction(this.STORE, 'readwrite');
+      const store = tx.objectStore(this.STORE);
+      store.clear();
+      store.put({ savedAt: Date.now(), fileNames: fileNames || [], count: traces.length }, this.META_KEY);
+      for (let i = 0; i < traces.length; i++) {
+        store.put(traces[i], i);
+      }
+      await new Promise((resolve, reject) => {
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch (err) {
+      console.warn('[TraceStore] Save failed:', err);
+    }
+  },
+
+  async load() {
+    try {
+      const db = await this._open();
+      const tx = db.transaction(this.STORE, 'readonly');
+      const store = tx.objectStore(this.STORE);
+      const metaReq = store.get(this.META_KEY);
+      const meta = await new Promise((resolve, reject) => {
+        metaReq.onsuccess = () => resolve(metaReq.result);
+        metaReq.onerror = () => reject(metaReq.error);
+      });
+      if (!meta || meta.count === 0) return null;
+
+      const traces = [];
+      for (let i = 0; i < meta.count; i++) {
+        const req = store.get(i);
+        const trace = await new Promise((resolve, reject) => {
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+        if (trace) traces.push(trace);
+      }
+      return { traces, meta };
+    } catch (err) {
+      console.warn('[TraceStore] Load failed:', err);
+      return null;
+    }
+  },
+
+  async clear() {
+    try {
+      const db = await this._open();
+      const tx = db.transaction(this.STORE, 'readwrite');
+      tx.objectStore(this.STORE).clear();
+      await new Promise((resolve, reject) => {
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch (err) {
+      console.warn('[TraceStore] Clear failed:', err);
+    }
+  },
+};
+
 class StandardWorkbenchApp {
   constructor() {
     this.reader = new TraceReader('traces');
@@ -63,10 +153,68 @@ class StandardWorkbenchApp {
 
     this.injectBundleControls();
     this.injectCaseSearch();
+    this.injectClearStorageButton();
     this.bindEvents();
     this.bindDropZone();
     this.bindFolderUpload();
     this.bindTabToggle();
+
+    // Restore traces from IndexedDB if a previous session saved them.
+    await this.restoreFromStore();
+  }
+
+  // Restores traces persisted in IndexedDB from a prior session so the user
+  // does not need to re-upload on every page refresh.
+  async restoreFromStore() {
+    const result = await TraceStore.load();
+    if (!result || result.traces.length === 0) return;
+
+    this.loadedTraces = result.traces;
+    this.rebuildManifestFromLoadedTraces();
+    this.populateCaseSelector();
+
+    // Auto-select the first trace so the view isn't blank.
+    const first = this.loadedTraces[0];
+    if (first) {
+      this.activeTrace = first;
+      this.loadBundle(this.activeTrace);
+      this.render();
+      const sel = document.getElementById('case-select');
+      if (sel) sel.value = `${(first.task || '').toLowerCase()}:${first.case_id}`;
+    }
+
+    const ageSec = Math.round((Date.now() - result.meta.savedAt) / 1000);
+    const ageStr = ageSec < 60 ? `${ageSec}s ago` : ageSec < 3600 ? `${Math.round(ageSec / 60)}m ago` : `${Math.round(ageSec / 3600)}h ago`;
+    this.showFeedback(`Restored ${result.traces.length} traces from browser memory (saved ${ageStr}). Upload new files to replace.`, 'info');
+  }
+
+  // Injects a small "Clear stored data" button next to the upload controls.
+  injectClearStorageButton() {
+    const controls = document.querySelector('.controls-group');
+    if (!controls) return;
+    if (document.getElementById('btn-clear-storage')) return;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'btn-clear-storage';
+    btn.className = 'json-btn';
+    btn.textContent = 'Clear Memory';
+    btn.style.fontFamily = 'var(--font-mono)';
+    btn.style.fontSize = '11px';
+    btn.style.padding = '4px 10px';
+    btn.style.cursor = 'pointer';
+    btn.style.marginLeft = '6px';
+    btn.addEventListener('click', async () => {
+      await TraceStore.clear();
+      this.loadedTraces = [];
+      this.manifest = { traces: [] };
+      this.activeTrace = null;
+      this.activeBundle = null;
+      this.populateCaseSelector();
+      this.render();
+      this.showFeedback('Browser memory cleared. Upload files to load new data.', 'info');
+    });
+    controls.appendChild(btn);
   }
 
   populateCaseSelector() {
@@ -270,6 +418,13 @@ class StandardWorkbenchApp {
     }
   }
 
+  // Persists currently loaded traces to IndexedDB so they survive refresh.
+  // Called after every successful file upload / drag-drop.
+  async persistToStore(fileNames) {
+    if (this.loadedTraces.length === 0) return;
+    await TraceStore.save(this.loadedTraces, fileNames || []);
+  }
+
   // Shared file processing pipeline for both folder upload and drag-drop.
   async processFiles(files) {
     if (files.length > 1) {
@@ -333,6 +488,7 @@ class StandardWorkbenchApp {
           this.loadBundle(this.activeTrace);
           this.render();
         }
+        await this.persistToStore(parsedFiles.map(p => p.name));
       } else {
         this.showFeedback('No valid traces could be merged from split files.', 'error');
       }
@@ -369,6 +525,7 @@ class StandardWorkbenchApp {
         this.loadBundle(this.activeTrace);
         this.render();
       }
+      await this.persistToStore(parsedFiles.map(p => p.name));
     } else if (parsedFiles.length > 0) {
       this.showFeedback('No valid trace files found.', 'error');
     }
